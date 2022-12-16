@@ -1,0 +1,7 @@
+{
+  "url_title": "about-me", // the title you provide while creating a new blog, this appears in url
+  "title": "About me", // main title of blog
+  "sub_title": "Everything AI and beyond.", // sub-title of blog
+  "top_image": "Images/Noah1.jpg", // main image of blog
+  "visible": true // don't worry about this
+}
