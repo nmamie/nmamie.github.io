@@ -50,37 +50,58 @@
       </div>
     </div>
   </div>
-  <div class="topnav">
-    <a href="/">Home</a>
-    <a href="projects.html">Projects</a>
-    <a href="publications.html">Publications</a>
-    <a href="academic.html">Academics</a>
-    <a class="active" href="sports.html">Sports</a>
-  </div>
+
   <div id="display">
-    <div id="blog_section">
-      <h1>Nothing here yet, stay tuned!</h1>
-      <div id="blogs"></div>
+    <div class="sidebar" id="mySidebar">
+      <a href="javascript:void(0);" class="closebtn" onclick="closeSidebar()">&times;</a>
+      <a href="/">Home</a>
+      <a href="projects.html">Projects</a>
+      <a href="publications.html">Publications</a>
+      <a href="academic.html">Academics</a>
+      <a class="active" href="sports.html">Sports</a>
     </div>
-  </div>
-  <script type="text/javascript">
-    setTimeout(function () {
-      document.getElementById("loading").classList.add("animated");
-      document.getElementById("loading").classList.add("fadeOut");
-      setTimeout(function () {
-        document.getElementById("loading").classList.remove("animated");
-        document.getElementById("loading").classList.remove("fadeOut");
-        document.getElementById("loading").style.display = "none";
-      }, 800);
-    }, 1500);
-    $.getJSON("sports.json", function (blog) {
-      blog = blog || [];
-      if (blog.length == 0) {
-        return (document.getElementById("blog_section").style.display =
-          "none");
+
+    <div class="content">
+      <button class="openbtn" onclick="openSidebar()">&#9776;</button>
+    </div>
+
+    <script>
+      function openSidebar() {
+        document.getElementById("mySidebar").style.width = "200px";
+        document.querySelector(".content").classList.add("menu-opened");
       }
-      for (var i = 0; i < blog.length; i++) {
-        $("#blogs").append(`
+
+      function closeSidebar() {
+        document.getElementById("mySidebar").style.width = "0";
+        document.querySelector(".content").classList.remove("menu-opened");
+      }    
+    </script>
+
+
+    <div id="blog_section">
+      <div id="blog_section">
+        <h1>Nothing here yet, stay tuned!</h1>
+        <div id="blogs"></div>
+      </div>
+    </div>
+    <script type="text/javascript">
+      setTimeout(function () {
+        document.getElementById("loading").classList.add("animated");
+        document.getElementById("loading").classList.add("fadeOut");
+        setTimeout(function () {
+          document.getElementById("loading").classList.remove("animated");
+          document.getElementById("loading").classList.remove("fadeOut");
+          document.getElementById("loading").style.display = "none";
+        }, 800);
+      }, 1500);
+      $.getJSON("sports.json", function (blog) {
+        blog = blog || [];
+        if (blog.length == 0) {
+          return (document.getElementById("blog_section").style.display =
+            "none");
+        }
+        for (var i = 0; i < blog.length; i++) {
+          $("#blogs").append(`
               <a href="./blog/${blog[i].url_title}/" target="_blank">
                   <section>
                       <img src="./blog/${blog[i].url_title}/${blog[i].top_image}">
@@ -93,38 +114,38 @@
                   </section>
               </a>
               `);
-      }
-    }).fail(function () {
-      return (document.getElementById("blog_section").style.display = "none");
-    });
-  </script>
+        }
+      }).fail(function () {
+        return (document.getElementById("blog_section").style.display = "none");
+      });
+    </script>
 
-  <script>
-    const magicProjectsGrid = new MagicGrid({
-      container: "#work_section",
-      animate: false,
-      gutter: 30, // default gutter size
-      static: true,
-      useMin: false,
-      maxColumns: 2,
-      useTransform: true
-    });
+    <script>
+      const magicProjectsGrid = new MagicGrid({
+        container: "#work_section",
+        animate: false,
+        gutter: 30, // default gutter size
+        static: true,
+        useMin: false,
+        maxColumns: 2,
+        useTransform: true
+      });
 
-    const magicForksGrid = new MagicGrid({
-      container: "#forks_section",
-      animate: false,
-      gutter: 30, // default gutter size
-      static: true,
-      useMin: false,
-      maxColumns: 2,
-      useTransform: true
-    });
+      const magicForksGrid = new MagicGrid({
+        container: "#forks_section",
+        animate: false,
+        gutter: 30, // default gutter size
+        static: true,
+        useMin: false,
+        maxColumns: 2,
+        useTransform: true
+      });
 
-    $("document").ready(() => {
-      magicProjectsGrid.listen();
-      magicForksGrid.listen();
-    });
-  </script>
+      $("document").ready(() => {
+        magicProjectsGrid.listen();
+        magicForksGrid.listen();
+      });
+    </script>
 
 
 </body>

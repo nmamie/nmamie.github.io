@@ -417,32 +417,67 @@ body {
   transform: scale(1.03);
 }
 
-/* Add a black background color to the top navigation */
-.topnav {
-  background-color: var(--bg-color);
-  overflow: hidden;
+.sidebar {
+  height: 100%;
+  width: 0;
+  position: fixed;
+  top: 0;
+  right: 0;
+  background-color: #333;
+  overflow-x: hidden;
+  transition: 0.3s;
+  z-index: 2;
 }
 
-/* Style the links inside the navigation bar */
-.topnav a {
-  float: right;
-  color: #f2f2f2;
-  text-align: center;
-  padding: 14px 16px;
+.sidebar a {
+  padding: 15px 40px;
+  text-align: right;
   text-decoration: none;
-  font-size: 17px;
-}
-
-/* Change the color of links on hover */
-.topnav a:hover {
-  background-color: #ddd;
-  color: black;
-}
-
-/* Add a color to the active/current link */
-.topnav a.active {
-  background-color: #04aa6d;
+  font-size: 20px;
   color: white;
+  display: block;
+  transition: 0.3s;
+}
+
+.sidebar a:hover {
+  background-color: #444;
+}
+
+.sidebar a.active {
+  background-color: green;
+}
+
+.closebtn {
+  position: absolute;
+  top: 0;
+  left: -30px;
+  padding: 15px 25px;
+  cursor: pointer;
+  font-size: 30px;
+  color: white;
+}
+
+.openbtn {
+  background-color: #333;
+  color: white;
+  font-size: 20px;
+  border: none;
+  cursor: pointer;
+  padding: 15px 20px;
+  position: fixed;
+  top: 0;
+  right: 0;
+  margin: 15px;
+  z-index: 1;
+}
+
+.content {
+  margin-right: 0;
+  transition: margin-right 0.3s;
+}
+
+.menu-opened {
+  margin-right: 200px;
 }
 
 .go_back {
