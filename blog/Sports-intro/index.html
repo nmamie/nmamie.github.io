@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>About me</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css"
+    integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+    integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="../../stylesheets/index.css">
+</head>
+
+<body>
+  <div id="loading">
+    <div id="spinner"></div>
+  </div>
+  <a href="/" class="go_back"><i class="fas fa-arrow-left"></i></a>
+  <div id="background_overlay"></div>
+  <div id="background" style="background: url(top_image.jpeg) center;"></div>
+  <table id="profile_blog">
+    <tbody>
+      <tr>
+        <td style="width:8vw;">
+          <div id="profile_img_blog"></div>
+        </td>
+        <td style="width:52vw;">
+          <div id="username_blog"></div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <div id="blog-display">
+    <h1 id="blog_title">4 Rackets 1 Sport</h1>
+    <h2 id="blog_sub_title">Exploring the World of Racketlon and Outdoor Sports: A Journey of Fitness and Fun.</h2>
+    <h2 id="para_1_title">Embracing Racketlon: A Four-Sport Challenge</h2>
+    <p id="para_1_original">For those unfamiliar, racketlon is an intriguing sport that combines table tennis,
+      badminton, squash, and tennis. It's a test of versatility, skill, and endurance, offering a unique blend of indoor
+      racket sports. I was drawn to racketlon for its diversity and the challenge of mastering four distinct sports.</p>
+
+    <h3 id="para_2_title">Table Tennis: The Speedy Starter</h3>
+    <p id="para_2_original">Table tennis kicks off a racketlon competition. It's a fast-paced game that demands quick
+      reflexes and sharp hand-eye coordination. I love the intensity of the rallies and the precision required to
+      outmaneuver my opponent.</p>
+
+    <h3 id="para_3_title">Badminton: The Feathered Finesse</h3>
+    <p id="para_3_original">Next comes badminton, a sport that balances power and delicacy. The shuttlecock's
+      unpredictable flight patterns make for an exciting game. It's a test of agility and strategic play, and I enjoy
+      the challenge of controlling the court with deft strokes and nimble footwork.</p>
+
+    <h3 id="para_4_title">Squash: The Intense Middle</h3>
+    <p id="para_4_original">Squash is the third discipline, known for its high intensity and dynamic movements. It's a
+      physically demanding sport that requires stamina and strength. Playing squash has improved my cardiovascular
+      fitness and mental toughness, essential for enduring long rallies within the confined space of a squash court.</p>
+
+    <h3 id="para_5_title">Tennis: The Grand Finale</h3>
+    <p id="para_5_original">Tennis, the final sport in racketlon, demands a blend of strength, skill, and strategy. It's
+      a wonderful culmination of the skills honed in the previous sports. I find tennis to be a test of endurance,
+      especially after the energy expended in the earlier games.</p>
+
+    <h2 id="para_6_title">Outdoor Sports: A World of Adventure</h2>
+    <p id="para_6_original">While racketlon is my primary focus, I also engage in outdoor sports to maintain my fitness
+      and indulge in the thrill of nature.</p>
+
+    <h3 id="para_7_title">Running: The Cardio King</h3>
+    <p id="para_7_original">Running is a fundamental part of my fitness regime. It's an excellent way to build stamina
+      and improve overall cardiovascular health. Whether it's a serene jog in the park or a challenging trail run,
+      running keeps me grounded and in shape.</p>
+
+    <h3 id="para_8_title">Biking: The Scenic Explorer</h3>
+    <p id="para_8_original">Cycling offers both fitness and exploration. It's a low-impact way to strengthen the legs
+      and improve endurance. Biking through different terrains and landscapes is not only a workout for the body but
+      also a feast for the senses.</p>
+
+    <h3 id="para_9_title">Snowboarding: The Winter Wonderland</h3>
+    <p id="para_9_original">Come winter, snowboarding is my go-to sport. It's an exhilarating blend of speed, balance,
+      and agility. Gliding down snowy slopes provides a thrilling escape and works out various muscle groups, enhancing
+      my coordination and balance.</p>
+
+    <h3 id="para_10_title">Cross-Country Skiing: The Endurance Builder</h3>
+    <p id="para_10_original">Cross-country skiing is a fantastic way to stay active in the colder months. It's a
+      full-body workout, requiring both strength and endurance. The peacefulness of skiing through serene, snow-covered
+      trails is an experience unlike any other.</p>
+
+    <h2 id="para_11_title">Conclusion: A Balanced Approach to Fitness</h2>
+    <p id="para_11_original">My journey through racketlon and various outdoor sports is more than just about staying
+      fit. It's about embracing challenges, enjoying the beauty of nature, and pushing my limits. Each sport offers
+      something unique, be it the adrenaline rush of snowboarding or the strategic play of badminton. Together, they
+      keep me physically and mentally sharp, ready for whatever challenge comes next. Whether you're an avid sports
+      enthusiast or just starting out, I encourage you to explore these diverse sports. They offer a world of fitness,
+      fun, and adventure.</p>
+
+  </div>
+  <script type="text/javascript">
+    setTimeout(function () {
+      document.getElementById("loading").classList.add("animated");
+      document.getElementById("loading").classList.add("fadeOut");
+      setTimeout(function () {
+        document.getElementById("loading").classList.remove("animated");
+        document.getElementById("loading").classList.remove("fadeOut");
+        document.getElementById("loading").style.display = "none";
+      }, 800);
+    }, 1500);
+    $.getJSON("../../config.json", function (user) {
+      var icon = document.createElement("link");
+      icon.setAttribute("rel", "icon");
+      icon.setAttribute("href", user[0].userimg);
+      icon.setAttribute("type", "image/png");
+      document.getElementsByTagName("head")[0].appendChild(icon);
+      document.getElementById(
+        "profile_img_blog"
+      ).style.background = `url('${user[0].userimg}') center center`;
+      document.getElementById(
+        "username_blog"
+      ).innerHTML = `<span style="display:${user[0].name == null || !user[0].name ? "none" : "block"
+        };">${user[0].name}</span>@${user[0].username}<b id="blog_time"></b>`;
+
+      if ((user[0].theme = "dark.css")) {
+        document.querySelector("#background_overlay").style.background =
+          "linear-gradient(0deg, rgba(10, 10, 10, 1), rgba(10, 10, 10, 0.1))";
+      } else {
+        document.querySelector("#background_overlay").style.background =
+          "linear-gradient(0deg, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0.1))";
+      }
+    });
+  </script>
+
+
+</body>
+
+</html>
