@@ -1,3 +1,9 @@
 [
-
-]
+    {
+     "url_title": "Academic-intro",
+     "title": "My Academic Journey",
+     "sub_title": "A brief introduction to my academic journey",
+     "top_image": "top_image.jpg",
+     "visible": true
+    }
+ ]
