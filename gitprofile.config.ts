@@ -59,7 +59,7 @@ const CONFIG = {
   },
   resume: {
     fileUrl:
-      'https://nmamie.github.io/', // Empty fileUrl will hide the `Download Resume` button.
+      '', // Empty fileUrl will hide the `Download Resume` button.
   },
   skills: [
     'Python',
@@ -82,7 +82,7 @@ const CONFIG = {
       position: 'Doctoral Researcher',
       from: 'September 2025',
       to: 'Present',
-      companyLink: 'https://www.detecon.com',
+      companyLink: 'https://www.ifi.uzh.ch',
     },
     {
       company: 'Detecon Switzerland',
