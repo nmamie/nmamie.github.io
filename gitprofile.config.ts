@@ -34,7 +34,7 @@ const CONFIG = {
       projects: [],
     },
   },
-  seo: { title: 'Noah Mamie', description: '', imageURL: '' },
+  seo: { title: 'Noah Mamie', description: 'PhD @ UZH | Artificial Intelligence | GenAI, Multi-Agent Systems, GNNs', imageURL: '' },
   social: {
     linkedin: 'noah-mamie',
     x: '',
@@ -148,9 +148,9 @@ const CONFIG = {
   ],
   // Display articles from your medium or dev account. (Optional)
   blog: {
-    source: 'metium', // medium | dev
+    source: 'medium', // medium | dev
     username: 'nmamie', // to hide blog section, keep it empty
-    limit: 2, // How many articles to display. Max is 10.
+    limit: 4, // How many articles to display. Max is 10.
   },
   googleAnalytics: {
     id: '', // GA3 tracking id/GA4 tag id UA-XXXXXXXXX-X | G-XXXXXXXXXX
