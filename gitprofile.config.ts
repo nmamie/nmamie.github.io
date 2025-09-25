@@ -53,13 +53,13 @@ const CONFIG = {
     stackoverflow: '', // example: '1/jeff-atwood'
     discord: '',
     telegram: '',
-    website: 'https://www.nmamie.com',
+    website: 'https://www.nmamie.ch',
     phone: '',
     email: 'noah.mamie@uzh.ch',
   },
   resume: {
     fileUrl:
-      '', // Empty fileUrl will hide the `Download Resume` button.
+      'https://nmamie.github.io/', // Empty fileUrl will hide the `Download Resume` button.
   },
   skills: [
     'Python',
