@@ -134,7 +134,7 @@ const CONFIG = {
       authors: 'Noah Mamie and Susie Xi Rao',
       link: 'https://arxiv.org/pdf/2503.05473?',
       description:
-        'Multi-agent systems address issues of accessibility and scalability of artificial intelligence (AI) foundation models, which are often represented by large language models. We develop a framework – the “Society of HiveMind” (SOHM) – that orchestrates the interaction between multiple AI foundation models, imitating the observed behavior of animal swarms in nature by following modern evolutionary theories. On the one hand, we find that the SOHM provides a negligible benefit on tasks that mainly require real-world knowledge. On the other hand, we remark a significant improvement on tasks that require intensive logical reasoning, indicating that multi-agent systems are capable of increasing the reasoning capabilities of the collective compared to the individual agents. Our findings demonstrate the potential of combining a multitude of diverse AI foundation models to form an artificial swarm intelligence capable of self-improvement through interactions with a given environment.',
+        'We introduce the Society of HiveMind (SOHM), a framework that coordinates multiple AI foundation models inspired by swarm behavior and evolutionary theory. While SOHM shows little gain on knowledge-intensive tasks, it significantly boosts performance on logical reasoning tasks, highlighting the potential of multi-agent systems to enhance collective reasoning beyond individual models.',
     },
     {
       title: 'Voting Booklet Bias: Stance Detection in Swiss Federal Communication',
@@ -143,7 +143,7 @@ const CONFIG = {
       authors: 'Eric Egli, Noah Mamie, Mathias Müller and Eyal Liron Dolev',
       link: 'https://arxiv.org/pdf/2306.08999',
       description:
-        'In this study, we use recent stance detection methods to study the stance (for, against or neutral) of statements in official information booklets for voters. Our main goal is to answer the fundamental question: are topics to be voted on presented in a neutral way? To this end, we first train and compare several models for stance detection on a large dataset about Swiss politics. We find that fine-tuning an M-BERT model leads to the best accuracy. We then use our best model to analyze the stance of utterances extracted from the Swiss federal voting booklet concerning the Swiss popular votes of September 2022, which is the main goal of this project. We evaluated the models in both a multilingual as well as a monolingual context for German, French, and Italian. Our analysis shows that some issues are heavily favored while others are more balanced, and that the results are largely consistent across languages. Our findings have implications for the editorial process of future voting booklets and the design of better automated systems for analyzing political discourse. ',
+        'We apply stance detection to Swiss federal voting booklets to examine whether issues are presented neutrally. After comparing models, we find fine-tuned M-BERT performs best and use it to analyze the September 2022 votes in German, French, and Italian. Results show certain issues are strongly favored while others remain balanced, with consistent patterns across languages.',
     },
   ],
   // Display articles from your medium or dev account. (Optional)
