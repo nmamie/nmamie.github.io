@@ -34,7 +34,7 @@ const CONFIG = {
       projects: [],
     },
   },
-  seo: { title: 'Noah Mamie', description: 'PhD @ UZH | Artificial Intelligence | GenAI, Multi-Agent Systems, GNNs', imageURL: '' },
+  seo: { title: 'Noah Mamie', description: 'PhD @ UZH | Artificial Intelligence | GenAI, Multi-Agent Systems, GNNs', imageURL: 'public/logo.png' },
   social: {
     linkedin: 'noah-mamie',
     x: '',
@@ -158,7 +158,7 @@ const CONFIG = {
   // Track visitor interaction and behavior. https://www.hotjar.com
   hotjar: { id: '', snippetVersion: 6 },
   themeConfig: {
-    defaultTheme: 'procyon',
+    defaultTheme: 'halloween',
 
     // Hides the switch in the navbar
     // Useful if you want to support a single color mode
