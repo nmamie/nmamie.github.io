@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import axios, { AxiosError } from 'axios';
 import { formatDistance } from 'date-fns';
 import {
@@ -44,6 +44,7 @@ const GitProfile = ({ config }: { config: Config }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [githubProjects, setGithubProjects] = useState<GithubProject[]>([]);
+  const vantaRef = useRef<any | null>(null);
 
   const getGithubProjects = useCallback(
     async (publicRepoCount: number): Promise<GithubProject[]> => {
@@ -143,6 +144,84 @@ const GitProfile = ({ config }: { config: Config }) => {
     theme && document.documentElement.setAttribute('data-theme', theme);
   }, [theme]);
 
+  // Initialize Vanta.js background (VANTA.BIRDS) from CDN and clean up on unmount
+  // Recreate when `theme` changes so colors match the active theme
+  useEffect(() => {
+    let mounted = true;
+
+    const loadScript = (src: string) =>
+      new Promise<void>((resolve, reject) => {
+        if (document.querySelector(`script[src="${src}"]`)) {
+          resolve();
+          return;
+        }
+        const s = document.createElement('script');
+        s.src = src;
+        s.async = true;
+        s.onload = () => resolve();
+        s.onerror = () => reject(new Error(`Failed to load ${src}`));
+        document.body.appendChild(s);
+      });
+
+    const createVanta = () => {
+      const VANTA = (window as any).VANTA;
+      if (!VANTA || !VANTA.BIRDS) return;
+
+      // Read theme colors from CSS variables (defined by DaisyUI/Tailwind)
+      const style = getComputedStyle(document.documentElement);
+      const primary = style.getPropertyValue('--color-primary')?.trim() || '#fc055b';
+      const accent = style.getPropertyValue('--color-accent')?.trim() || '#e8d03a';
+      const baseContent = style.getPropertyValue('--color-base-content')?.trim() || '#2a2730';
+
+      // Destroy existing instance first (if any)
+      try {
+        vantaRef.current?.destroy?.();
+      } catch (e) {
+        /* ignore */
+      }
+
+      vantaRef.current = VANTA.BIRDS({
+        el: '#vanta-bg',
+        mouseControls: true,
+        touchControls: true,
+        gyroControls: false,
+        minHeight: 200.0,
+        minWidth: 200.0,
+        scale: 1.0,
+        scaleMobile: 1.0,
+        // Make Vanta canvas transparent so the container's background shows through
+        backgroundAlpha: 0,
+        // Use theme-aware colors for birds
+        color: primary || baseContent,
+        color2: accent || baseContent,
+      });
+    };
+
+    (async () => {
+      try {
+        await loadScript('https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js');
+        await loadScript('https://unpkg.com/vanta@latest/dist/vanta.birds.min.js');
+
+        if (!mounted) return;
+        createVanta();
+      } catch (e) {
+        // If Vanta fails to load, don't block the app
+        // eslint-disable-next-line no-console
+        console.warn('Vanta failed to load', e);
+      }
+    })();
+
+    return () => {
+      mounted = false;
+      try {
+        vantaRef.current?.destroy?.();
+        vantaRef.current = null;
+      } catch (e) {
+        /* ignore cleanup errors */
+      }
+    };
+  }, [theme]);
+
   const handleError = (error: AxiosError | Error): void => {
     console.error('Error:', error);
 
@@ -187,94 +266,117 @@ const GitProfile = ({ config }: { config: Config }) => {
         />
       ) : (
         <>
-          <div className={`p-4 lg:p-10 min-h-full ${BG_COLOR}`}>
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 rounded-box">
-              <div className="col-span-1">
-                <div className="grid grid-cols-1 gap-6">
-                  {!sanitizedConfig.themeConfig.disableSwitch && (
-                    <ThemeChanger
-                      theme={theme}
-                      setTheme={setTheme}
+          <div
+            className={`p-4 lg:p-10 min-h-full ${BG_COLOR}`}
+            style={{ position: 'relative', overflow: 'hidden' }}
+          >
+            {/* Vanta background container - scoped to the BG area so birds integrate with the theme background */}
+            <div
+              id="vanta-bg"
+              style={{
+                position: 'absolute',
+                top: 0,
+                right: 0,
+                bottom: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                zIndex: 0,
+                pointerEvents: 'none',
+              }}
+            />
+
+            <div style={{ position: 'relative', zIndex: 1 }}>
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 rounded-box">
+                <div className="col-span-1">
+                  <div className="grid grid-cols-1 gap-6">
+                    {!sanitizedConfig.themeConfig.disableSwitch && (
+                      <ThemeChanger
+                        theme={theme}
+                        setTheme={setTheme}
+                        loading={loading}
+                        themeConfig={sanitizedConfig.themeConfig}
+                      />
+                    )}
+                    <AvatarCard
+                      profile={profile}
                       loading={loading}
-                      themeConfig={sanitizedConfig.themeConfig}
+                      avatarRing={sanitizedConfig.themeConfig.displayAvatarRing}
+                      resumeFileUrl={sanitizedConfig.resume.fileUrl}
                     />
-                  )}
-                  <AvatarCard
-                    profile={profile}
-                    loading={loading}
-                    avatarRing={sanitizedConfig.themeConfig.displayAvatarRing}
-                    resumeFileUrl={sanitizedConfig.resume.fileUrl}
-                  />
-                  <DetailsCard
-                    profile={profile}
-                    loading={loading}
-                    github={sanitizedConfig.github}
-                    social={sanitizedConfig.social}
-                  />
-                  {sanitizedConfig.skills.length !== 0 && (
-                    <SkillCard
+                    <DetailsCard
+                      profile={profile}
                       loading={loading}
-                      skills={sanitizedConfig.skills}
+                      github={sanitizedConfig.github}
+                      social={sanitizedConfig.social}
                     />
-                  )}
-                  {sanitizedConfig.experiences.length !== 0 && (
-                    <ExperienceCard
-                      loading={loading}
-                      experiences={sanitizedConfig.experiences}
-                    />
-                  )}
-                  {sanitizedConfig.certifications.length !== 0 && (
-                    <CertificationCard
-                      loading={loading}
-                      certifications={sanitizedConfig.certifications}
-                    />
-                  )}
-                  {sanitizedConfig.educations.length !== 0 && (
-                    <EducationCard
-                      loading={loading}
-                      educations={sanitizedConfig.educations}
-                    />
-                  )}
+                    {sanitizedConfig.skills.length !== 0 && (
+                      <SkillCard
+                        loading={loading}
+                        skills={sanitizedConfig.skills}
+                      />
+                    )}
+                    {sanitizedConfig.experiences.length !== 0 && (
+                      <ExperienceCard
+                        loading={loading}
+                        experiences={sanitizedConfig.experiences}
+                      />
+                    )}
+                    {sanitizedConfig.certifications.length !== 0 && (
+                      <CertificationCard
+                        loading={loading}
+                        certifications={sanitizedConfig.certifications}
+                      />
+                    )}
+                    {sanitizedConfig.educations.length !== 0 && (
+                      <EducationCard
+                        loading={loading}
+                        educations={sanitizedConfig.educations}
+                      />
+                    )}
+                  </div>
                 </div>
-              </div>
-              <div className="lg:col-span-2 col-span-1">
-                <div className="grid grid-cols-1 gap-6">
-                  {sanitizedConfig.projects.github.display && (
-                    <GithubProjectCard
-                      header={sanitizedConfig.projects.github.header}
-                      limit={sanitizedConfig.projects.github.automatic.limit}
-                      githubProjects={githubProjects}
-                      loading={loading}
-                      googleAnalyticsId={sanitizedConfig.googleAnalytics.id}
-                    />
-                  )}
-                  {sanitizedConfig.publications.length !== 0 && (
-                    <PublicationCard
-                      loading={loading}
-                      publications={sanitizedConfig.publications}
-                    />
-                  )}
-                  {sanitizedConfig.projects.external.projects.length !== 0 && (
-                    <ExternalProjectCard
-                      loading={loading}
-                      header={sanitizedConfig.projects.external.header}
-                      externalProjects={
-                        sanitizedConfig.projects.external.projects
-                      }
-                      googleAnalyticId={sanitizedConfig.googleAnalytics.id}
-                    />
-                  )}
-                  {sanitizedConfig.blog.display && (
-                    <BlogCard
-                      loading={loading}
-                      googleAnalyticsId={sanitizedConfig.googleAnalytics.id}
-                      blog={sanitizedConfig.blog}
-                    />
-                  )}
+
+                <div className="lg:col-span-2 col-span-1">
+                  <div className="grid grid-cols-1 gap-6">
+                    {sanitizedConfig.projects.github.display && (
+                      <GithubProjectCard
+                        header={sanitizedConfig.projects.github.header}
+                        limit={sanitizedConfig.projects.github.automatic.limit}
+                        githubProjects={githubProjects}
+                        loading={loading}
+                        googleAnalyticsId={sanitizedConfig.googleAnalytics.id}
+                      />
+                    )}
+                    {sanitizedConfig.publications.length !== 0 && (
+                      <PublicationCard
+                        loading={loading}
+                        publications={sanitizedConfig.publications}
+                      />
+                    )}
+                    {sanitizedConfig.projects.external.projects.length !== 0 && (
+                      <ExternalProjectCard
+                        loading={loading}
+                        header={sanitizedConfig.projects.external.header}
+                        externalProjects={
+                          sanitizedConfig.projects.external.projects
+                        }
+                        googleAnalyticId={sanitizedConfig.googleAnalytics.id}
+                      />
+                    )}
+                    {sanitizedConfig.blog.display && (
+                      <BlogCard
+                        loading={loading}
+                        googleAnalyticsId={sanitizedConfig.googleAnalytics.id}
+                        blog={sanitizedConfig.blog}
+                      />
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
+
           {sanitizedConfig.footer && (
             <footer
               className={`p-4 footer ${BG_COLOR} text-base-content footer-center`}

@@ -185,7 +185,11 @@ interface Social {
   /**
    * Website
    */
-  website?: string;
+  scholar?: string;
+  /**
+   * Display name for scholar link
+   */
+  scholarName?: string;
 
   /**
    * Telegram username

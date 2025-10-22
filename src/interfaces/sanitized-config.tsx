@@ -58,7 +58,8 @@ export interface SanitizedSocial {
   medium?: string;
   dev?: string;
   stackoverflow?: string;
-  website?: string;
+  scholar?: string;
+  scholarName?: string;
   telegram?: string;
   phone?: string;
   email?: string;

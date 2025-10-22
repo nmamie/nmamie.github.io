@@ -53,7 +53,8 @@ const CONFIG = {
     stackoverflow: '', // example: '1/jeff-atwood'
     discord: '',
     telegram: '',
-    website: 'https://www.nmamie.ch',
+    scholar: 'https://scholar.google.com/citations?user=JhXjm_sAAAAJ&hl=de',
+    scholarName: 'Noah Mamié',
     phone: '',
     email: 'noah.mamie@uzh.ch',
   },

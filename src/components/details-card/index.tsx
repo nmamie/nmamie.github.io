@@ -321,17 +321,15 @@ const DetailsCard = ({ profile, loading, social, github }: Props) => {
                   link={`https://stackoverflow.com/users/${social.stackoverflow}`}
                 />
               )}
-              {social?.website && (
+              {social?.scholar && (
                 <ListItem
                   icon={<FaGlobe />}
-                  title="Website:"
-                  value={social.website
-                    .replace('https://', '')
-                    .replace('http://', '')}
+                  title="Google Scholar:"
+                  value={social.scholarName || 'View profile'}
                   link={
-                    !social.website.startsWith('http')
-                      ? `http://${social.website}`
-                      : social.website
+                    social.scholar.startsWith('http')
+                      ? social.scholar
+                      : `https://${social.scholar}`
                   }
                 />
               )}
