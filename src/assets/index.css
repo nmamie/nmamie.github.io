@@ -135,3 +135,31 @@ svg {
     opacity: 1;
   }
 }
+
+/* Make card/box backgrounds slightly translucent so background (Vanta birds) shows through.
+   Uses color-mix when available and falls back to an rgba approximation for older browsers. */
+:root {
+  /* Adjust this value to make boxes more or less translucent (0.0 - 1.0) */
+  --card-bg-alpha: 0.92;
+}
+
+.card.bg-base-100,
+.card-sm.bg-base-100,
+.bg-base-100.card,
+.rounded-box.bg-base-100,
+.card.bg-base-200,
+.card-sm.bg-base-200,
+.bg-base-200.card,
+.rounded-box.bg-base-200 {
+  /* Prefer color-mix to blend theme base color with transparent */
+  background-color: color-mix(in srgb, var(--color-base-100) 92%, transparent) !important;
+  /* If the element uses base-200, prefer mixing with that value as well. */
+  /* The second background-color will override the first when the selector matches base-200. */
+  background-color: color-mix(in srgb, var(--color-base-200) 92%, transparent) !important;
+  /* Fallbacks for browsers without color-mix support. Uses approximate RGBA values from theme defaults. */
+  background-color: rgba(227, 227, 237, var(--card-bg-alpha)); /* base-100 fallback (#e3e3ed) */
+  background-color: rgba(209, 209, 219, var(--card-bg-alpha)); /* base-200 fallback (#d1d1db) - overrides if matched */
+  /* Slight blur to improve legibility when background shows through */
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+}

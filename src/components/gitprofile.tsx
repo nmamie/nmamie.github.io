@@ -188,7 +188,7 @@ const GitProfile = ({ config }: { config: Config }) => {
         minHeight: 200.0,
         minWidth: 200.0,
         scale: 1.0,
-        scaleMobile: 1.0,
+        scaleMobile: 0.7,
         birdSize: 0.50,
         // Make Vanta canvas transparent so the container's background shows through
         backgroundAlpha: 0,

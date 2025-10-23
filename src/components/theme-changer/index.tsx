@@ -40,7 +40,7 @@ const ThemeChanger = ({
   };
 
   return (
-    <div className="card overflow-visible shadow-lg card-sm bg-base-100">
+  <div className="card overflow-visible shadow-lg card-sm bg-base-100" style={{ position: 'relative', zIndex: 30 }}>
       <div className="flex-row items-center space-x-4 flex pl-6 pr-2 py-4">
         <div className="flex-1">
           <h5 className="card-title">
@@ -70,7 +70,7 @@ const ThemeChanger = ({
               className: 'mr-6',
             })
           ) : (
-            <div title="Change Theme" className="dropdown dropdown-end">
+            <div title="Change Theme" className="dropdown dropdown-end relative">
               <div
                 tabIndex={0}
                 className="btn btn-ghost m-1 normal-case opacity-50 text-base-content flex items-center whitespace-nowrap"
@@ -79,7 +79,8 @@ const ThemeChanger = ({
               </div>
               <div
                 tabIndex={0}
-                className="mt-16 overflow-y-auto shadow-2xl top-px dropdown-content max-h-96 min-w-max rounded-lg bg-base-200 text-base-content z-10"
+                className="mt-16 overflow-y-auto shadow-2xl top-px dropdown-content max-h-96 min-w-max rounded-lg bg-base-200 text-base-content z-50"
+                style={{ position: 'relative' }}
               >
                 <ul className="p-4 menu menu-sm">
                   {[
