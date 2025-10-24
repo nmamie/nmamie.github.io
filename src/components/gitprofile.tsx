@@ -187,9 +187,10 @@ const GitProfile = ({ config }: { config: Config }) => {
         gyroControls: false,
         minHeight: 200.0,
         minWidth: 200.0,
-        scale: 1.0,
-        scaleMobile: 0.7,
+        scale: 1.00,
+        scaleMobile: 0.50,
         birdSize: 0.50,
+        speedLimit: 4.00,
         // Make Vanta canvas transparent so the container's background shows through
         backgroundAlpha: 0,
         // Use theme-aware colors for birds
