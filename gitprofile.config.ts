@@ -70,7 +70,7 @@ const CONFIG = {
     'JavaScript',
     'React.js',
     'Node.js',
-    'Nest.js',
+    'Next.js',
     'MySQL',
     'PostgreSQL',
     'Git',
