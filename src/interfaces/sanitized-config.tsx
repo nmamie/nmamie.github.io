@@ -100,6 +100,8 @@ export interface SanitizedPublication {
   link?: string;
   description?: string;
   year?: string;
+  imageUrl?: string;
+  bibtex?: string;
 }
 
 export interface SanitizedNews {

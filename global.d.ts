@@ -249,6 +249,8 @@ interface Publication {
   link?: string;
   description?: string;
   year?: string;
+  imageUrl?: string;
+  bibtex?: string;
 }
 
 interface News {

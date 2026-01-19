@@ -111,6 +111,8 @@ export const getSanitizedConfig = (
           .map((item) => ({
             ...item,
             year: item.year || '',
+            imageUrl: item.imageUrl || '',
+            bibtex: item.bibtex || '',
           })) || [],
       news:
         config?.news?.filter((item) => item.title && item.date) || [],
