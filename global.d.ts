@@ -248,6 +248,14 @@ interface Publication {
   authors?: string;
   link?: string;
   description?: string;
+  year?: string;
+}
+
+interface News {
+  title: string;
+  date: string;
+  link?: string;
+  description?: string;
 }
 
 interface GoogleAnalytics {
@@ -365,6 +373,11 @@ interface Config {
    * Publication list
    */
   publications?: Array<Publication>;
+
+  /**
+   * News list
+   */
+  news?: Array<News>;
 
   /**
    * Resume

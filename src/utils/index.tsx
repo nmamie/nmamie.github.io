@@ -76,8 +76,8 @@ export const getSanitizedConfig = (
         medium: config?.social?.medium,
         dev: config?.social?.dev,
         stackoverflow: config?.social?.stackoverflow,
-  scholar: config?.social?.scholar,
-  scholarName: config?.social?.scholarName || '',
+        scholar: config?.social?.scholar,
+        scholarName: config?.social?.scholarName || '',
         phone: config?.social?.phone,
         email: config?.social?.email,
         telegram: config?.social?.telegram,
@@ -105,7 +105,15 @@ export const getSanitizedConfig = (
         config?.educations?.filter(
           (item) => item.institution || item.degree || item.from || item.to,
         ) || [],
-      publications: config?.publications?.filter((item) => item.title) || [],
+      publications:
+        config?.publications
+          ?.filter((item) => item.title)
+          .map((item) => ({
+            ...item,
+            year: item.year || '',
+          })) || [],
+      news:
+        config?.news?.filter((item) => item.title && item.date) || [],
       googleAnalytics: {
         id: config?.googleAnalytics?.id,
       },

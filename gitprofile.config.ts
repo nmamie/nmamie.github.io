@@ -136,6 +136,7 @@ const CONFIG = {
       link: 'https://arxiv.org/pdf/2503.05473?',
       description:
         'We introduce the Society of HiveMind (SOHM), a framework that coordinates multiple AI foundation models inspired by swarm behavior and evolutionary theory. While SOHM shows little gain on knowledge-intensive tasks, it significantly boosts performance on logical reasoning tasks, highlighting the potential of multi-agent systems to enhance collective reasoning beyond individual models.',
+      year: '2025',
     },
     {
       title: 'Voting Booklet Bias: Stance Detection in Swiss Federal Communication',
@@ -145,6 +146,20 @@ const CONFIG = {
       link: 'https://arxiv.org/pdf/2306.08999',
       description:
         'We apply stance detection to Swiss federal voting booklets to examine whether issues are presented neutrally. After comparing models, we find fine-tuned M-BERT performs best and use it to analyze the September 2022 votes in German, French, and Italian. Results show certain issues are strongly favored while others remain balanced, with consistent patterns across languages.',
+      year: '2023',
+    },
+  ],
+  news: [
+    {
+      title: 'Starting PhD at University of Zurich!',
+      date: 'September 2025',
+      description: 'I am excited to start my PhD journey at the University of Zurich, focusing on Multi-Agent Systems and Foundation Models.',
+    },
+    {
+      title: 'New paper on arXiv: The Society of HiveMind',
+      date: 'March 2025',
+      link: 'https://arxiv.org/abs/2503.05473',
+      description: 'Our latest research on foundation model swarms is now available on arXiv.',
     },
   ],
   // Display articles from your medium or dev account. (Optional)
@@ -214,7 +229,7 @@ const CONFIG = {
   },
 
   // Optional Footer. Supports plain text or HTML.
-  footer: `Made with ❤️`,
+  footer: `Made with ❤️ in Switzerland. © Copyright 2026 Noah Mamié.`,
 
   enablePWA: true,
 };

@@ -99,6 +99,14 @@ export interface SanitizedPublication {
   authors?: string;
   link?: string;
   description?: string;
+  year?: string;
+}
+
+export interface SanitizedNews {
+  title: string;
+  date: string;
+  link?: string;
+  description?: string;
 }
 
 export interface SanitizedGoogleAnalytics {
@@ -136,6 +144,7 @@ export interface SanitizedConfig {
   educations: Array<SanitizedEducation>;
   certifications: Array<SanitizedCertification>;
   publications: Array<SanitizedPublication>;
+  news: Array<SanitizedNews>;
   googleAnalytics: SanitizedGoogleAnalytics;
   hotjar: SanitizedHotjar;
   blog: SanitizedBlog;
