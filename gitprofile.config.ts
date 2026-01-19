@@ -34,7 +34,7 @@ const CONFIG = {
       projects: [],
     },
   },
-  seo: { title: 'Noah Mamie', description: 'PhD @ UZH | Artificial Intelligence | GenAI, Multi-Agent Systems, GNNs', imageURL: 'public/logo.png' },
+  seo: { title: 'Noah Mamié', description: 'PhD @ UZH | Artificial Intelligence | GenAI, Multi-Agent Systems, GNNs', imageURL: '/logo.png' },
   social: {
     linkedin: 'noah-mamie',
     x: '',
@@ -137,7 +137,7 @@ const CONFIG = {
       description:
         'Multi-agent systems address issues of accessibility and scalability of artificial intelligence (AI) foundation models, which are often represented by large language models. We develop a framework –the “Society of HiveMind” (SOHM) – that orchestrates the interaction between multiple AI foundation models, imitating the observed behavior of animal swarms in nature by following modern evolutionary theories. On the one hand, we find that the SOHM provides a negligible benefit on tasks that mainly require real-world knowledge. On the other hand, we remark a significant improvement on tasks that require intensive logical reasoning, indicating that multi-agent systems are capable of increasing the reasoning capabilities of the collective compared to the individual agents. Our findings demonstrate the potential of combining a multitude of diverse AI foundation models to form an artificial swarm intelligence capable of self-improvement through interactions with a given environment.',
       year: '2025',
-      imageUrl: 'src/img/HiveMind.png',
+      imageUrl: '/img/HiveMind.png',
       bibtex: `@article{mamie2025society,
   title={The Society of HiveMind: Multi-Agent Optimization of Foundation Model Swarms},
   author={Mami{\'e}, Noah and Rao, Susie Xi},
@@ -154,7 +154,7 @@ const CONFIG = {
       description:
         'In this study, we use recent stance detection methods to study the stance (for, against or neutral) of statements in official information booklets for voters. Our main goal is to answer the fundamental question: are topics to be voted on presented in a neutral way? To this end, we first train and compare several models for stance detection on a large dataset about Swiss politics. We find that fine-tuning an M-BERT model leads to the best accuracy. We then use our best model to analyze the stance of utterances extracted from the Swiss federal voting booklet concerning the Swiss popular votes of September 2022, which is the main goal of this project. We evaluated the models in both a multilingual as well as a monolingual context for German, French, and Italian. Our analysis shows that some issues are heavily favored while others are more balanced, and that the results are largely consistent across languages. Our findings have implications for the editorial process of future voting booklets and the design of better automated systems for analyzing political discourse. The data and code accompanying this paper are available at https://github.com/ZurichNLP/voting-booklet-bias.',
       year: '2023',
-      imageUrl: 'src/img/dist_all.png',
+      imageUrl: '/img/dist_all.png',
       bibtex: `@inproceedings{egli2023voting,
   title={Voting Booklet Bias: Stance Detection in Swiss Federal Communication},
   author={Egli, Eric and Mami{\'e}, Noah and M{\"u}ller, Mathias and Dolev, Eyal Liron},
@@ -173,6 +173,7 @@ const CONFIG = {
     {
       title: 'Starting PhD at University of Zurich!',
       date: 'September 2025',
+      link: 'https://www.ifi.uzh.ch/en/ddis/people/nmamie.html',
       description: 'I am excited to start my PhD journey at the University of Zurich, focusing on the potential of GenAI in the Context of Personalized Recommender Systems.',
     },
     {
