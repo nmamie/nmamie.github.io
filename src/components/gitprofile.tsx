@@ -191,19 +191,13 @@ const GitProfile = ({ config }: { config: Config }) => {
     const createVanta = () => {
       if (!vantaDivRef.current) return;
 
-      // Ensure THREE is globally available as some Vanta versions expect it
+      // Ensure THREE is globally available as Vanta expects it in the window object
       (window as any).THREE = THREE;
 
       // Read theme colors from CSS variables
       const style = getComputedStyle(document.documentElement);
       const primary = style.getPropertyValue('--color-primary')?.trim();
       const accent = style.getPropertyValue('--color-accent')?.trim();
-      const baseContent = style.getPropertyValue('--color-base-content')?.trim();
-
-      // Helper to ensure we have a valid color format for Vanta
-      const isValidHex = (c: string) => /^#([A-Fa-f0-9]{3}){1,2}$/.test(c);
-      const vantaColor = isValidHex(primary) ? primary : (isValidHex(baseContent) ? baseContent : '#fc055b');
-      const vantaColor2 = isValidHex(accent) ? accent : (isValidHex(baseContent) ? baseContent : '#e8d03a');
 
       // Destroy existing instance
       try {
@@ -215,7 +209,7 @@ const GitProfile = ({ config }: { config: Config }) => {
       }
 
       try {
-        vantaEffectRef.current = BIRDS({
+        const vantaInstance = BIRDS({
           el: vantaDivRef.current,
           THREE,
           mouseControls: true,
@@ -224,21 +218,24 @@ const GitProfile = ({ config }: { config: Config }) => {
           minHeight: 200.0,
           minWidth: 200.0,
           scale: 1.0,
-          scaleMobile: 0.5,
-          birdSize: 0.5,
+          scaleMobile: 1.0, // Don't downscale on mobile to keep it sharp
+          birdSize: 0.6,
           speedLimit: 4.0,
-          backgroundAlpha: 0,
-          color: vantaColor,
-          color2: vantaColor2,
+          backgroundAlpha: 0.001, // Near zero but not zero
+          color1: primary || '#fc055b',
+          color2: accent || '#e8d03a',
+          forceAnimate: true,
         });
 
+        vantaEffectRef.current = vantaInstance;
       } catch (e) {
         console.warn('Vanta failed to initialize', e);
       }
     };
 
-    // Small delay to ensure styles are applied and element is sized
-    const timer = setTimeout(createVanta, 200);
+    // Longer delay to ensure layout is stable on Safari/Mobile
+    const timer = setTimeout(createVanta, 400);
+
 
     // ResizeObserver to handle layout shifts (especially important on mobile)
     const resizeObserver = new ResizeObserver(() => {

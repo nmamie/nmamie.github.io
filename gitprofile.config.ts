@@ -33,10 +33,10 @@ const CONFIG = {
       // To hide the `External Projects` section, keep it empty.
       projects: [
         {
-          name: 'Informfully',
+          title: 'Informfully',
           link: 'http://informfully.ch/',
           description: 'Informfully is a research platform for conducting empirical field studies. At its core, Informfully is a smartphone application for Android and iOS to push text, audio, and video content to users. It allows researchers to log all activities of participants and offers in-app surveys to facilitate their user studies.',
-          image: 'informfully.png',
+          imageURL: '/informfully.png',
         },
       ],
     },
