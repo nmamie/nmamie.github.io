@@ -69,7 +69,8 @@ const GitProfile = ({ config }: { config: Config }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [githubProjects, setGithubProjects] = useState<GithubProject[]>([]);
-  const vantaRef = useRef<any | null>(null);
+  const vantaDivRef = useRef<HTMLDivElement>(null);
+  const vantaEffectRef = useRef<any>(null);
 
   const getGithubProjects = useCallback(
     async (publicRepoCount: number): Promise<GithubProject[]> => {
@@ -188,25 +189,35 @@ const GitProfile = ({ config }: { config: Config }) => {
   // Recreate when `theme` changes so colors match the active theme
   useEffect(() => {
     const createVanta = () => {
-      // Read theme colors from CSS variables (defined by DaisyUI/Tailwind)
-      const style = getComputedStyle(document.documentElement);
-      const primary = style.getPropertyValue('--color-primary')?.trim() || '#fc055b';
-      const accent = style.getPropertyValue('--color-accent')?.trim() || '#e8d03a';
-      const baseContent = style.getPropertyValue('--color-base-content')?.trim() || '#2a2730';
+      if (!vantaDivRef.current) return;
 
-      // Destroy existing instance first (if any)
+      // Ensure THREE is globally available as some Vanta versions expect it
+      (window as any).THREE = THREE;
+
+      // Read theme colors from CSS variables
+      const style = getComputedStyle(document.documentElement);
+      const primary = style.getPropertyValue('--color-primary')?.trim();
+      const accent = style.getPropertyValue('--color-accent')?.trim();
+      const baseContent = style.getPropertyValue('--color-base-content')?.trim();
+
+      // Helper to ensure we have a valid color format for Vanta
+      const isValidHex = (c: string) => /^#([A-Fa-f0-9]{3}){1,2}$/.test(c);
+      const vantaColor = isValidHex(primary) ? primary : (isValidHex(baseContent) ? baseContent : '#fc055b');
+      const vantaColor2 = isValidHex(accent) ? accent : (isValidHex(baseContent) ? baseContent : '#e8d03a');
+
+      // Destroy existing instance
       try {
-        if (vantaRef.current) {
-          vantaRef.current.destroy();
+        if (vantaEffectRef.current) {
+          vantaEffectRef.current.destroy();
         }
       } catch (e) {
         /* ignore */
       }
 
       try {
-        vantaRef.current = BIRDS({
-          el: '#vanta-bg',
-          THREE, // Pass Three.js to Vanta
+        vantaEffectRef.current = BIRDS({
+          el: vantaDivRef.current,
+          THREE,
           mouseControls: true,
           touchControls: true,
           gyroControls: false,
@@ -217,29 +228,47 @@ const GitProfile = ({ config }: { config: Config }) => {
           birdSize: 0.5,
           speedLimit: 4.0,
           backgroundAlpha: 0,
-          color: primary || baseContent,
-          color2: accent || baseContent,
+          color: vantaColor,
+          color2: vantaColor2,
         });
+
       } catch (e) {
         console.warn('Vanta failed to initialize', e);
       }
     };
 
-    // Small delay to ensure styles are applied and container is ready
-    const timer = setTimeout(createVanta, 100);
+    // Small delay to ensure styles are applied and element is sized
+    const timer = setTimeout(createVanta, 200);
+
+    // ResizeObserver to handle layout shifts (especially important on mobile)
+    const resizeObserver = new ResizeObserver(() => {
+      try {
+        if (vantaEffectRef.current) {
+          vantaEffectRef.current.resize();
+        }
+      } catch (e) {
+        /* ignore */
+      }
+    });
+
+    if (vantaDivRef.current) {
+      resizeObserver.observe(vantaDivRef.current);
+    }
 
     return () => {
       clearTimeout(timer);
+      resizeObserver.disconnect();
       try {
-        if (vantaRef.current) {
-          vantaRef.current.destroy();
-          vantaRef.current = null;
+        if (vantaEffectRef.current) {
+          vantaEffectRef.current.destroy();
+          vantaEffectRef.current = null;
         }
       } catch (e) {
         /* ignore cleanup errors */
       }
     };
   }, [theme]);
+
 
 
   const handleError = (error: AxiosError | Error): void => {
@@ -292,7 +321,7 @@ const GitProfile = ({ config }: { config: Config }) => {
           >
             {/* Vanta background container - scoped to the BG area so birds integrate with the theme background */}
             <div
-              id="vanta-bg"
+              ref={vantaDivRef}
               style={{
                 position: 'absolute',
                 top: 0,
