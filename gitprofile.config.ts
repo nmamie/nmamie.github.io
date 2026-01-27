@@ -29,9 +29,16 @@ const CONFIG = {
       },
     },
     external: {
-      header: 'My Projects',
+      header: 'My Research Projects',
       // To hide the `External Projects` section, keep it empty.
-      projects: [],
+      projects: [
+        {
+          name: 'Informfully',
+          link: 'http://informfully.ch/',
+          description: 'Informfully is a research platform for conducting empirical field studies. At its core, Informfully is a smartphone application for Android and iOS to push text, audio, and video content to users. It allows researchers to log all activities of participants and offers in-app surveys to facilitate their user studies.',
+          image: '/informfully.png',
+        },
+      ],
     },
   },
   seo: { title: 'Noah Mamié', description: 'PhD @ UZH | Artificial Intelligence | GenAI, Multi-Agent Systems, GNNs', imageURL: '/logo.png' },
@@ -60,7 +67,7 @@ const CONFIG = {
   },
   resume: {
     fileUrl:
-      '', // Empty fileUrl will hide the `Download Resume` button.
+      'CV_Noah.pdf', // Empty fileUrl will hide the `Download Resume` button.
   },
   skills: [
     'Python',
@@ -135,7 +142,7 @@ const CONFIG = {
       authors: 'Noah Mamié and Susie Xi Rao',
       link: 'https://link.springer.com/chapter/10.1007/978-981-95-0982-9_20',
       description:
-        'Multi-agent systems address issues of accessibility and scalability of artificial intelligence (AI) foundation models, which are often represented by large language models. We develop a framework –the “Society of HiveMind” (SOHM) – that orchestrates the interaction between multiple AI foundation models, imitating the observed behavior of animal swarms in nature by following modern evolutionary theories. On the one hand, we find that the SOHM provides a negligible benefit on tasks that mainly require real-world knowledge. On the other hand, we remark a significant improvement on tasks that require intensive logical reasoning, indicating that multi-agent systems are capable of increasing the reasoning capabilities of the collective compared to the individual agents. Our findings demonstrate the potential of combining a multitude of diverse AI foundation models to form an artificial swarm intelligence capable of self-improvement through interactions with a given environment.',
+        'Multi-agent systems address issues of accessibility and scalability of artificial intelligence (AI) foundation models, which are often represented by large language models. We develop a framework - the “Society of HiveMind” (SOHM) - that orchestrates the interaction between multiple AI foundation models, imitating the observed behavior of animal swarms in nature by following modern evolutionary theories. On the one hand, we find that the SOHM provides a negligible benefit on tasks that mainly require real-world knowledge. On the other hand, we remark a significant improvement on tasks that require intensive logical reasoning, indicating that multi-agent systems are capable of increasing the reasoning capabilities of the collective compared to the individual agents. Our findings demonstrate the potential of combining a multitude of diverse AI foundation models to form an artificial swarm intelligence capable of self-improvement through interactions with a given environment.',
       year: '2025',
       imageUrl: '/img/HiveMind.png',
       bibtex: `@inproceedings{10.1007/978-981-95-0982-9_20,

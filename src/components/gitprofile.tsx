@@ -1,4 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import * as THREE from 'three';
+import BIRDS from 'vanta/dist/vanta.birds.min';
+
 import axios, { AxiosError } from 'axios';
 import { formatDistance } from 'date-fns';
 import {
@@ -29,6 +32,27 @@ import BlogCard from './blog-card';
 import Footer from './footer';
 import PublicationCard from './publication-card';
 import NewsCard from './news-card';
+
+const CACHE_TTL = 3600000; // 1 hour
+
+const getCachedData = (key: string) => {
+  const cached = localStorage.getItem(key);
+  if (!cached) return null;
+  try {
+    const { data, timestamp } = JSON.parse(cached);
+    if (Date.now() - timestamp > CACHE_TTL) {
+      localStorage.removeItem(key);
+      return null;
+    }
+    return data;
+  } catch (e) {
+    return null;
+  }
+};
+
+const setCachedData = (key: string, data: any) => {
+  localStorage.setItem(key, JSON.stringify({ data, timestamp: Date.now() }));
+};
 
 /**
  * Renders the GitProfile component.
@@ -98,6 +122,15 @@ const GitProfile = ({ config }: { config: Config }) => {
   );
 
   const loadData = useCallback(async () => {
+    const cacheKey = `gitprofile_cache_${sanitizedConfig.github.username}`;
+    const cachedData = getCachedData(cacheKey);
+
+    if (cachedData) {
+      setProfile(cachedData.profile);
+      setGithubProjects(cachedData.projects);
+      return;
+    }
+
     try {
       setLoading(true);
 
@@ -106,19 +139,25 @@ const GitProfile = ({ config }: { config: Config }) => {
       );
       const data = response.data;
 
-      setProfile({
+      const profileData = {
         avatar: data.avatar_url,
         name: data.name || ' ',
         bio: data.bio || '',
         location: data.location || '',
         company: data.company || '',
-      });
+      };
+
+      setProfile(profileData);
 
       if (!sanitizedConfig.projects.github.display) {
+        setCachedData(cacheKey, { profile: profileData, projects: [] });
         return;
       }
 
-      setGithubProjects(await getGithubProjects(data.public_repos));
+      const projectsData = await getGithubProjects(data.public_repos);
+      setGithubProjects(projectsData);
+
+      setCachedData(cacheKey, { profile: profileData, projects: projectsData });
     } catch (error) {
       handleError(error as AxiosError | Error);
     } finally {
@@ -145,29 +184,10 @@ const GitProfile = ({ config }: { config: Config }) => {
     theme && document.documentElement.setAttribute('data-theme', theme);
   }, [theme]);
 
-  // Initialize Vanta.js background (VANTA.BIRDS) from CDN and clean up on unmount
+  // Initialize Vanta.js background (BIRDS)
   // Recreate when `theme` changes so colors match the active theme
   useEffect(() => {
-    let mounted = true;
-
-    const loadScript = (src: string) =>
-      new Promise<void>((resolve, reject) => {
-        if (document.querySelector(`script[src="${src}"]`)) {
-          resolve();
-          return;
-        }
-        const s = document.createElement('script');
-        s.src = src;
-        s.async = true;
-        s.onload = () => resolve();
-        s.onerror = () => reject(new Error(`Failed to load ${src}`));
-        document.body.appendChild(s);
-      });
-
     const createVanta = () => {
-      const VANTA = (window as any).VANTA;
-      if (!VANTA || !VANTA.BIRDS) return;
-
       // Read theme colors from CSS variables (defined by DaisyUI/Tailwind)
       const style = getComputedStyle(document.documentElement);
       const primary = style.getPropertyValue('--color-primary')?.trim() || '#fc055b';
@@ -176,54 +196,51 @@ const GitProfile = ({ config }: { config: Config }) => {
 
       // Destroy existing instance first (if any)
       try {
-        vantaRef.current?.destroy?.();
+        if (vantaRef.current) {
+          vantaRef.current.destroy();
+        }
       } catch (e) {
         /* ignore */
       }
 
-      vantaRef.current = VANTA.BIRDS({
-        el: '#vanta-bg',
-        mouseControls: true,
-        touchControls: true,
-        gyroControls: false,
-        minHeight: 200.0,
-        minWidth: 200.0,
-        scale: 1.00,
-        scaleMobile: 0.50,
-        birdSize: 0.50,
-        speedLimit: 4.00,
-        // Make Vanta canvas transparent so the container's background shows through
-        backgroundAlpha: 0,
-        // Use theme-aware colors for birds
-        color: primary || baseContent,
-        color2: accent || baseContent,
-      });
+      try {
+        vantaRef.current = BIRDS({
+          el: '#vanta-bg',
+          THREE, // Pass Three.js to Vanta
+          mouseControls: true,
+          touchControls: true,
+          gyroControls: false,
+          minHeight: 200.0,
+          minWidth: 200.0,
+          scale: 1.0,
+          scaleMobile: 0.5,
+          birdSize: 0.5,
+          speedLimit: 4.0,
+          backgroundAlpha: 0,
+          color: primary || baseContent,
+          color2: accent || baseContent,
+        });
+      } catch (e) {
+        console.warn('Vanta failed to initialize', e);
+      }
     };
 
-    (async () => {
-      try {
-        await loadScript('https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js');
-        await loadScript('https://unpkg.com/vanta@latest/dist/vanta.birds.min.js');
-
-        if (!mounted) return;
-        createVanta();
-      } catch (e) {
-        // If Vanta fails to load, don't block the app
-        // eslint-disable-next-line no-console
-        console.warn('Vanta failed to load', e);
-      }
-    })();
+    // Small delay to ensure styles are applied and container is ready
+    const timer = setTimeout(createVanta, 100);
 
     return () => {
-      mounted = false;
+      clearTimeout(timer);
       try {
-        vantaRef.current?.destroy?.();
-        vantaRef.current = null;
+        if (vantaRef.current) {
+          vantaRef.current.destroy();
+          vantaRef.current = null;
+        }
       } catch (e) {
         /* ignore cleanup errors */
       }
     };
   }, [theme]);
+
 
   const handleError = (error: AxiosError | Error): void => {
     console.error('Error:', error);
