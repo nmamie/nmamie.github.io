@@ -26,6 +26,10 @@ const LazyImage: React.FC<{
     imageToLoad.onload = () => {
       setLoading(false);
     };
+
+    imageToLoad.onerror = () => {
+      setLoading(false);
+    };
   }, [src]);
 
   return (

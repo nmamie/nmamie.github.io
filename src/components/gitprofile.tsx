@@ -1,6 +1,4 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import * as THREE from 'three';
-import BIRDS from 'vanta/dist/vanta.birds.min';
 
 import axios, { AxiosError } from 'axios';
 import { formatDistance } from 'date-fns';
@@ -187,84 +185,89 @@ const GitProfile = ({ config }: { config: Config }) => {
 
   // Initialize Vanta.js background (BIRDS)
   // Recreate when `theme` changes so colors match the active theme
+  // Revert to CDN loading as requested to restore original behavior
   useEffect(() => {
-    const createVanta = () => {
-      if (!vantaDivRef.current) return;
-
-      // Ensure THREE is globally available as Vanta expects it in the window object
-      (window as any).THREE = THREE;
-
-      // Read theme colors from CSS variables
-      const style = getComputedStyle(document.documentElement);
-      const primary = style.getPropertyValue('--color-primary')?.trim();
-      const accent = style.getPropertyValue('--color-accent')?.trim();
-
-      // Destroy existing instance
-      try {
-        if (vantaEffectRef.current) {
-          vantaEffectRef.current.destroy();
-        }
-      } catch (e) {
-        /* ignore */
-      }
-
-      try {
-        const vantaInstance = BIRDS({
-          el: vantaDivRef.current,
-          THREE,
-          mouseControls: true,
-          touchControls: true,
-          gyroControls: false,
-          minHeight: 200.0,
-          minWidth: 200.0,
-          scale: 1.0,
-          scaleMobile: 1.0, // Don't downscale on mobile to keep it sharp
-          birdSize: 0.6,
-          speedLimit: 4.0,
-          backgroundAlpha: 0.001, // Near zero but not zero
-          color1: primary || '#fc055b',
-          color2: accent || '#e8d03a',
-          forceAnimate: true,
+    const loadScripts = async () => {
+      const loadScript = (id: string, src: string) => {
+        return new Promise((resolve) => {
+          if (document.getElementById(id)) {
+            resolve(true);
+            return;
+          }
+          const script = document.createElement('script');
+          script.id = id;
+          script.src = src;
+          script.onload = () => resolve(true);
+          document.body.appendChild(script);
         });
+      };
 
-        vantaEffectRef.current = vantaInstance;
-      } catch (e) {
-        console.warn('Vanta failed to initialize', e);
-      }
+      await loadScript(
+        'three-js',
+        'https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js',
+      );
+      await loadScript(
+        'vanta-birds',
+        'https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.birds.min.js',
+      );
+
+      const createVanta = () => {
+        if (!vantaDivRef.current) return;
+
+        try {
+          if (vantaEffectRef.current) {
+            vantaEffectRef.current.destroy();
+          }
+        } catch (e) {
+          /* ignore */
+        }
+
+        try {
+          // @ts-ignore
+          vantaEffectRef.current = window.VANTA.BIRDS({
+            el: vantaDivRef.current,
+            // @ts-ignore
+            THREE: window.THREE,
+            mouseControls: true,
+            touchControls: true,
+            gyroControls: false,
+            minHeight: 200.0,
+            minWidth: 200.0,
+            scale: 1.0,
+            scaleMobile: 1.0,
+            birdSize: 1.0,
+            speedLimit: 4.0,
+            backgroundAlpha: 0.0,
+            // Setting color1 to black and color2 to white in 'variance' mode 
+            // creates a full spectrum of random colors (Rainbow effect)
+            color1: 0x000000,
+            color2: 0xffffff,
+            colorMode: 'variance',
+            quantity: 4.0, // Maximum flock size
+          });
+        } catch (e) {
+          console.warn('Vanta failed to initialize', e);
+        }
+      };
+
+      setTimeout(createVanta, 500);
     };
 
-    // Longer delay to ensure layout is stable on Safari/Mobile
-    const timer = setTimeout(createVanta, 400);
-
-
-    // ResizeObserver to handle layout shifts (especially important on mobile)
-    const resizeObserver = new ResizeObserver(() => {
-      try {
-        if (vantaEffectRef.current) {
-          vantaEffectRef.current.resize();
-        }
-      } catch (e) {
-        /* ignore */
-      }
-    });
-
-    if (vantaDivRef.current) {
-      resizeObserver.observe(vantaDivRef.current);
-    }
+    loadScripts();
 
     return () => {
-      clearTimeout(timer);
-      resizeObserver.disconnect();
       try {
         if (vantaEffectRef.current) {
           vantaEffectRef.current.destroy();
           vantaEffectRef.current = null;
         }
       } catch (e) {
-        /* ignore cleanup errors */
+        /* ignore cleanup */
       }
     };
   }, [theme]);
+
+
 
 
 
@@ -391,15 +394,6 @@ const GitProfile = ({ config }: { config: Config }) => {
                         news={sanitizedConfig.news}
                       />
                     )}
-                    {sanitizedConfig.projects.github.display && (
-                      <GithubProjectCard
-                        header={sanitizedConfig.projects.github.header}
-                        limit={sanitizedConfig.projects.github.automatic.limit}
-                        githubProjects={githubProjects}
-                        loading={loading}
-                        googleAnalyticsId={sanitizedConfig.googleAnalytics.id}
-                      />
-                    )}
                     {sanitizedConfig.publications.length !== 0 && (
                       <PublicationCard
                         loading={loading}
@@ -423,6 +417,16 @@ const GitProfile = ({ config }: { config: Config }) => {
                         blog={sanitizedConfig.blog}
                       />
                     )}
+                    {sanitizedConfig.projects.github.display && (
+                      <GithubProjectCard
+                        header={sanitizedConfig.projects.github.header}
+                        limit={sanitizedConfig.projects.github.automatic.limit}
+                        githubProjects={githubProjects}
+                        loading={loading}
+                        googleAnalyticsId={sanitizedConfig.googleAnalytics.id}
+                      />
+                    )}
+
                   </div>
                 </div>
               </div>

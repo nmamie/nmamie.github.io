@@ -36,7 +36,7 @@ const CONFIG = {
           title: 'Informfully',
           link: 'http://informfully.ch/',
           description: 'Informfully is a research platform for conducting empirical field studies. At its core, Informfully is a smartphone application for Android and iOS to push text, audio, and video content to users. It allows researchers to log all activities of participants and offers in-app surveys to facilitate their user studies.',
-          imageURL: '/informfully.png',
+          imageUrl: '/informfully.png',
         },
       ],
     },

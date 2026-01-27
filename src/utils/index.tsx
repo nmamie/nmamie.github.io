@@ -53,7 +53,11 @@ export const getSanitizedConfig = (
         },
         external: {
           header: config?.projects?.external?.header || 'My Projects',
-          projects: config?.projects?.external?.projects || [],
+          projects:
+            config?.projects?.external?.projects?.map((item: any) => ({
+              ...item,
+              imageUrl: item.imageUrl || item.imageURL || '',
+            })) || [],
         },
       },
       seo: {
