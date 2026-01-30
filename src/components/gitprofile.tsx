@@ -214,6 +214,13 @@ const GitProfile = ({ config }: { config: Config }) => {
       const createVanta = () => {
         if (!vantaDivRef.current) return;
 
+        // Skip Vanta initialization on mobile/small screens for stability.
+        // Mobile devices often struggle with Three.js/Vanta, causing memory crashes.
+        if (window.innerWidth < 768) {
+          console.log('Mobile/Small screen detected, skipping Vanta Birds for stability.');
+          return;
+        }
+
         try {
           if (vantaEffectRef.current) {
             vantaEffectRef.current.destroy();
