@@ -210,6 +210,11 @@ interface Social {
    * Discord username
    */
   discord?: string;
+
+  /**
+   * Bluesky username
+   */
+  bluesky?: string;
 }
 
 interface Resume {

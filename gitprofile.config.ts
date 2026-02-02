@@ -64,6 +64,7 @@ const CONFIG = {
     scholarName: 'Noah Mamié',
     phone: '',
     email: 'noah@mamié.ch',
+    bluesky: 'nmamie.bsky.social',
   },
   resume: {
     fileUrl:
