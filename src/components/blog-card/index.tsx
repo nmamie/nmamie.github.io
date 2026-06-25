@@ -53,13 +53,13 @@ const BlogCard = ({
               <div className="w-full">
                 <div className="flex items-start px-4">
                   <div className="w-full">
-                    <h2>
+                    <h3>
                       {skeleton({
                         widthCls: 'w-full',
                         heightCls: 'h-8',
                         className: 'mb-2 mx-auto md:mx-0',
                       })}
-                    </h2>
+                    </h3>
                     {skeleton({
                       widthCls: 'w-24',
                       heightCls: 'h-3',
@@ -120,7 +120,7 @@ const BlogCard = ({
                 <div className="w-24 h-24 mask mask-squircle">
                   <LazyImage
                     src={article.thumbnail}
-                    alt={'thumbnail'}
+                    alt={article.title}
                     placeholder={skeleton({
                       widthCls: 'w-full',
                       heightCls: 'h-full',
@@ -132,9 +132,9 @@ const BlogCard = ({
               <div className="w-full">
                 <div className="flex items-start px-4">
                   <div className="text-center md:text-left w-full">
-                    <h2 className="font-medium text-base-content opacity-60">
+                    <h3 className="font-medium text-base-content opacity-60">
                       {article.title}
-                    </h2>
+                    </h3>
                     <p className="text-base-content opacity-50 text-xs">
                       {formatDistance(article.publishedAt, new Date(), {
                         addSuffix: true,
@@ -188,11 +188,11 @@ const BlogCard = ({
                 </div>
               )}
               <div className="min-w-0 flex-1">
-                <h3 className="text-base sm:text-lg font-bold text-base-content truncate">
+                <h2 className="text-base sm:text-lg font-bold text-base-content truncate">
                   {loading
                     ? skeleton({ widthCls: 'w-28', heightCls: 'h-8' })
                     : 'My Articles'}
-                </h3>
+                </h2>
                 <div className="text-base-content/60 text-xs sm:text-sm mt-1 truncate">
                   {loading
                     ? skeleton({ widthCls: 'w-32', heightCls: 'h-4' })

@@ -88,6 +88,7 @@ export const getSanitizedConfig = (
         researchGate: config?.social?.researchGate,
         discord: config?.social?.discord,
         bluesky: config?.social?.bluesky,
+        substack: config?.social?.substack,
       },
       resume: {
         fileUrl: config?.resume?.fileUrl || '',
@@ -118,9 +119,17 @@ export const getSanitizedConfig = (
             year: item.year || '',
             imageUrl: item.imageUrl || '',
             bibtex: item.bibtex || '',
+            laymanSummary: item.laymanSummary || '',
+            authorLinks: item.authorLinks || {},
           })) || [],
       news:
         config?.news?.filter((item) => item.title && item.date) || [],
+      teaching:
+        config?.teaching?.filter(
+          (t) => t.course || t.role || t.institution || t.year,
+        ) || [],
+      researchInterests: config?.researchInterests || [],
+      enableSwarmDemo: config?.enableSwarmDemo ?? false,
       googleAnalytics: {
         id: config?.googleAnalytics?.id,
       },

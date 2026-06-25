@@ -25,13 +25,13 @@ const ExternalProjectCard = ({
               <div className="w-full">
                 <div className="flex items-start px-4">
                   <div className="w-full">
-                    <h2>
+                    <h3>
                       {skeleton({
                         widthCls: 'w-32',
                         heightCls: 'h-8',
                         className: 'mb-2 mx-auto',
                       })}
-                    </h2>
+                    </h3>
                     <div className="avatar w-full h-full">
                       <div className="w-24 h-24 mask mask-squircle mx-auto">
                         {skeleton({
@@ -94,15 +94,15 @@ const ExternalProjectCard = ({
             <div className="w-full">
               <div className="px-4">
                 <div className="text-center w-full">
-                  <h2 className="font-medium text-center opacity-60 mb-2">
+                  <h3 className="font-medium text-center opacity-60 mb-2">
                     {item.title}
-                  </h2>
+                  </h3>
                   {item.imageUrl && (
                     <div className="avatar opacity-90">
-                      <div className="w-24 h-24 mask mask-squircle">
+                      <div className="w-24 h-24 mask mask-squircle mx-auto">
                         <LazyImage
                           src={item.imageUrl}
-                          alt={'thumbnail'}
+                          alt={item.title}
                           className="w-full h-full object-cover"
                           placeholder={skeleton({
                             widthCls: 'w-full',
@@ -144,11 +144,11 @@ const ExternalProjectCard = ({
                   </div>
                 )}
                 <div className="min-w-0 flex-1">
-                  <h3 className="text-base sm:text-lg font-bold text-base-content truncate">
+                  <h2 className="text-base sm:text-lg font-bold text-base-content truncate">
                     {loading
                       ? skeleton({ widthCls: 'w-40', heightCls: 'h-8' })
                       : header}
-                  </h3>
+                  </h2>
                   <div className="text-base-content/60 text-xs sm:text-sm mt-1 truncate">
                     {loading
                       ? skeleton({ widthCls: 'w-32', heightCls: 'h-4' })

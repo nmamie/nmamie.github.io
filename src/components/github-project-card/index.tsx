@@ -30,13 +30,13 @@ const GithubProjectCard = ({
             <div>
               <div className="flex items-center">
                 <span>
-                  <h5 className="card-title text-lg">
+                  <h3 className="card-title text-lg">
                     {skeleton({
                       widthCls: 'w-32',
                       heightCls: 'h-8',
                       className: 'mb-1',
                     })}
-                  </h5>
+                  </h3>
                 </span>
               </div>
               <div className="mb-5 mt-1">
@@ -94,10 +94,10 @@ const GithubProjectCard = ({
         <div className="flex justify-between flex-col p-8 h-full w-full">
           <div>
             <div className="flex items-center truncate">
-              <div className="card-title text-lg tracking-wide flex text-base-content opacity-60">
+              <h3 className="card-title text-lg tracking-wide flex text-base-content opacity-60">
                 <MdInsertLink className="my-auto" />
                 <span>{item.name}</span>
-              </div>
+              </h3>
             </div>
             <p className="mb-5 mt-1 text-base-content text-sm">
               {item.description}
@@ -149,11 +149,11 @@ const GithubProjectCard = ({
                   </div>
                 )}
                 <div className="min-w-0 flex-1">
-                  <h3 className="text-base sm:text-lg font-bold text-base-content truncate">
+                  <h2 className="text-base sm:text-lg font-bold text-base-content truncate">
                     {loading
                       ? skeleton({ widthCls: 'w-48', heightCls: 'h-8' })
                       : header}
-                  </h3>
+                  </h2>
                   <div className="text-base-content/60 text-xs sm:text-sm mt-1 truncate">
                     {loading
                       ? skeleton({ widthCls: 'w-32', heightCls: 'h-4' })

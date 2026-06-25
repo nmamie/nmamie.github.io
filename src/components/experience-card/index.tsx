@@ -61,13 +61,13 @@ const ExperienceCard = ({
     <div className="card shadow-lg card-sm bg-base-100">
       <div className="card-body">
         <div className="mx-3">
-          <h5 className="card-title">
+          <h2 className="card-title">
             {loading ? (
               skeleton({ widthCls: 'w-32', heightCls: 'h-8' })
             ) : (
               <span className="text-base-content opacity-70">Experience</span>
             )}
-          </h5>
+          </h2>
         </div>
         <div className="text-base-content">
           <ol className="relative border-l border-base-300 border-opacity-30 my-2 mx-4">

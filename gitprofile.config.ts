@@ -65,11 +65,20 @@ const CONFIG = {
     phone: '',
     email: 'noah@mamié.ch',
     bluesky: 'nmamie.bsky.social',
+    substack: 'noahmamie',
   },
   resume: {
     fileUrl:
       'CV_Noah.pdf', // Empty fileUrl will hide the `Download Resume` button.
   },
+  researchInterests: [
+    'Multi-Agent Systems',
+    'Swarm Intelligence',
+    'Generative AI',
+    'Recommender Systems',
+    'Graph Neural Networks',
+  ],
+  enableSwarmDemo: true,
   skills: [
     'Python',
     'PyTorch',
@@ -99,6 +108,43 @@ const CONFIG = {
       from: 'April 2025',
       to: 'August 2025',
       companyLink: 'https://www.detecon.com',
+    },
+    {
+      company: 'ETH Zurich (Chair of Applied Economics)',
+      position: 'Research Assistant',
+      from: '2023',
+      to: '2025',
+      companyLink: 'https://mtec.ethz.ch',
+    },
+    {
+      company: 'Storskogen Switzerland AG',
+      position: 'Private Equity Intelligence DACH',
+      from: '2021',
+      to: '2022',
+    },
+    {
+      company: 'Artum AG (Storskogen CH)',
+      position: 'Private Equity Intern',
+      from: '2021',
+      to: '2021',
+    },
+    {
+      company: 'Ernst & Young',
+      position: 'Assurance Industrial Services Intern',
+      from: '2020',
+      to: '2020',
+    },
+    {
+      company: 'Dr. Wolff Singapore Pte. Ltd.',
+      position: 'Student Consultant',
+      from: '2019',
+      to: '2019',
+    },
+    {
+      company: 'SpanSet Spain',
+      position: 'Accounting, Marketing & Sales Intern',
+      from: '2016',
+      to: '2016',
     },
   ],
   certifications: [
@@ -135,6 +181,40 @@ const CONFIG = {
       to: '2021',
     },
   ],
+  teaching: [
+    {
+      course: 'Informatics and the Economy (Informatik und Wirtschaft)',
+      role: 'Head TA & Co-Organizer (Prof. Bernstein)',
+      institution: 'University of Zurich',
+      year: '2026 - Present',
+      link: 'https://www.ifi.uzh.ch',
+    },
+    {
+      course: 'Informatics I: Introduction to Programming',
+      role: 'Teaching Assistant',
+      institution: 'University of Zurich',
+      year: 'Fall 2025',
+      link: 'https://www.ifi.uzh.ch/en/lst/teaching.html',
+    },
+    {
+      course: 'Essentials of Text and Speech Processing',
+      role: 'Teaching Assistant (Dr. Mathias Müller)',
+      institution: 'University of Zurich (Computational Linguistics)',
+      year: '2023',
+    },
+    {
+      course: 'Operations Management (Excel, Operations)',
+      role: 'Teaching Assistant (Prof. Dr. Wortmann)',
+      institution: 'University of St. Gallen (ITEM-HSG)',
+      year: '2020',
+    },
+    {
+      course: 'Programming (Python, R, HTML/CSS/JS)',
+      role: 'Teaching Assistant (Dr. Silic)',
+      institution: 'University of St. Gallen (IWI-HSG)',
+      year: '2019',
+    },
+  ],
   publications: [
     {
       title: 'The Society of HiveMind: Multi-Agent Optimization of Foundation Model Swarms to Unlock the Potential of Collective Intelligence',
@@ -157,6 +237,10 @@ const CONFIG = {
   pages = {243--254},
   isbn = {978-981-95-0982-9}
 }`,
+      laymanSummary: 'We designed "Society of HiveMind," a system that links multiple AI models together like a swarm of bees or a flock of birds. We discovered that by working together and exchanging feedback, the team of AIs could solve complex logical reasoning problems much better than any single AI could alone.',
+      authorLinks: {
+        'Susie Xi Rao': 'https://susierao.github.io/',
+      },
     },
     {
       title: 'Voting Booklet Bias: Stance Detection in Swiss Federal Communication',
@@ -178,6 +262,12 @@ const CONFIG = {
   organization={ACL Anthology},
   url={https://arxiv.org/pdf/2306.08999}
 }`,
+      laymanSummary: 'We used AI models to analyze official Swiss voting information booklets. Our model automatically classified statements as being "for", "against", or "neutral" towards a vote. We discovered that some topics were presented with a clear bias, showing that automated tools can help monitor neutrality in political discourse.',
+      authorLinks: {
+        'Eric Egli': 'https://github.com/ericegli',
+        'Mathias Müller': 'https://www.cl.uzh.ch/en/people/team/mueller.html',
+        'Eyal Liron Dolev': 'https://github.com/eyaldolev',
+      },
     },
   ],
   news: [

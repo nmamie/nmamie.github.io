@@ -36,7 +36,7 @@ const PublicationItem = ({ item }: { item: SanitizedPublication }) => {
         )}
         <div className="flex-1 min-w-0">
           <div className="flex flex-col gap-2">
-            <h3 className="text-lg font-bold group-hover:text-primary transition-colors leading-tight">
+            <h4 className="text-lg font-bold group-hover:text-primary transition-colors leading-tight">
               {item.link ? (
                 <a href={item.link} target="_blank" rel="noreferrer">
                   {item.title}
@@ -44,12 +44,31 @@ const PublicationItem = ({ item }: { item: SanitizedPublication }) => {
               ) : (
                 item.title
               )}
-            </h3>
+            </h4>
 
             {item.authors && (
               <p className="text-sm opacity-80 leading-relaxed italic">
                 {item.authors.split(/,| and/).map((author, i, arr) => {
-                  const isUser = author.trim().includes('Noah Mamié');
+                  const nameCleaned = author.trim();
+                  const isUser = nameCleaned.includes('Noah Mamié');
+                  const link = item.authorLinks?.[nameCleaned];
+
+                  const renderAuthorName = () => {
+                    if (link) {
+                      return (
+                        <a
+                          href={link}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="hover:underline hover:text-primary transition-colors font-medium"
+                        >
+                          {author}
+                        </a>
+                      );
+                    }
+                    return author;
+                  };
+
                   return (
                     <span
                       key={i}
@@ -59,7 +78,7 @@ const PublicationItem = ({ item }: { item: SanitizedPublication }) => {
                           : ''
                       }
                     >
-                      {author}
+                      {renderAuthorName()}
                       {i < arr.length - 1 ? ', ' : ''}
                     </span>
                   );
@@ -70,6 +89,13 @@ const PublicationItem = ({ item }: { item: SanitizedPublication }) => {
             <p className="text-sm font-medium text-primary/80">
               {item.conferenceName || item.journalName}
             </p>
+
+            {item.laymanSummary && (
+              <div className="bg-primary/5 border-l-2 border-primary px-3 py-2 rounded-r-lg mt-1 text-xs leading-relaxed text-justify">
+                <span className="font-semibold text-primary block mb-0.5">Simple terms / TL;DR:</span>
+                <span className="opacity-80">{item.laymanSummary}</span>
+              </div>
+            )}
 
             <div className="flex flex-wrap gap-2 mt-3">
               {item.link && (
@@ -179,9 +205,9 @@ const PublicationCard = ({
 
     return years.map((year) => (
       <div key={year} className="mb-12 last:mb-0">
-        <h4 className="text-xl font-bold mb-8 border-b border-base-300 pb-2 opacity-70">
+        <h3 className="text-xl font-bold mb-8 border-b border-base-300 pb-2 opacity-70">
           {year}
-        </h4>
+        </h3>
         <div className="flex flex-col gap-10">
           {grouped[year].map((item, index) => (
             <PublicationItem key={index} item={item} />
@@ -210,11 +236,11 @@ const PublicationCard = ({
                   </div>
                 )}
                 <div className="min-w-0 flex-1">
-                  <h3 className="text-base sm:text-lg font-bold text-base-content truncate">
+                  <h2 className="text-base sm:text-lg font-bold text-base-content truncate">
                     {loading
                       ? skeleton({ widthCls: 'w-40', heightCls: 'h-8' })
                       : 'Publications'}
-                  </h3>
+                  </h2>
                   <div className="text-base-content/60 text-xs sm:text-sm mt-1 truncate">
                     {loading
                       ? skeleton({ widthCls: 'w-32', heightCls: 'h-4' })

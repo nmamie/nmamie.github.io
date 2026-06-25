@@ -215,6 +215,11 @@ interface Social {
    * Bluesky username
    */
   bluesky?: string;
+
+  /**
+   * Substack newsletter username
+   */
+  substack?: string;
 }
 
 interface Resume {
@@ -256,6 +261,8 @@ interface Publication {
   year?: string;
   imageUrl?: string;
   bibtex?: string;
+  laymanSummary?: string;
+  authorLinks?: { [name: string]: string };
 }
 
 interface News {
@@ -385,6 +392,27 @@ interface Config {
    * News list
    */
   news?: Array<News>;
+
+  /**
+   * Teaching list
+   */
+  teaching?: Array<{
+    course: string;
+    role: string;
+    institution: string;
+    year: string;
+    link?: string;
+  }>;
+
+  /**
+   * Research interests list
+   */
+  researchInterests?: Array<string>;
+
+  /**
+   * Enable Swarm simulation visualizer
+   */
+  enableSwarmDemo?: boolean;
 
   /**
    * Resume

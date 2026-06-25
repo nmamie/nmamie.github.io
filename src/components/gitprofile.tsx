@@ -30,6 +30,9 @@ import BlogCard from './blog-card';
 import Footer from './footer';
 import PublicationCard from './publication-card';
 import NewsCard from './news-card';
+import SwarmCard from './swarm-card';
+import TeachingCard from './teaching-card';
+import NewsletterCard from './newsletter-card';
 
 const CACHE_TTL = 3600000; // 1 hour
 
@@ -178,6 +181,65 @@ const GitProfile = ({ config }: { config: Config }) => {
       loadData();
     }
   }, [sanitizedConfig, loadData]);
+
+  useEffect(() => {
+    if (profile) {
+      const existingScript = document.getElementById('jsonLdSchema');
+      if (existingScript) {
+        existingScript.remove();
+      }
+
+      const schema = {
+        '@context': 'https://schema.org',
+        '@type': 'ProfilePage',
+        mainEntity: {
+          '@type': 'Person',
+          name: profile.name || sanitizedConfig.seo.title,
+          description: profile.bio || sanitizedConfig.seo.description,
+          image: profile.avatar || sanitizedConfig.seo.imageURL,
+          url: 'https://mamié.ch/',
+          sameAs: [
+            sanitizedConfig.social.linkedin
+              ? `https://www.linkedin.com/in/${sanitizedConfig.social.linkedin}`
+              : null,
+            sanitizedConfig.social.bluesky
+              ? `https://bsky.app/profile/${sanitizedConfig.social.bluesky}`
+              : null,
+            sanitizedConfig.social.scholar ? sanitizedConfig.social.scholar : null,
+            sanitizedConfig.social.medium
+              ? `https://medium.com/@${sanitizedConfig.social.medium}`
+              : null,
+            `https://github.com/${sanitizedConfig.github.username}`,
+          ].filter(Boolean),
+          jobTitle: sanitizedConfig.experiences?.[0]?.position || undefined,
+          worksFor: sanitizedConfig.experiences?.[0]
+            ? {
+                '@type': 'Organization',
+                name: sanitizedConfig.experiences[0].company,
+                url: sanitizedConfig.experiences[0].companyLink || undefined,
+              }
+            : undefined,
+          alumniOf: sanitizedConfig.educations?.map((edu) => ({
+            '@type': 'EducationalOrganization',
+            name: edu.institution,
+          })) || [],
+        },
+      };
+
+      const script = document.createElement('script');
+      script.id = 'jsonLdSchema';
+      script.type = 'application/ld+json';
+      script.text = JSON.stringify(schema);
+      document.head.appendChild(script);
+
+      return () => {
+        const scriptToRemove = document.getElementById('jsonLdSchema');
+        if (scriptToRemove) {
+          scriptToRemove.remove();
+        }
+      };
+    }
+  }, [profile, sanitizedConfig]);
 
   useEffect(() => {
     theme && document.documentElement.setAttribute('data-theme', theme);
@@ -359,12 +421,17 @@ const GitProfile = ({ config }: { config: Config }) => {
                       loading={loading}
                       avatarRing={sanitizedConfig.themeConfig.displayAvatarRing}
                       resumeFileUrl={sanitizedConfig.resume.fileUrl}
+                      researchInterests={sanitizedConfig.researchInterests}
                     />
                     <DetailsCard
                       profile={profile}
                       loading={loading}
                       github={sanitizedConfig.github}
                       social={sanitizedConfig.social}
+                    />
+                    <NewsletterCard
+                      substack={sanitizedConfig.social.substack}
+                      loading={loading}
                     />
                     {sanitizedConfig.skills.length !== 0 && (
                       <SkillCard
@@ -390,11 +457,20 @@ const GitProfile = ({ config }: { config: Config }) => {
                         educations={sanitizedConfig.educations}
                       />
                     )}
+                    {sanitizedConfig.teaching && sanitizedConfig.teaching.length !== 0 && (
+                      <TeachingCard
+                        teaching={sanitizedConfig.teaching}
+                        loading={loading}
+                      />
+                    )}
                   </div>
                 </div>
 
                 <div className="lg:col-span-2 col-span-1">
                   <div className="grid grid-cols-1 gap-6">
+                    {sanitizedConfig.enableSwarmDemo && (
+                      <SwarmCard loading={loading} />
+                    )}
                     {sanitizedConfig.news.length !== 0 && (
                       <NewsCard
                         loading={loading}

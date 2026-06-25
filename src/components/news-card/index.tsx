@@ -36,16 +36,17 @@ const NewsCard = ({
                 </div>
                 <div className="flex-1">
                     {item.link ? (
-                        <a
-                            href={item.link}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="font-medium hover:text-primary transition-colors"
-                        >
-                            {item.title}
-                        </a>
+                        <h3 className="font-medium hover:text-primary transition-colors">
+                            <a
+                                href={item.link}
+                                target="_blank"
+                                rel="noreferrer"
+                            >
+                                {item.title}
+                            </a>
+                        </h3>
                     ) : (
-                        <span className="font-medium text-base-content">{item.title}</span>
+                        <h3 className="font-medium text-base-content">{item.title}</h3>
                     )}
                     {item.description && (
                         <p className="mt-1 text-sm opacity-70 text-justify">
@@ -76,11 +77,11 @@ const NewsCard = ({
                                     </div>
                                 )}
                                 <div className="min-w-0 flex-1">
-                                    <h3 className="text-base sm:text-lg font-bold text-base-content truncate">
+                                    <h2 className="text-base sm:text-lg font-bold text-base-content truncate">
                                         {loading
                                             ? skeleton({ widthCls: 'w-40', heightCls: 'h-8' })
                                             : 'News'}
-                                    </h3>
+                                    </h2>
                                 </div>
                             </div>
                         </div>

@@ -65,6 +65,7 @@ export interface SanitizedSocial {
   email?: string;
   discord?: string;
   bluesky?: string;
+  substack?: string;
 }
 
 export interface SanitizedResume {
@@ -103,6 +104,8 @@ export interface SanitizedPublication {
   year?: string;
   imageUrl?: string;
   bibtex?: string;
+  laymanSummary?: string;
+  authorLinks?: { [name: string]: string };
 }
 
 export interface SanitizedNews {
@@ -148,6 +151,15 @@ export interface SanitizedConfig {
   certifications: Array<SanitizedCertification>;
   publications: Array<SanitizedPublication>;
   news: Array<SanitizedNews>;
+  teaching?: Array<{
+    course: string;
+    role: string;
+    institution: string;
+    year: string;
+    link?: string;
+  }>;
+  researchInterests?: Array<string>;
+  enableSwarmDemo?: boolean;
   googleAnalytics: SanitizedGoogleAnalytics;
   hotjar: SanitizedHotjar;
   blog: SanitizedBlog;

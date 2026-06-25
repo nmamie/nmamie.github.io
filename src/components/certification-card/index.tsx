@@ -19,12 +19,12 @@ const ListItem = ({
       style={{ left: '-4.5px' }}
     ></div>
     <div className="my-0.5 text-xs">{year}</div>
-    <div className="font-medium">
+    <h3 className="font-medium">
       <a href={link} target="_blank" rel="noreferrer">
         {name}
       </a>
-    </div>
-    <h3 className="mb-4 font-normal">{body}</h3>
+    </h3>
+    <div className="mb-4 font-normal">{body}</div>
   </li>
 );
 
@@ -62,7 +62,7 @@ const CertificationCard = ({
     <div className="card shadow-lg card-sm bg-base-100">
       <div className="card-body">
         <div className="mx-3">
-          <h5 className="card-title">
+          <h2 className="card-title">
             {loading ? (
               skeleton({ widthCls: 'w-32', heightCls: 'h-8' })
             ) : (
@@ -70,7 +70,7 @@ const CertificationCard = ({
                 Certification
               </span>
             )}
-          </h5>
+          </h2>
         </div>
         <div className="text-base-content">
           <ol className="relative border-l border-base-300 border-opacity-30 my-2 mx-4">

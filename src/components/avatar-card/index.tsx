@@ -8,6 +8,7 @@ interface AvatarCardProps {
   loading: boolean;
   avatarRing: boolean;
   resumeFileUrl?: string;
+  researchInterests?: string[];
 }
 
 /**
@@ -23,6 +24,7 @@ const AvatarCard: React.FC<AvatarCardProps> = ({
   loading,
   avatarRing,
   resumeFileUrl,
+  researchInterests,
 }): React.JSX.Element => {
   return (
     <div className="card shadow-lg card-sm bg-base-100">
@@ -61,7 +63,7 @@ const AvatarCard: React.FC<AvatarCardProps> = ({
           </div>
         )}
         <div className="text-center mx-auto px-8">
-          <h5 className="font-bold text-2xl">
+          <h1 className="font-bold text-2xl">
             {loading || !profile ? (
               skeleton({ widthCls: 'w-48', heightCls: 'h-8' })
             ) : (
@@ -69,12 +71,24 @@ const AvatarCard: React.FC<AvatarCardProps> = ({
                 {profile.name}
               </span>
             )}
-          </h5>
+          </h1>
           <div className="mt-3 text-base-content font-mono">
             {loading || !profile
               ? skeleton({ widthCls: 'w-48', heightCls: 'h-5' })
               : profile.bio}
           </div>
+          {researchInterests && researchInterests.length > 0 && (
+            <div className="flex flex-wrap justify-center gap-1.5 mt-4">
+              {researchInterests.map((interest, idx) => (
+                <span
+                  key={idx}
+                  className="px-2 py-0.5 text-[10px] uppercase font-mono tracking-wide rounded bg-base-300 text-base-content/85 border border-base-content/10"
+                >
+                  {interest}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
         {resumeFileUrl &&
           (loading ? (
