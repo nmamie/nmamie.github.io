@@ -187,14 +187,7 @@ const CONFIG = {
       role: 'Head TA & Co-Organizer (Prof. Bernstein)',
       institution: 'University of Zurich',
       year: '2026 - Present',
-      link: 'https://www.ifi.uzh.ch',
-    },
-    {
-      course: 'Informatics I: Introduction to Programming',
-      role: 'Teaching Assistant',
-      institution: 'University of Zurich',
-      year: 'Fall 2025',
-      link: 'https://www.ifi.uzh.ch/en/lst/teaching.html',
+      link: 'https://studentservices.uzh.ch/uzh/anonym/vvz/?sap-language=DE&sap-ui-language=DE#/details/2026/003/SM/51110635',
     },
     {
       course: 'Essentials of Text and Speech Processing',

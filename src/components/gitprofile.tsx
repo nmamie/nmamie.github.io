@@ -468,9 +468,6 @@ const GitProfile = ({ config }: { config: Config }) => {
 
                 <div className="lg:col-span-2 col-span-1">
                   <div className="grid grid-cols-1 gap-6">
-                    {sanitizedConfig.enableSwarmDemo && (
-                      <SwarmCard loading={loading} />
-                    )}
                     {sanitizedConfig.news.length !== 0 && (
                       <NewsCard
                         loading={loading}
@@ -509,7 +506,9 @@ const GitProfile = ({ config }: { config: Config }) => {
                         googleAnalyticsId={sanitizedConfig.googleAnalytics.id}
                       />
                     )}
-
+                    {sanitizedConfig.enableSwarmDemo && (
+                      <SwarmCard loading={loading} />
+                    )}
                   </div>
                 </div>
               </div>
