@@ -126,6 +126,7 @@ export const getSanitizedConfig = (
             journalAward: item.journalAward || '',
             googleScholarLink: item.googleScholarLink || '',
             selected: item.selected ?? false,
+            citations: item.citations ?? 0,
           })) || [],
       news:
         config?.news?.filter((item) => item.title && item.date) || [],

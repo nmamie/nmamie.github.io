@@ -90,8 +90,16 @@ const AvatarCard: React.FC<AvatarCardProps> = ({
             </div>
           )}
           {/* Collaboration / Discussion open invitation */}
-          <div className="mt-5 px-6 text-xs text-base-content/75 italic max-w-[280px] leading-relaxed border-t border-base-content/10 pt-4 text-center">
-            Open for collaborations and discussions, especially on my topics of interest or related areas. Feel free to reach out!
+          <div className="mt-6 mx-4 p-5 rounded-2xl bg-primary/10 border border-primary/20 text-center flex flex-col items-center gap-3 shadow-inner hover:scale-[1.01] transition-transform duration-300">
+            <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-lg">
+              🤝
+            </div>
+            <h4 className="font-bold text-sm text-base-content">Let's Collaborate!</h4>
+            <p className="text-xs text-base-content/85 leading-relaxed">
+              I'm always excited to connect with fellow researchers, developers, and creators. If you want to discuss{' '}
+              <span className="font-semibold text-primary">GenAI</span>,{' '}
+              <span className="font-semibold text-primary">Multi-Agent Systems</span>, or any of my other research areas, let's chat!
+            </p>
           </div>
         </div>
         {resumeFileUrl &&

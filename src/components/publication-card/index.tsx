@@ -1,7 +1,7 @@
 import { Fragment, useState } from 'react';
 import { AiOutlineBook, AiOutlineCopy, AiOutlineCheck } from 'react-icons/ai';
-import { FiFileText, FiEye, FiEyeOff, FiCode } from 'react-icons/fi';
 import { SiGooglescholar } from 'react-icons/si';
+import { FiFileText, FiEye, FiEyeOff, FiCode } from 'react-icons/fi';
 import { SanitizedPublication } from '../../interfaces/sanitized-config';
 import { skeleton } from '../../utils';
 import LazyImage from '../lazy-image';
@@ -17,8 +17,10 @@ const PublicationItem = ({ item }: { item: SanitizedPublication }) => {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const elementId = `pub-${item.title.toLowerCase().replace(/[^a-z0-9]/g, '-')}`;
+
   return (
-    <div className="group border-b border-base-300 pb-8 last:border-0 last:pb-0">
+    <div id={elementId} className="group border-b border-base-300 pb-8 last:border-0 last:pb-0 scroll-mt-24">
       <div className="flex flex-col md:flex-row gap-6">
         {item.imageUrl && (
           <div className="w-full md:w-1/4 shrink-0">
@@ -128,10 +130,15 @@ const PublicationItem = ({ item }: { item: SanitizedPublication }) => {
                   href={item.googleScholarLink}
                   target="_blank"
                   rel="noreferrer"
-                  className="btn btn-outline btn-xs btn-neutral normal-case gap-1"
+                  className="inline-flex items-center h-6 rounded-md overflow-hidden border border-base-content/20 hover:border-primary/50 transition-colors shadow-sm text-[10px] font-mono"
                 >
-                  <SiGooglescholar className="text-xs text-info" />
-                  Scholar
+                  <span className="bg-[#4285F4] text-white px-2 h-full flex items-center gap-1 font-semibold uppercase tracking-wider text-[9px]">
+                    <SiGooglescholar className="text-[11px]" />
+                    Scholar
+                  </span>
+                  <span className="bg-base-300 text-base-content px-2 h-full flex items-center font-bold">
+                    {item.citations ?? 0}
+                  </span>
                 </a>
               )}
               {item.description && (
@@ -210,21 +217,6 @@ const PublicationCard = ({
   publications: SanitizedPublication[];
   loading: boolean;
 }) => {
-  const [searchTerm, setSearchTerm] = useState('');
-
-  const filteredPublications = publications.filter((pub) => {
-    const term = searchTerm.toLowerCase();
-    return (
-      pub.title.toLowerCase().includes(term) ||
-      (pub.authors && pub.authors.toLowerCase().includes(term)) ||
-      (pub.conferenceName && pub.conferenceName.toLowerCase().includes(term)) ||
-      (pub.journalName && pub.journalName.toLowerCase().includes(term)) ||
-      (pub.description && pub.description.toLowerCase().includes(term)) ||
-      (pub.year && pub.year.toString().includes(term)) ||
-      (pub.laymanSummary && pub.laymanSummary.toLowerCase().includes(term))
-    );
-  });
-
   const renderSkeleton = () => {
     const array = [];
     for (let index = 0; index < 3; index++) {
@@ -255,15 +247,15 @@ const PublicationCard = ({
   };
 
   const renderPublications = () => {
-    if (filteredPublications.length === 0) {
+    if (publications.length === 0) {
       return (
         <div className="text-center py-8 text-base-content opacity-50">
-          No publications match your search query.
+          No publications available.
         </div>
       );
     }
 
-    const grouped = filteredPublications.reduce((acc, pub) => {
+    const grouped = publications.reduce((acc, pub) => {
       const year = pub.year || 'Other';
       if (!acc[year]) acc[year] = [];
       acc[year].push(pub);
@@ -313,22 +305,11 @@ const PublicationCard = ({
                   <div className="text-base-content/60 text-xs sm:text-sm mt-1 truncate">
                     {loading
                       ? skeleton({ widthCls: 'w-32', heightCls: 'h-4' })
-                      : `Showcasing ${filteredPublications.length} research works`}
+                      : `Showcasing ${publications.length} research works`}
                   </div>
                 </div>
               </div>
             </div>
-            {!loading && (
-              <div className="mb-6">
-                <input
-                  type="text"
-                  placeholder="Search publications by title, author, venue, abstract..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="input input-bordered input-sm w-full bg-base-100/50 focus:bg-base-100"
-                />
-              </div>
-            )}
             <div>
               {loading ? renderSkeleton() : renderPublications()}
             </div>

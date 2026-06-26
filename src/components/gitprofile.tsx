@@ -16,6 +16,8 @@ import ErrorPage from './error-page';
 import { DEFAULT_THEMES } from '../constants/default-themes';
 import ThemeChanger from './theme-changer';
 import { BG_COLOR } from '../constants';
+import { getDevPost, getMediumPost } from '@arifszn/blog-js';
+import { Article } from '../interfaces/article';
 import AvatarCard from './avatar-card';
 import { Profile } from '../interfaces/profile';
 import DetailsCard from './details-card';
@@ -72,6 +74,13 @@ const GitProfile = ({ config }: { config: Config }) => {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [githubProjects, setGithubProjects] = useState<GithubProject[]>([]);
   const [activeTab, setActiveTab] = useState<string>('about');
+
+  // Global search and article states
+  const [isSearchOpen, setIsSearchOpen] = useState<boolean>(false);
+  const [globalSearchQuery, setGlobalSearchQuery] = useState<string>('');
+  const [articles, setArticles] = useState<Article[]>([]);
+  const [loadingArticles, setLoadingArticles] = useState<boolean>(false);
+
   const vantaDivRef = useRef<HTMLDivElement>(null);
   const vantaEffectRef = useRef<any>(null);
 
@@ -243,7 +252,6 @@ const GitProfile = ({ config }: { config: Config }) => {
     }
   }, [profile, sanitizedConfig]);
 
-  // Handle passing down social prop to BlogCard by mapping it
   const isAboutTab = activeTab === 'about';
   const isNewsTab = activeTab === 'news';
   const isPublicationsTab = activeTab === 'publications';
@@ -261,6 +269,382 @@ const GitProfile = ({ config }: { config: Config }) => {
     { id: 'blog', label: 'Blog & Articles' },
     { id: 'talks', label: 'Talks', count: sanitizedConfig.talks?.length || 0 },
   ];
+
+  // Fetch articles on mount
+  useEffect(() => {
+    if (!sanitizedConfig.blog?.display) return;
+    
+    const fetchAllPosts = async () => {
+      setLoadingArticles(true);
+      const allPosts: Article[] = [];
+      const promises: Promise<void>[] = [];
+
+      // 1. Medium
+      if (sanitizedConfig.blog.source === 'medium' && sanitizedConfig.blog.username) {
+        promises.push(
+          getMediumPost({ user: sanitizedConfig.blog.username })
+            .then((res) => {
+              res.forEach((post: any) => {
+                allPosts.push({
+                  title: post.title,
+                  thumbnail: post.thumbnail,
+                  link: post.link,
+                  publishedAt: new Date(post.publishedAt),
+                  description: post.description,
+                  categories: [...(post.categories || []), 'Medium'],
+                });
+              });
+            })
+            .catch((err) => console.error('Error fetching Medium posts:', err))
+        );
+      }
+
+      // 2. Dev.to
+      if (sanitizedConfig.blog.source === 'dev' && sanitizedConfig.blog.username) {
+        promises.push(
+          getDevPost({ user: sanitizedConfig.blog.username })
+            .then((res) => {
+              res.forEach((post: any) => {
+                allPosts.push({
+                  title: post.title,
+                  thumbnail: post.thumbnail,
+                  link: post.link,
+                  publishedAt: new Date(post.publishedAt),
+                  description: post.description,
+                  categories: [...(post.categories || []), 'Dev.to'],
+                });
+              });
+            })
+            .catch((err) => console.error('Error fetching Dev.to posts:', err))
+        );
+      }
+
+      // 3. LessWrong GraphQL
+      if (sanitizedConfig.social?.lesswrong) {
+        promises.push(
+          (async () => {
+            try {
+              const userRes = await axios.post('https://www.lesswrong.com/graphql', {
+                query: `
+                  query GetUser {
+                    users(selector: { usersProfile: { slug: "${sanitizedConfig.social.lesswrong}" } }) {
+                      results {
+                        _id
+                      }
+                    }
+                  }
+                `
+              });
+              const results = userRes.data?.data?.users?.results;
+              if (results && results.length > 0) {
+                const userId = results[0]._id;
+                const postsRes = await axios.post('https://www.lesswrong.com/graphql', {
+                  query: `
+                    query GetPosts {
+                      posts(input: { terms: { limit: 10, userId: "${userId}" } }) {
+                        results {
+                          title
+                          pageUrl
+                          postedAt
+                          htmlBody
+                        }
+                      }
+                    }
+                  `
+                });
+                const posts = postsRes.data?.data?.posts?.results || [];
+                posts.forEach((post: any) => {
+                  const cleanDesc = post.htmlBody
+                    ? post.htmlBody.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 150) + '...'
+                    : '';
+                  allPosts.push({
+                    title: post.title,
+                    thumbnail: '/img/lesswrong.png',
+                    link: post.pageUrl,
+                    publishedAt: new Date(post.postedAt),
+                    description: cleanDesc,
+                    categories: ['LessWrong'],
+                  });
+                });
+              }
+            } catch (err) {
+              console.error('Error fetching LessWrong posts:', err);
+            }
+          })()
+        );
+      }
+
+      // 4. Substack Feed via RSS-to-JSON
+      if (sanitizedConfig.social?.substack) {
+        promises.push(
+          (async () => {
+            try {
+              const feedUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(`https://${sanitizedConfig.social.substack}.substack.com/feed`)}`;
+              const res = await axios.get(feedUrl);
+              const items = res.data?.items || [];
+              items.forEach((item: any) => {
+                let thumbnail = item.thumbnail || '';
+                if (!thumbnail && item.description) {
+                  const imgMatch = item.description.match(/<img[^>]+src="([^">]+)"/);
+                  if (imgMatch) {
+                    thumbnail = imgMatch[1];
+                  }
+                }
+                const cleanDesc = item.description
+                  ? item.description.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 150) + '...'
+                  : '';
+                allPosts.push({
+                  title: item.title,
+                  thumbnail: thumbnail,
+                  link: item.link,
+                  publishedAt: new Date(item.pubDate),
+                  description: cleanDesc,
+                  categories: ['Substack'],
+                });
+              });
+            } catch (err) {
+              console.error('Error fetching Substack posts:', err);
+            }
+          })()
+        );
+      }
+
+      await Promise.all(promises);
+      allPosts.sort((a, b) => b.publishedAt.getTime() - a.publishedAt.getTime());
+      setArticles(allPosts);
+      setLoadingArticles(false);
+    };
+
+    fetchAllPosts();
+  }, [
+    sanitizedConfig.blog?.display,
+    sanitizedConfig.blog?.source,
+    sanitizedConfig.blog?.username,
+    sanitizedConfig.social?.lesswrong,
+    sanitizedConfig.social?.substack
+  ]);
+
+  // Command palette listeners
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setIsSearchOpen((prev) => !prev);
+      }
+      if (e.key === 'Escape') {
+        setIsSearchOpen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  const getSearchResults = () => {
+    if (!globalSearchQuery.trim()) return [];
+    const query = globalSearchQuery.toLowerCase().trim();
+    const results: Array<{
+      type: 'news' | 'publication' | 'project' | 'cv' | 'article' | 'talk';
+      title: string;
+      subtitle?: string;
+      targetId?: string;
+      targetTab: string;
+      externalUrl?: string;
+    }> = [];
+
+    // Search Publications
+    if (sanitizedConfig.publications) {
+      sanitizedConfig.publications.forEach((pub) => {
+        if (
+          pub.title.toLowerCase().includes(query) ||
+          (pub.authors && pub.authors.toLowerCase().includes(query)) ||
+          (pub.conferenceName && pub.conferenceName.toLowerCase().includes(query)) ||
+          (pub.journalName && pub.journalName.toLowerCase().includes(query)) ||
+          (pub.description && pub.description.toLowerCase().includes(query)) ||
+          (pub.laymanSummary && pub.laymanSummary.toLowerCase().includes(query))
+        ) {
+          results.push({
+            type: 'publication',
+            title: pub.title,
+            subtitle: `${pub.year} • ${pub.conferenceName || pub.journalName || 'Paper'}`,
+            targetTab: 'publications',
+            targetId: `pub-${pub.title.toLowerCase().replace(/[^a-z0-9]/g, '-')}`,
+          });
+        }
+      });
+    }
+
+    // Search News
+    if (sanitizedConfig.news) {
+      sanitizedConfig.news.forEach((n) => {
+        if (
+          n.title.toLowerCase().includes(query) ||
+          (n.description && n.description.toLowerCase().includes(query)) ||
+          n.date.toLowerCase().includes(query)
+        ) {
+          results.push({
+            type: 'news',
+            title: n.title,
+            subtitle: n.date,
+            targetTab: 'news',
+            targetId: `news-${n.title.toLowerCase().replace(/[^a-z0-9]/g, '-')}`,
+          });
+        }
+      });
+    }
+
+    // Search Projects
+    if (sanitizedConfig.projects?.external?.projects) {
+      sanitizedConfig.projects.external.projects.forEach((proj) => {
+        if (
+          proj.title.toLowerCase().includes(query) ||
+          (proj.description && proj.description.toLowerCase().includes(query))
+        ) {
+          results.push({
+            type: 'project',
+            title: proj.title,
+            subtitle: 'External Project',
+            targetTab: 'projects',
+            externalUrl: proj.link,
+          });
+        }
+      });
+    }
+    if (githubProjects) {
+      githubProjects.forEach((proj) => {
+        if (
+          proj.name.toLowerCase().includes(query) ||
+          (proj.description && proj.description.toLowerCase().includes(query))
+        ) {
+          results.push({
+            type: 'project',
+            title: proj.name,
+            subtitle: 'GitHub Repository',
+            targetTab: 'projects',
+            externalUrl: proj.html_url,
+          });
+        }
+      });
+    }
+
+    // Search CV
+    if (sanitizedConfig.experiences) {
+      sanitizedConfig.experiences.forEach((exp) => {
+        if (
+          (exp.company && exp.company.toLowerCase().includes(query)) ||
+          (exp.position && exp.position.toLowerCase().includes(query))
+        ) {
+          results.push({
+            type: 'cv',
+            title: `${exp.position} @ ${exp.company}`,
+            subtitle: `Experience (${exp.from} - ${exp.to})`,
+            targetTab: 'cv',
+          });
+        }
+      });
+    }
+    if (sanitizedConfig.educations) {
+      sanitizedConfig.educations.forEach((edu) => {
+        if (
+          (edu.institution && edu.institution.toLowerCase().includes(query)) ||
+          (edu.degree && edu.degree.toLowerCase().includes(query))
+        ) {
+          results.push({
+            type: 'cv',
+            title: `${edu.degree} @ ${edu.institution}`,
+            subtitle: `Education (${edu.from} - ${edu.to})`,
+            targetTab: 'cv',
+          });
+        }
+      });
+    }
+    if (sanitizedConfig.teaching) {
+      sanitizedConfig.teaching.forEach((teach) => {
+        if (
+          teach.course.toLowerCase().includes(query) ||
+          teach.role.toLowerCase().includes(query) ||
+          teach.institution.toLowerCase().includes(query)
+        ) {
+          results.push({
+            type: 'cv',
+            title: `${teach.role}: ${teach.course}`,
+            subtitle: `Teaching • ${teach.institution} (${teach.year})`,
+            targetTab: 'cv',
+          });
+        }
+      });
+    }
+    if (sanitizedConfig.certifications) {
+      sanitizedConfig.certifications.forEach((cert) => {
+        if (
+          (cert.name && cert.name.toLowerCase().includes(query)) ||
+          (cert.body && cert.body.toLowerCase().includes(query))
+        ) {
+          results.push({
+            type: 'cv',
+            title: cert.name || '',
+            subtitle: `Certification • ${cert.body} (${cert.year})`,
+            targetTab: 'cv',
+          });
+        }
+      });
+    }
+
+    // Search Articles
+    articles.forEach((art) => {
+      if (
+        art.title.toLowerCase().includes(query) ||
+        art.description.toLowerCase().includes(query) ||
+        art.categories.some((c) => c.toLowerCase().includes(query))
+      ) {
+        results.push({
+          type: 'article',
+          title: art.title,
+          subtitle: `Article • ${art.categories.join(', ')}`,
+          targetTab: 'blog',
+          targetId: `article-${art.title.toLowerCase().replace(/[^a-z0-9]/g, '-')}`,
+          externalUrl: art.link,
+        });
+      }
+    });
+
+    // Search Talks
+    if (sanitizedConfig.talks) {
+      sanitizedConfig.talks.forEach((talk) => {
+        if (
+          talk.title.toLowerCase().includes(query) ||
+          (talk.description && talk.description.toLowerCase().includes(query)) ||
+          talk.date.toLowerCase().includes(query)
+        ) {
+          results.push({
+            type: 'talk',
+            title: talk.title,
+            subtitle: `Talk • ${talk.date}`,
+            targetTab: 'talks',
+            targetId: `talk-${talk.title.toLowerCase().replace(/[^a-z0-9]/g, '-')}`,
+          });
+        }
+      });
+    }
+
+    return results.slice(0, 15);
+  };
+
+  const handleSelectResult = (result: any) => {
+    setIsSearchOpen(false);
+    setGlobalSearchQuery('');
+    setActiveTab(result.targetTab);
+
+    if (result.targetId) {
+      setTimeout(() => {
+        const el = document.getElementById(result.targetId);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 250);
+    } else if (result.externalUrl) {
+      window.open(result.externalUrl, '_blank');
+    }
+  };
 
   useEffect(() => {
     theme && document.documentElement.setAttribute('data-theme', theme);
@@ -434,35 +818,48 @@ const GitProfile = ({ config }: { config: Config }) => {
                       {profile?.name || sanitizedConfig.seo.title}
                     </span>
                   </div>
-                  <div className="tabs tabs-boxed bg-transparent gap-1 flex-wrap justify-center">
-                    {navTabs.map((tab) => {
-                      if (tab.id === 'talks' && (!sanitizedConfig.talks || sanitizedConfig.talks.length === 0)) return null;
-                      if (tab.id === 'news' && sanitizedConfig.news.length === 0) return null;
-                      if (tab.id === 'publications' && sanitizedConfig.publications.length === 0) return null;
+                  <div className="flex items-center gap-4 flex-wrap justify-center">
+                    <div className="tabs tabs-boxed bg-transparent gap-1 flex-wrap justify-center">
+                      {navTabs.map((tab) => {
+                        if (tab.id === 'talks' && (!sanitizedConfig.talks || sanitizedConfig.talks.length === 0)) return null;
+                        if (tab.id === 'news' && sanitizedConfig.news.length === 0) return null;
+                        if (tab.id === 'publications' && sanitizedConfig.publications.length === 0) return null;
 
-                      return (
-                        <button
-                          key={tab.id}
-                          onClick={() => setActiveTab(tab.id)}
-                          className={`tab tab-sm sm:tab-md font-semibold transition-all rounded-md px-3 py-1 ${
-                            activeTab === tab.id
-                              ? 'tab-active bg-primary text-primary-content shadow-sm'
-                              : 'hover:bg-base-300 text-base-content/75'
-                          }`}
-                        >
-                          {tab.label}
-                          {tab.count !== undefined && tab.count > 0 && (
-                            <span className={`ml-1.5 px-1.5 py-0.25 text-[9px] rounded-full font-bold ${
+                        return (
+                          <button
+                            key={tab.id}
+                            onClick={() => setActiveTab(tab.id)}
+                            className={`tab tab-sm sm:tab-md font-semibold transition-all rounded-md px-3 py-1 ${
                               activeTab === tab.id
-                                ? 'bg-primary-content/20 text-primary-content'
-                                : 'bg-base-300 text-base-content/60'
-                            }`}>
-                              {tab.count}
-                            </span>
-                          )}
-                        </button>
-                      );
-                    })}
+                                ? 'tab-active bg-primary text-primary-content shadow-sm'
+                                : 'hover:bg-base-300 text-base-content/75'
+                            }`}
+                          >
+                            {tab.label}
+                            {tab.count !== undefined && tab.count > 0 && (
+                              <span className={`ml-1.5 px-1.5 py-0.25 text-[9px] rounded-full font-bold ${
+                                activeTab === tab.id
+                                  ? 'bg-primary-content/20 text-primary-content'
+                                  : 'bg-base-300 text-base-content/60'
+                              }`}>
+                                {tab.count}
+                              </span>
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+                    
+                    <button
+                      onClick={() => setIsSearchOpen(true)}
+                      className="btn btn-ghost btn-sm normal-case flex items-center gap-2 border border-base-content/10 hover:bg-base-300/80 rounded-md"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 opacity-75 text-base-content" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                      </svg>
+                      <span className="text-xs opacity-60 text-base-content">Search</span>
+                      <kbd className="kbd kbd-xs bg-base-300 text-base-content/60 border-base-content/10">⌘K</kbd>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -527,10 +924,10 @@ const GitProfile = ({ config }: { config: Config }) => {
                         )}
                         {sanitizedConfig.blog.display && (
                           <BlogCard
-                            loading={loading}
+                            loading={loadingArticles}
                             googleAnalyticsId={sanitizedConfig.googleAnalytics.id}
                             blog={{ ...sanitizedConfig.blog, limit: 2 }}
-                            social={sanitizedConfig.social}
+                            articles={articles}
                           />
                         )}
                         {sanitizedConfig.enableSwarmDemo && (
@@ -608,10 +1005,10 @@ const GitProfile = ({ config }: { config: Config }) => {
 
                     {isBlogTab && sanitizedConfig.blog.display && (
                       <BlogCard
-                        loading={loading}
+                        loading={loadingArticles}
                         googleAnalyticsId={sanitizedConfig.googleAnalytics.id}
                         blog={sanitizedConfig.blog}
-                        social={sanitizedConfig.social}
+                        articles={articles}
                       />
                     )}
 
@@ -625,6 +1022,80 @@ const GitProfile = ({ config }: { config: Config }) => {
                 </div>
               </div>
             </div>
+
+            {/* Global search overlay modal (Cmd+K) */}
+            {isSearchOpen && (
+              <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-start justify-center pt-20 px-4 animate-in fade-in duration-200">
+                {/* Clicking backdrop closes search */}
+                <div className="fixed inset-0" onClick={() => setIsSearchOpen(false)} />
+                
+                <div className="relative card bg-base-200 border border-base-300 rounded-xl max-w-2xl w-full shadow-2xl overflow-hidden flex flex-col max-h-[70vh] z-10 animate-in slide-in-from-top-4 duration-200">
+                  <div className="p-4 border-b border-base-300 flex items-center gap-3 bg-base-300/20">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 opacity-70 text-base-content" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                    <input
+                      autoFocus
+                      type="text"
+                      placeholder="Search news, publications, blog, cv, talks..."
+                      value={globalSearchQuery}
+                      onChange={(e) => setGlobalSearchQuery(e.target.value)}
+                      className="bg-transparent text-base-content placeholder-base-content/40 outline-none w-full text-base sm:text-lg"
+                    />
+                    <button 
+                      onClick={() => setIsSearchOpen(false)} 
+                      className="kbd kbd-sm bg-base-300 text-base-content/60 border-base-content/10 cursor-pointer hover:bg-base-300/80"
+                    >
+                      ESC
+                    </button>
+                  </div>
+                  
+                  <div className="overflow-y-auto p-4 flex flex-col gap-2 flex-1 max-h-[50vh] custom-scrollbar">
+                    {globalSearchQuery.trim() === '' ? (
+                      <div className="text-center py-12 text-base-content opacity-40 text-sm">
+                        <p className="font-medium">Search for anything on Noah's profile</p>
+                        <p className="text-xs mt-1">Start typing to see matching publications, articles, news, and cv experiences.</p>
+                      </div>
+                    ) : getSearchResults().length === 0 ? (
+                      <div className="text-center py-12 text-base-content opacity-40 text-sm">
+                        No results found for "{globalSearchQuery}"
+                      </div>
+                    ) : (
+                      getSearchResults().map((res, index) => {
+                        const typeBadgeColor = 
+                          res.type === 'publication' ? 'badge-primary text-primary-content' :
+                          res.type === 'article' ? 'badge-warning text-warning-content bg-amber-500 border-amber-500' :
+                          res.type === 'news' ? 'badge-secondary text-secondary-content' :
+                          res.type === 'talk' ? 'badge-accent text-accent-content' :
+                          'badge-ghost opacity-70';
+
+                        return (
+                          <button
+                            key={index}
+                            onClick={() => handleSelectResult(res)}
+                            className="w-full text-left p-3 rounded-lg bg-base-100 hover:bg-primary/10 border border-base-300 hover:border-primary/20 transition-all flex items-center justify-between gap-4 group"
+                          >
+                            <div className="min-w-0 flex-1">
+                              <div className="font-bold text-sm sm:text-base text-base-content group-hover:text-primary transition-colors truncate">
+                                {res.title}
+                              </div>
+                              {res.subtitle && (
+                                <div className="text-xs text-base-content/60 mt-0.5 truncate">
+                                  {res.subtitle}
+                                </div>
+                              )}
+                            </div>
+                            <span className={`badge badge-sm uppercase text-[8px] font-bold tracking-wider shrink-0 ${typeBadgeColor}`}>
+                              {res.type}
+                            </span>
+                          </button>
+                        );
+                      })
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           {sanitizedConfig.footer && (

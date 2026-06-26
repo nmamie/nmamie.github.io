@@ -111,6 +111,7 @@ export interface SanitizedPublication {
   journalAward?: string;
   googleScholarLink?: string;
   selected?: boolean;
+  citations?: number;
 }
 
 export interface SanitizedNews {

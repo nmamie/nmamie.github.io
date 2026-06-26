@@ -272,6 +272,7 @@ interface Publication {
   journalAward?: string;
   googleScholarLink?: string;
   selected?: boolean;
+  citations?: number;
 }
 
 interface News {
