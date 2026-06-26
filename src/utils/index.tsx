@@ -4,6 +4,7 @@ import { LOCAL_STORAGE_KEY_NAME } from '../constants';
 
 import { DEFAULT_THEMES } from '../constants/default-themes';
 import colors from '../data/colors.json';
+import citationsData from '../data/citations.json';
 import {
   SanitizedConfig,
   SanitizedHotjar,
@@ -126,7 +127,15 @@ export const getSanitizedConfig = (
             journalAward: item.journalAward || '',
             googleScholarLink: item.googleScholarLink || '',
             selected: item.selected ?? false,
-            citations: item.citations ?? 0,
+            citations: (() => {
+              if (item.googleScholarLink) {
+                const match = /citation_for_view=[^:]+:([a-zA-Z0-9_-]+)/.exec(item.googleScholarLink);
+                if (match && citationsData && (citationsData as any)[match[1]] !== undefined) {
+                  return (citationsData as any)[match[1]];
+                }
+              }
+              return item.citations ?? 0;
+            })(),
           })) || [],
       news:
         config?.news?.filter((item) => item.title && item.date) || [],

@@ -98,8 +98,15 @@ const AvatarCard: React.FC<AvatarCardProps> = ({
             <p className="text-xs text-base-content/85 leading-relaxed">
               I'm always excited to connect with fellow researchers, developers, and creators. If you want to discuss{' '}
               <span className="font-semibold text-primary">GenAI</span>,{' '}
-              <span className="font-semibold text-primary">Multi-Agent Systems</span>, or any of my other research areas, let's chat!
+              <span className="font-semibold text-primary">Multi-Agent Systems</span>,{' '}
+              <span className="font-semibold text-primary">personalized news recommenders</span>, or any of my other research areas, let's chat!
             </p>
+            <a
+              href="mailto:collaborations@mamié.ch"
+              className="btn btn-primary btn-xs normal-case mt-1 text-[10px] font-semibold gap-1.5"
+            >
+              ✉️ Message me
+            </a>
           </div>
         </div>
         {resumeFileUrl &&

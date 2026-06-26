@@ -41,6 +41,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Fetch Google Scholar Citations
+        run: node scripts/fetch-citations.cjs
+
       - name: Build with vite
         run: npm run build
 
