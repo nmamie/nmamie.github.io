@@ -106,6 +106,8 @@ export interface SanitizedPublication {
   bibtex?: string;
   laymanSummary?: string;
   authorLinks?: { [name: string]: string };
+  journalStatus?: string;
+  journalAward?: string;
 }
 
 export interface SanitizedNews {

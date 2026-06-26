@@ -263,6 +263,8 @@ interface Publication {
   bibtex?: string;
   laymanSummary?: string;
   authorLinks?: { [name: string]: string };
+  journalStatus?: string;
+  journalAward?: string;
 }
 
 interface News {

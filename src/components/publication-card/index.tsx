@@ -1,5 +1,6 @@
 import { Fragment, useState } from 'react';
 import { AiOutlineBook, AiOutlineCopy, AiOutlineCheck } from 'react-icons/ai';
+import { FiFileText, FiEye, FiEyeOff, FiCode } from 'react-icons/fi';
 import { SanitizedPublication } from '../../interfaces/sanitized-config';
 import { skeleton } from '../../utils';
 import LazyImage from '../lazy-image';
@@ -86,9 +87,21 @@ const PublicationItem = ({ item }: { item: SanitizedPublication }) => {
               </p>
             )}
 
-            <p className="text-sm font-medium text-primary/80">
-              {item.conferenceName || item.journalName}
-            </p>
+            <div className="flex flex-wrap items-center gap-2">
+              <p className="text-sm font-medium text-primary/80">
+                {item.conferenceName || item.journalName}
+              </p>
+              {item.journalStatus && (
+                <div className="badge badge-warning badge-outline text-[9px] font-bold uppercase px-2 py-0.5 tracking-wider">
+                  {item.journalStatus}
+                </div>
+              )}
+              {item.journalAward && (
+                <div className="badge badge-secondary text-[9px] font-bold uppercase px-2 py-0.5 tracking-wider text-secondary-content">
+                  {item.journalAward}
+                </div>
+              )}
+            </div>
 
             {item.laymanSummary && (
               <div className="bg-primary/5 border-l-2 border-primary px-3 py-2 rounded-r-lg mt-1 text-xs leading-relaxed text-justify">
@@ -103,25 +116,46 @@ const PublicationItem = ({ item }: { item: SanitizedPublication }) => {
                   href={item.link}
                   target="_blank"
                   rel="noreferrer"
-                  className="btn btn-outline btn-xs btn-primary normal-case"
+                  className="btn btn-outline btn-xs btn-primary normal-case gap-1"
                 >
+                  <FiFileText className="text-xs" />
                   Article
                 </a>
               )}
               {item.description && (
                 <button
                   onClick={() => setIsAbstractExpanded(!isAbstractExpanded)}
-                  className="btn btn-outline btn-xs normal-case"
+                  className="btn btn-outline btn-xs normal-case gap-1"
                 >
-                  {isAbstractExpanded ? 'Hide Abstract' : 'Abstract'}
+                  {isAbstractExpanded ? (
+                    <>
+                      <FiEyeOff className="text-xs" />
+                      Hide Abstract
+                    </>
+                  ) : (
+                    <>
+                      <FiEye className="text-xs" />
+                      Abstract
+                    </>
+                  )}
                 </button>
               )}
               {item.bibtex && (
                 <button
                   onClick={() => setIsBibtexExpanded(!isBibtexExpanded)}
-                  className="btn btn-outline btn-xs normal-case"
+                  className="btn btn-outline btn-xs normal-case gap-1"
                 >
-                  {isBibtexExpanded ? 'Hide BibTeX' : 'BibTeX'}
+                  {isBibtexExpanded ? (
+                    <>
+                      <FiCode className="text-xs text-primary" />
+                      Hide BibTeX
+                    </>
+                  ) : (
+                    <>
+                      <FiCode className="text-xs" />
+                      BibTeX
+                    </>
+                  )}
                 </button>
               )}
             </div>

@@ -261,9 +261,16 @@ const CONFIG = {
         'Mathias Müller': 'https://www.cl.uzh.ch/en/people/team/mueller.html',
         'Eyal Liron Dolev': 'https://github.com/eyaldolev',
       },
+      journalAward: 'Best Poster Award 🏆',
     },
   ],
   news: [
+    {
+      title: 'Invited system demonstration of Informfully at the Recommenders in News Media NAMS 2026 Side event',
+      date: 'May 2026',
+      link: 'https://sites.google.com/view/recommenders-in-news-media/recommenders-in-news-media',
+      description: 'We were invited to present our research platform Informfully at the Recommenders in News Media NAMS 2026 Side event, where I demonstrated the brand new interface and features of the platform and interacted with the community.',
+    },
     {
       title: 'New paper published 🎉: The Society of HiveMind',
       date: 'October 2025',

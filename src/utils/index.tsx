@@ -121,6 +121,8 @@ export const getSanitizedConfig = (
             bibtex: item.bibtex || '',
             laymanSummary: item.laymanSummary || '',
             authorLinks: item.authorLinks || {},
+            journalStatus: item.journalStatus || '',
+            journalAward: item.journalAward || '',
           })) || [],
       news:
         config?.news?.filter((item) => item.title && item.date) || [],

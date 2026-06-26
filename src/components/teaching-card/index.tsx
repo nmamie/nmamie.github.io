@@ -38,7 +38,7 @@ const ListItem = ({
         course
       )}
     </h3>
-    <div className="text-xs font-mono opacity-80 mt-0.5">
+    <div className="text-xs font-normal opacity-85 mt-0.5">
       {role} • {institution}
     </div>
   </li>
