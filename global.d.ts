@@ -220,6 +220,11 @@ interface Social {
    * Substack newsletter username
    */
   substack?: string;
+
+  /**
+   * LessWrong username
+   */
+  lesswrong?: string;
 }
 
 interface Resume {
@@ -265,6 +270,8 @@ interface Publication {
   authorLinks?: { [name: string]: string };
   journalStatus?: string;
   journalAward?: string;
+  googleScholarLink?: string;
+  selected?: boolean;
 }
 
 interface News {
@@ -450,6 +457,16 @@ interface Config {
    * Enable PWA
    */
   enablePWA?: boolean;
+
+  /**
+   * List of talks
+   */
+  talks?: Array<{
+    title: string;
+    date: string;
+    link?: string;
+    description?: string;
+  }>;
 }
 
 declare const CONFIG: Config;

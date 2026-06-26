@@ -371,6 +371,18 @@ const DetailsCard = ({ profile, loading, social, github }: Props) => {
                   link={`https://bsky.app/profile/${social.bluesky}`}
                 />
               )}
+              {social?.lesswrong && (
+                <ListItem
+                  icon={
+                    <span className="font-mono font-bold text-sm bg-base-content text-base-100 w-4 h-4 rounded-full flex items-center justify-center select-none" style={{ fontSize: '10px', lineHeight: 1 }}>
+                      λ
+                    </span>
+                  }
+                  title="LessWrong:"
+                  value={social.lesswrong}
+                  link={`https://www.lesswrong.com/users/${social.lesswrong}`}
+                />
+              )}
             </Fragment>
           )}
         </div>

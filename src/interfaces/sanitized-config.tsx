@@ -66,6 +66,7 @@ export interface SanitizedSocial {
   discord?: string;
   bluesky?: string;
   substack?: string;
+  lesswrong?: string;
 }
 
 export interface SanitizedResume {
@@ -108,6 +109,8 @@ export interface SanitizedPublication {
   authorLinks?: { [name: string]: string };
   journalStatus?: string;
   journalAward?: string;
+  googleScholarLink?: string;
+  selected?: boolean;
 }
 
 export interface SanitizedNews {
@@ -168,4 +171,10 @@ export interface SanitizedConfig {
   themeConfig: SanitizedThemeConfig;
   footer?: string;
   enablePWA: boolean;
+  talks?: Array<{
+    title: string;
+    date: string;
+    link?: string;
+    description?: string;
+  }>;
 }

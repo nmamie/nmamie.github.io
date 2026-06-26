@@ -1,4 +1,4 @@
-import { Fragment } from 'react';
+import { Fragment, useState } from 'react';
 import { AiOutlineNotification } from 'react-icons/ai';
 import { SanitizedNews } from '../../interfaces/sanitized-config';
 import { skeleton } from '../../utils';
@@ -10,6 +10,17 @@ const NewsCard = ({
     news: SanitizedNews[];
     loading: boolean;
 }) => {
+    const [searchTerm, setSearchTerm] = useState('');
+
+    const filteredNews = news.filter((item) => {
+        const term = searchTerm.toLowerCase();
+        return (
+            item.title.toLowerCase().includes(term) ||
+            (item.description && item.description.toLowerCase().includes(term)) ||
+            item.date.toLowerCase().includes(term)
+        );
+    });
+
     const renderSkeleton = () => {
         const array = [];
         for (let index = 0; index < 3; index++) {
@@ -29,14 +40,22 @@ const NewsCard = ({
     };
 
     const renderNews = () => {
-        return news.map((item, index) => (
+        if (filteredNews.length === 0) {
+            return (
+                <div className="text-center py-8 text-base-content opacity-50">
+                    No news matches your search query.
+                </div>
+            );
+        }
+
+        return filteredNews.map((item, index) => (
             <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 mb-6 last:mb-0" key={index}>
                 <div className="w-full sm:w-32 shrink-0 text-sm font-semibold opacity-60">
                     {item.date}
                 </div>
                 <div className="flex-1">
                     {item.link ? (
-                        <h3 className="font-medium hover:text-primary transition-colors">
+                        <h3 className="font-medium hover:text-primary transition-colors text-base-content">
                             <a
                                 href={item.link}
                                 target="_blank"
@@ -49,7 +68,7 @@ const NewsCard = ({
                         <h3 className="font-medium text-base-content">{item.title}</h3>
                     )}
                     {item.description && (
-                        <p className="mt-1 text-sm opacity-70 text-justify">
+                        <p className="mt-1 text-sm opacity-70 text-justify text-base-content/85">
                             {item.description}
                         </p>
                     )}
@@ -64,7 +83,7 @@ const NewsCard = ({
                 <div className="card bg-base-200 shadow-xl border border-base-300">
                     <div className="card-body p-8">
                         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
-                            <div className="flex items-center space-x-3">
+                            <div className="flex items-center space-x-3 w-full sm:w-auto">
                                 {loading ? (
                                     skeleton({
                                         widthCls: 'w-12',
@@ -82,9 +101,25 @@ const NewsCard = ({
                                             ? skeleton({ widthCls: 'w-40', heightCls: 'h-8' })
                                             : 'News'}
                                     </h2>
+                                    <div className="text-base-content/60 text-xs sm:text-sm mt-1 truncate">
+                                        {loading
+                                            ? skeleton({ widthCls: 'w-32', heightCls: 'h-4' })
+                                            : `Showcasing ${filteredNews.length} news items`}
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                        {!loading && (
+                            <div className="mb-6">
+                                <input
+                                    type="text"
+                                    placeholder="Search news by title, description, or date..."
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                    className="input input-bordered input-sm w-full bg-base-100/50 focus:bg-base-100"
+                                />
+                            </div>
+                        )}
                         <div className="max-h-96 overflow-y-auto pr-2 custom-scrollbar">
                             {loading ? renderSkeleton() : renderNews()}
                         </div>

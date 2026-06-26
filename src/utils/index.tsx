@@ -89,6 +89,7 @@ export const getSanitizedConfig = (
         discord: config?.social?.discord,
         bluesky: config?.social?.bluesky,
         substack: config?.social?.substack,
+        lesswrong: config?.social?.lesswrong,
       },
       resume: {
         fileUrl: config?.resume?.fileUrl || '',
@@ -123,6 +124,8 @@ export const getSanitizedConfig = (
             authorLinks: item.authorLinks || {},
             journalStatus: item.journalStatus || '',
             journalAward: item.journalAward || '',
+            googleScholarLink: item.googleScholarLink || '',
+            selected: item.selected ?? false,
           })) || [],
       news:
         config?.news?.filter((item) => item.title && item.date) || [],
@@ -130,6 +133,8 @@ export const getSanitizedConfig = (
         config?.teaching?.filter(
           (t) => t.course || t.role || t.institution || t.year,
         ) || [],
+      talks:
+        config?.talks?.filter((t) => t.title && t.date) || [],
       researchInterests: config?.researchInterests || [],
       enableSwarmDemo: config?.enableSwarmDemo ?? false,
       googleAnalytics: {

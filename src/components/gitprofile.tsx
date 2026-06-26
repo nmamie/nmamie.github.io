@@ -33,6 +33,7 @@ import NewsCard from './news-card';
 import SwarmCard from './swarm-card';
 import TeachingCard from './teaching-card';
 import NewsletterCard from './newsletter-card';
+import TalksCard from './talks-card';
 
 const CACHE_TTL = 3600000; // 1 hour
 
@@ -70,6 +71,7 @@ const GitProfile = ({ config }: { config: Config }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [githubProjects, setGithubProjects] = useState<GithubProject[]>([]);
+  const [activeTab, setActiveTab] = useState<string>('about');
   const vantaDivRef = useRef<HTMLDivElement>(null);
   const vantaEffectRef = useRef<any>(null);
 
@@ -241,6 +243,25 @@ const GitProfile = ({ config }: { config: Config }) => {
     }
   }, [profile, sanitizedConfig]);
 
+  // Handle passing down social prop to BlogCard by mapping it
+  const isAboutTab = activeTab === 'about';
+  const isNewsTab = activeTab === 'news';
+  const isPublicationsTab = activeTab === 'publications';
+  const isProjectsTab = activeTab === 'projects';
+  const isCvTab = activeTab === 'cv';
+  const isBlogTab = activeTab === 'blog';
+  const isTalksTab = activeTab === 'talks';
+
+  const navTabs = [
+    { id: 'about', label: 'About' },
+    { id: 'news', label: 'News', count: sanitizedConfig.news?.length || 0 },
+    { id: 'publications', label: 'Publications', count: sanitizedConfig.publications?.length || 0 },
+    { id: 'projects', label: 'Projects' },
+    { id: 'cv', label: 'CV' },
+    { id: 'blog', label: 'Blog & Articles' },
+    { id: 'talks', label: 'Talks', count: sanitizedConfig.talks?.length || 0 },
+  ];
+
   useEffect(() => {
     theme && document.documentElement.setAttribute('data-theme', theme);
   }, [theme]);
@@ -405,6 +426,47 @@ const GitProfile = ({ config }: { config: Config }) => {
             />
 
             <div style={{ position: 'relative', zIndex: 1 }}>
+              {/* Sticky glassmorphism navigation header */}
+              <div className="sticky top-0 z-30 w-full mb-6 card bg-base-100/75 backdrop-blur-md shadow-md border border-base-300">
+                <div className="card-body p-4 flex flex-col md:flex-row items-center justify-between gap-4">
+                  <div className="flex items-center space-x-2 font-bold text-lg px-2 opacity-90 text-base-content">
+                    <span className="hover:text-primary transition-colors cursor-pointer" onClick={() => setActiveTab('about')}>
+                      {profile?.name || sanitizedConfig.seo.title}
+                    </span>
+                  </div>
+                  <div className="tabs tabs-boxed bg-transparent gap-1 flex-wrap justify-center">
+                    {navTabs.map((tab) => {
+                      if (tab.id === 'talks' && (!sanitizedConfig.talks || sanitizedConfig.talks.length === 0)) return null;
+                      if (tab.id === 'news' && sanitizedConfig.news.length === 0) return null;
+                      if (tab.id === 'publications' && sanitizedConfig.publications.length === 0) return null;
+
+                      return (
+                        <button
+                          key={tab.id}
+                          onClick={() => setActiveTab(tab.id)}
+                          className={`tab tab-sm sm:tab-md font-semibold transition-all rounded-md px-3 py-1 ${
+                            activeTab === tab.id
+                              ? 'tab-active bg-primary text-primary-content shadow-sm'
+                              : 'hover:bg-base-300 text-base-content/75'
+                          }`}
+                        >
+                          {tab.label}
+                          {tab.count !== undefined && tab.count > 0 && (
+                            <span className={`ml-1.5 px-1.5 py-0.25 text-[9px] rounded-full font-bold ${
+                              activeTab === tab.id
+                                ? 'bg-primary-content/20 text-primary-content'
+                                : 'bg-base-300 text-base-content/60'
+                            }`}>
+                              {tab.count}
+                            </span>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 rounded-box">
                 <div className="col-span-1">
                   <div className="grid grid-cols-1 gap-6">
@@ -439,75 +501,125 @@ const GitProfile = ({ config }: { config: Config }) => {
                         skills={sanitizedConfig.skills}
                       />
                     )}
-                    {sanitizedConfig.experiences.length !== 0 && (
-                      <ExperienceCard
-                        loading={loading}
-                        experiences={sanitizedConfig.experiences}
-                      />
-                    )}
-                    {sanitizedConfig.certifications.length !== 0 && (
-                      <CertificationCard
-                        loading={loading}
-                        certifications={sanitizedConfig.certifications}
-                      />
-                    )}
-                    {sanitizedConfig.educations.length !== 0 && (
-                      <EducationCard
-                        loading={loading}
-                        educations={sanitizedConfig.educations}
-                      />
-                    )}
-                    {sanitizedConfig.teaching && sanitizedConfig.teaching.length !== 0 && (
-                      <TeachingCard
-                        teaching={sanitizedConfig.teaching}
-                        loading={loading}
-                      />
-                    )}
                   </div>
                 </div>
 
                 <div className="lg:col-span-2 col-span-1">
                   <div className="grid grid-cols-1 gap-6">
-                    {sanitizedConfig.news.length !== 0 && (
+                    {/* conditional views rendering depending on activeTab */}
+                    {isAboutTab && (
+                      <>
+                        {sanitizedConfig.news.length !== 0 && (
+                          <NewsCard
+                            loading={loading}
+                            news={sanitizedConfig.news.slice(0, 2)}
+                          />
+                        )}
+                        {sanitizedConfig.publications.length !== 0 && (
+                          <PublicationCard
+                            loading={loading}
+                            publications={
+                              sanitizedConfig.publications.filter((p) => p.selected).length > 0
+                                ? sanitizedConfig.publications.filter((p) => p.selected)
+                                : sanitizedConfig.publications.slice(0, 2)
+                            }
+                          />
+                        )}
+                        {sanitizedConfig.blog.display && (
+                          <BlogCard
+                            loading={loading}
+                            googleAnalyticsId={sanitizedConfig.googleAnalytics.id}
+                            blog={{ ...sanitizedConfig.blog, limit: 2 }}
+                            social={sanitizedConfig.social}
+                          />
+                        )}
+                        {sanitizedConfig.enableSwarmDemo && (
+                          <SwarmCard loading={loading} />
+                        )}
+                      </>
+                    )}
+
+                    {isNewsTab && sanitizedConfig.news.length !== 0 && (
                       <NewsCard
                         loading={loading}
                         news={sanitizedConfig.news}
                       />
                     )}
-                    {sanitizedConfig.publications.length !== 0 && (
+
+                    {isPublicationsTab && sanitizedConfig.publications.length !== 0 && (
                       <PublicationCard
                         loading={loading}
                         publications={sanitizedConfig.publications}
                       />
                     )}
-                    {sanitizedConfig.projects.external.projects.length !== 0 && (
-                      <ExternalProjectCard
-                        loading={loading}
-                        header={sanitizedConfig.projects.external.header}
-                        externalProjects={
-                          sanitizedConfig.projects.external.projects
-                        }
-                        googleAnalyticId={sanitizedConfig.googleAnalytics.id}
-                      />
+
+                    {isProjectsTab && (
+                      <>
+                        {sanitizedConfig.projects.external.projects.length !== 0 && (
+                          <ExternalProjectCard
+                            loading={loading}
+                            header={sanitizedConfig.projects.external.header}
+                            externalProjects={
+                              sanitizedConfig.projects.external.projects
+                            }
+                            googleAnalyticId={sanitizedConfig.googleAnalytics.id}
+                          />
+                        )}
+                        {sanitizedConfig.projects.github.display && (
+                          <GithubProjectCard
+                            header={sanitizedConfig.projects.github.header}
+                            limit={sanitizedConfig.projects.github.automatic.limit}
+                            githubProjects={githubProjects}
+                            loading={loading}
+                            googleAnalyticsId={sanitizedConfig.googleAnalytics.id}
+                          />
+                        )}
+                      </>
                     )}
-                    {sanitizedConfig.blog.display && (
+
+                    {isCvTab && (
+                      <>
+                        {sanitizedConfig.experiences.length !== 0 && (
+                          <ExperienceCard
+                            loading={loading}
+                            experiences={sanitizedConfig.experiences}
+                          />
+                        )}
+                        {sanitizedConfig.educations.length !== 0 && (
+                          <EducationCard
+                            loading={loading}
+                            educations={sanitizedConfig.educations}
+                          />
+                        )}
+                        {sanitizedConfig.teaching && sanitizedConfig.teaching.length !== 0 && (
+                          <TeachingCard
+                            teaching={sanitizedConfig.teaching}
+                            loading={loading}
+                          />
+                        )}
+                        {sanitizedConfig.certifications.length !== 0 && (
+                          <CertificationCard
+                            loading={loading}
+                            certifications={sanitizedConfig.certifications}
+                          />
+                        )}
+                      </>
+                    )}
+
+                    {isBlogTab && sanitizedConfig.blog.display && (
                       <BlogCard
                         loading={loading}
                         googleAnalyticsId={sanitizedConfig.googleAnalytics.id}
                         blog={sanitizedConfig.blog}
+                        social={sanitizedConfig.social}
                       />
                     )}
-                    {sanitizedConfig.projects.github.display && (
-                      <GithubProjectCard
-                        header={sanitizedConfig.projects.github.header}
-                        limit={sanitizedConfig.projects.github.automatic.limit}
-                        githubProjects={githubProjects}
+
+                    {isTalksTab && sanitizedConfig.talks && sanitizedConfig.talks.length !== 0 && (
+                      <TalksCard
+                        talks={sanitizedConfig.talks}
                         loading={loading}
-                        googleAnalyticsId={sanitizedConfig.googleAnalytics.id}
                       />
-                    )}
-                    {sanitizedConfig.enableSwarmDemo && (
-                      <SwarmCard loading={loading} />
                     )}
                   </div>
                 </div>

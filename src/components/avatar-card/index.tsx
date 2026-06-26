@@ -89,6 +89,10 @@ const AvatarCard: React.FC<AvatarCardProps> = ({
               ))}
             </div>
           )}
+          {/* Collaboration / Discussion open invitation */}
+          <div className="mt-5 px-6 text-xs text-base-content/75 italic max-w-[280px] leading-relaxed border-t border-base-content/10 pt-4 text-center">
+            Open for collaborations and discussions, especially on my topics of interest or related areas. Feel free to reach out!
+          </div>
         </div>
         {resumeFileUrl &&
           (loading ? (
