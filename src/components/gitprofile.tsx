@@ -36,6 +36,7 @@ import SwarmCard from './swarm-card';
 import TeachingCard from './teaching-card';
 import NewsletterCard from './newsletter-card';
 import TalksCard from './talks-card';
+import Logo from './logo';
 
 const CACHE_TTL = 3600000; // 1 hour
 
@@ -638,7 +639,15 @@ const GitProfile = ({ config }: { config: Config }) => {
       setTimeout(() => {
         const el = document.getElementById(result.targetId);
         if (el) {
-          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          const header = document.querySelector('.sticky');
+          const headerHeight = header ? header.getBoundingClientRect().height : 100;
+          const elementPosition = el.getBoundingClientRect().top + window.scrollY;
+          const offsetPosition = elementPosition - headerHeight - 20; // 20px padding for spacing
+
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
+          });
         }
       }, 250);
     } else if (result.externalUrl) {
@@ -813,10 +822,8 @@ const GitProfile = ({ config }: { config: Config }) => {
               {/* Sticky glassmorphism navigation header */}
               <div className="sticky top-0 z-30 w-full mb-6 card bg-base-100/75 backdrop-blur-md shadow-md border border-base-300">
                 <div className="card-body p-4 flex flex-col md:flex-row items-center justify-between gap-4">
-                  <div className="flex items-center space-x-2 font-bold text-lg px-2 opacity-90 text-base-content">
-                    <span className="hover:text-primary transition-colors cursor-pointer" onClick={() => setActiveTab('about')}>
-                      {profile?.name || sanitizedConfig.seo.title}
-                    </span>
+                  <div className="flex items-center space-x-2 px-2" onClick={() => setActiveTab('about')}>
+                    <Logo />
                   </div>
                   <div className="flex items-center gap-4 flex-wrap justify-center">
                     <div className="tabs tabs-boxed bg-transparent gap-1 flex-wrap justify-center">
