@@ -273,6 +273,12 @@ const CONFIG = {
   ],
   news: [
     {
+      title: 'Invited guest lecture on personalized recommender systems and the Informfully ecosystem in the "Recommender Systems" course at HSLU, Luzern',
+      date: 'August 2026',
+      link: 'https://www.hslu.ch/en/lucerne-school-of-business/degree-programmes/master/applied-information-and-data-science/',
+      description: 'I was invited to give a guest lecture on personalized recommender systems and the Informfully ecosystem in the "Recommender Systems" master\'s levelcourse at the School of Applied Sciences Luzern (HSLU).',
+    }, 
+    {
       title: 'Invited system demonstration of Informfully at the Recommenders in News Media NAMS 2026 Side event',
       date: 'May 2026',
       link: 'https://sites.google.com/view/recommenders-in-news-media/recommenders-in-news-media',
