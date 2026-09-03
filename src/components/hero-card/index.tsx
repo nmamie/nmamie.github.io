@@ -102,7 +102,16 @@ const HeroCard: React.FC<HeroCardProps> = ({
             <span className="opacity-90">Collective Intelligence</span>.
           </h1>
           <p className="text-base text-base-content/80 leading-relaxed max-w-3xl">
-            I am a Doctoral Researcher and <strong>UZH.ai Fellow</strong> in the{' '}
+            I am a Doctoral Researcher and {' '}
+            <a
+              href="https://www.ai.uzh.ch/en/research/UZH.ai-Fellowship-Program-2026.html"
+              target="_blank"
+              rel="noreferrer"
+              className="text-primary hover:underline font-semibold"
+            >
+              UZH.ai Fellow
+            </a>
+            {' '} in the{' '}
             <a
               href="https://www.ifi.uzh.ch/en/ddis.html"
               target="_blank"
@@ -113,91 +122,86 @@ const HeroCard: React.FC<HeroCardProps> = ({
             </a>{' '}
             group at the <strong>University of Zurich</strong>, and a scholar in the{' '}
             <a
-              href="https://www.dsi.uzh.ch/en/research/phd/excellence-program.html"
+              href="https://www.dsi.uzh.ch/en/education/excellence-program.html"
               target="_blank"
               rel="noreferrer"
               className="text-primary hover:underline font-semibold"
             >
               Digital Society Initiative (DSI) Excellence Program
             </a>
-            . My core PhD research focuses on <strong>Generative AI in personalized news recommender systems</strong>, combining the latest advancements in <strong>frontier foundation models</strong> and on <strong>recommender systems</strong> with empirical field studies on platforms like <a href="https://informfully.ch" target="_blank" rel="noreferrer" className="text-primary hover:underline font-semibold">Informfully</a>. In this context, I explore <strong>Collective & Swarm Intelligence</strong> to investigate how multi-agent foundation model swarms can enhance recommendation reasoning and information diversity.
+            . My core PhD research focuses on <strong>Generative AI in personalized news recommender systems</strong>, combining the latest advancements in <strong>frontier foundation models</strong> and on <strong>recommender systems</strong> with empirical field studies on platforms like <a href="https://informfully.ch" target="_blank" rel="noreferrer" className="text-primary hover:underline font-semibold">Informfully</a>. In this context, I explore advancements in frontier <strong>Foundation Models</strong> and <strong>Collective Intelligence</strong> to investigate how multi-agent foundation model swarms can enhance recommendation reasoning and information diversity.
           </p>
         </div>
 
-        {/* Action Links */}
-        <div className="flex flex-wrap items-center gap-3 pt-1 border-t border-b border-base-300/60 py-3">
+        {/* Clean Action Links */}
+        <div className="flex flex-wrap items-center gap-2 pt-1 border-t border-b border-base-300/60 py-3">
           <button
             onClick={() => onNavigateTab('projects')}
-            className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-primary hover:underline group"
+            className="btn btn-xs rounded-lg font-semibold bg-primary/10 text-primary border border-primary/20 hover:bg-primary hover:text-primary-content transition-all"
           >
-            <span>Informfully & Systems</span>
-            <span className="group-hover:translate-x-1 transition-transform">›</span>
+            <span>Research Platforms</span>
+            <span>›</span>
           </button>
-          <span className="text-base-content/30">•</span>
           <button
             onClick={() => onNavigateTab('publications')}
-            className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-base-content/80 hover:text-primary hover:underline group"
+            className="btn btn-xs rounded-lg font-medium bg-base-200 text-base-content/80 border border-base-300 hover:bg-base-300 transition-all"
           >
-            <span>Publications & Papers</span>
-            <span className="group-hover:translate-x-1 transition-transform">›</span>
+            <span>Publications</span>
+            <span>›</span>
           </button>
-          <span className="text-base-content/30">•</span>
           <button
             onClick={() => onNavigateTab('cv')}
-            className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-base-content/80 hover:text-primary hover:underline group"
+            className="btn btn-xs rounded-lg font-medium bg-base-200 text-base-content/80 border border-base-300 hover:bg-base-300 transition-all"
           >
-            <span>Curriculum Vitae</span>
-            <span className="group-hover:translate-x-1 transition-transform">›</span>
+            <span>Trajectory & CV</span>
+            <span>›</span>
           </button>
-          <span className="text-base-content/30">•</span>
           <a
             href="https://scholar.google.com/citations?user=JhXjm_sAAAAJ&hl=de"
             target="_blank"
             rel="noreferrer"
-            className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-base-content/80 hover:text-primary hover:underline group ml-auto"
+            className="btn btn-xs rounded-lg font-medium bg-base-200 text-base-content/80 border border-base-300 hover:bg-base-300 transition-all sm:ml-auto"
           >
-            <span>Google Scholar</span>
-            <span className="group-hover:translate-x-1 transition-transform">›</span>
+            <span>Google Scholar ↗</span>
           </a>
         </div>
 
         {/* Research Pillars with Interactive Marks */}
         <div className="pt-1">
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-base-content/60 font-mono">
-              Research Pillars & Methodologies
+          <div className="mb-3">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-base-content/50 font-mono">
+              Research Pillars & Focus Areas
             </h3>
-            <span className="text-[11px] text-base-content/50 hidden sm:inline">
-              Interactive micro-figures • Click card to navigate
-            </span>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {researchPillars.map((pillar) => (
               <div
                 key={pillar.id}
                 onClick={pillar.onClick}
-                className="group p-4 rounded-2xl bg-base-200/60 hover:bg-base-200 border border-base-300 hover:border-primary/40 transition-all duration-200 cursor-pointer shadow-xs hover:shadow-md flex flex-col justify-between"
+                className="group p-4 rounded-2xl bg-base-200/40 hover:bg-base-200/80 border border-base-300/80 hover:border-primary/40 transition-all duration-200 cursor-pointer shadow-xs hover:shadow-md flex flex-col justify-between"
               >
-                <div>
-                  <div className="flex items-center justify-between gap-2 mb-2.5">
+                <div className="space-y-2">
+                  <div className="flex items-start justify-between gap-2">
                     <div className="flex items-center gap-3">
                       {pillar.mark}
-                      <h4 className="font-bold text-sm text-base-content group-hover:text-primary transition-colors leading-snug">
-                        {pillar.title}
-                      </h4>
+                      <div>
+                        <h4 className="font-bold text-sm text-base-content group-hover:text-primary transition-colors leading-snug">
+                          {pillar.title}
+                        </h4>
+                        <span className="text-[10px] font-mono text-primary font-semibold">
+                          {pillar.badge}
+                        </span>
+                      </div>
                     </div>
                   </div>
-                  <p className="text-xs text-base-content/70 leading-relaxed line-clamp-3">
+                  <p className="text-xs text-base-content/75 leading-relaxed">
                     {pillar.desc}
                   </p>
                 </div>
 
-                <div className="flex items-center justify-between mt-3 pt-2.5 border-t border-base-300/60">
-                  <span className="badge badge-xs text-[9px] font-bold uppercase tracking-wider py-1.5 px-2 bg-base-100 border-base-300 text-base-content/70">
-                    {pillar.badge}
-                  </span>
-                  <span className="text-xs font-semibold text-primary flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                <div className="flex items-center justify-end mt-3 pt-2 text-xs font-semibold text-primary/80 group-hover:text-primary">
+                  <span className="flex items-center gap-1 group-hover:translate-x-1 transition-transform">
                     {pillar.actionText} <BsArrowRight className="w-3 h-3" />
                   </span>
                 </div>

@@ -265,7 +265,7 @@ const SkillCard = ({
         <div className="pt-1 text-[11px] font-mono text-base-content/50 flex items-center justify-between border-t border-base-300/60">
           <span className="inline-flex items-center gap-1">
             <HiOutlineSparkles className="text-primary text-xs" />
-            <span>Interactive Tooling</span>
+            <span>Tooling & Ecosystem</span>
           </span>
           <span className="text-[10px] opacity-70 uppercase tracking-wider">
             {selectedCategory === 'All' ? 'Full Stack' : selectedCategory}

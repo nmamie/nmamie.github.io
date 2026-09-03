@@ -87,6 +87,26 @@ const GitProfile = ({ config }: { config: Config }) => {
   const vantaDivRef = useRef<HTMLDivElement>(null);
   const vantaEffectRef = useRef<any>(null);
 
+  const [birdsEnabled, setBirdsEnabled] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('vanta_birds_enabled') !== 'false';
+    } catch (e) {
+      return true;
+    }
+  });
+
+  const toggleBirds = () => {
+    setBirdsEnabled((prev) => {
+      const next = !prev;
+      try {
+        localStorage.setItem('vanta_birds_enabled', String(next));
+      } catch (e) {
+        /* ignore */
+      }
+      return next;
+    });
+  };
+
   const validTabs = ['about', 'news', 'publications', 'projects', 'cv', 'blog', 'talks'];
 
   // Handle URL hash navigation & deep-linking
@@ -758,15 +778,17 @@ const GitProfile = ({ config }: { config: Config }) => {
             minWidth: 200.0,
             scale: 1.0,
             scaleMobile: 1.0,
-            birdSize: 1.0,
-            speedLimit: 4.0,
+            birdSize: 1.05,
+            wingSpan: 20.0,
+            speedLimit: 2.3, // Gentle, relaxed gliding speed
+            cohesion: 28.0,
+            separation: 48.0,
+            alignment: 32.0,
             backgroundAlpha: 0.0,
-            // Setting color1 to black and color2 to white in 'variance' mode 
-            // creates a full spectrum of random colors (Rainbow effect)
             color1: 0x000000,
             color2: 0xffffff,
             colorMode: 'variance',
-            quantity: 4.0, // Maximum flock size
+            quantity: 2.7, // Balanced, natural flock size
           });
         } catch (e) {
           console.warn('Vanta failed to initialize', e);
@@ -838,7 +860,7 @@ const GitProfile = ({ config }: { config: Config }) => {
             className={`p-4 lg:p-10 min-h-full ${BG_COLOR}`}
             style={{ position: 'relative', overflow: 'hidden' }}
           >
-            {/* Vanta background container - scoped to the BG area so birds integrate with the theme background */}
+            {/* Vanta background container - ambient opacity so birds never disturb reading */}
             <div
               ref={vantaDivRef}
               style={{
@@ -851,12 +873,14 @@ const GitProfile = ({ config }: { config: Config }) => {
                 height: '100%',
                 zIndex: 0,
                 pointerEvents: 'none',
+                opacity: birdsEnabled ? 1 : 0,
+                transition: 'opacity 0.6s ease-in-out',
               }}
             />
 
             <div style={{ position: 'relative', zIndex: 1 }}>
-              {/* Sticky glassmorphism navigation header */}
-              <div className="sticky top-0 z-30 w-full mb-6 card bg-base-100/75 backdrop-blur-md shadow-md border border-base-300">
+              {/* Sticky frosted glass navigation header */}
+              <div className="sticky top-0 z-30 w-full mb-6 card bg-base-100/85 backdrop-blur-md shadow-md border border-base-300">
                 <div className="card-body p-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
                   {/* Top row containing Logo and Hamburger */}
                   <div className="flex items-center justify-between w-full md:w-auto">
@@ -912,19 +936,36 @@ const GitProfile = ({ config }: { config: Config }) => {
                       })}
                     </div>
                     
-                    <button
-                      onClick={() => {
-                        setIsSearchOpen(true);
-                        setIsMenuOpen(false);
-                      }}
-                      className="btn btn-ghost btn-sm normal-case flex items-center justify-center gap-2 border border-base-content/10 hover:bg-base-300/80 rounded-md w-full md:w-auto mt-2 md:mt-0"
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 opacity-75 text-base-content" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                      </svg>
-                      <span className="text-xs opacity-60 text-base-content">Search</span>
-                      <kbd className="kbd kbd-xs bg-base-300 text-base-content/60 border-base-content/10 hidden md:inline-flex">⌘K</kbd>
-                    </button>
+                    <div className="flex items-center gap-2 w-full md:w-auto mt-2 md:mt-0">
+                      <button
+                        onClick={toggleBirds}
+                        title={birdsEnabled ? 'Mute background flock animation' : 'Enable background flock animation'}
+                        className={`btn btn-ghost btn-sm normal-case flex items-center justify-center gap-1.5 border border-base-content/10 rounded-md transition-all ${
+                          birdsEnabled
+                            ? 'bg-base-200/60 text-base-content hover:bg-base-300'
+                            : 'opacity-50 hover:opacity-100'
+                        }`}
+                      >
+                        <span className="text-xs">🕊️</span>
+                        <span className="text-xs font-mono hidden sm:inline">
+                          {birdsEnabled ? 'Flock' : 'Flock Off'}
+                        </span>
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          setIsSearchOpen(true);
+                          setIsMenuOpen(false);
+                        }}
+                        className="btn btn-ghost btn-sm normal-case flex items-center justify-center gap-2 border border-base-content/10 hover:bg-base-300/80 rounded-md flex-1 md:flex-initial"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 opacity-75 text-base-content" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                        <span className="text-xs opacity-60 text-base-content">Search</span>
+                        <kbd className="kbd kbd-xs bg-base-300 text-base-content/60 border-base-content/10 hidden md:inline-flex">⌘K</kbd>
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>

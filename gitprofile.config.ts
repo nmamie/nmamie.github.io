@@ -311,7 +311,7 @@ const CONFIG = {
     {
       title: 'Awarded UZH.ai Fellowship & Accepted into DSI Excellence Program 🎉',
       date: 'September 2026',
-      link: 'https://www.dsi.uzh.ch/en/research/phd/excellence-program.html',
+      link: 'https://www.ai.uzh.ch/en/research/UZH.ai-Fellowship-Program-2026.html',
       description: 'Honored to receive the prestigious UZH.ai Fellowship and be admitted into the Digital Society Initiative (DSI) Excellence Program at the University of Zurich starting September 1, 2026. Looking forward to deep interdisciplinary collaboration on AI and digital transformation!',
     },
     {

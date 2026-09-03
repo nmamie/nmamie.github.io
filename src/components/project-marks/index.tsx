@@ -18,7 +18,7 @@ export const InformfullyMark: React.FC = () => {
       onMouseEnter={() => setActiveTab((p) => (p + 1) % modalities.length)}
       onClick={() => setActiveTab((p) => (p + 1) % modalities.length)}
       className="relative w-12 h-12 rounded-xl bg-gradient-to-b from-base-200 to-base-300 border border-base-300 flex flex-col items-center justify-center cursor-pointer transition-all duration-300 hover:scale-110 shadow-xs hover:border-primary/50 shrink-0 group overflow-hidden"
-      title={`Informfully: ${modalities[activeTab].label} - Click or hover to cycle study modalities`}
+      title={`Informfully: ${modalities[activeTab].label}`}
     >
       <div className="w-4 h-0.5 bg-base-content/25 rounded-full mb-1" />
       <span className="text-base leading-none transform group-hover:scale-115 transition-transform duration-200">
@@ -47,7 +47,7 @@ export const HiveMindMark: React.FC = () => {
       onMouseEnter={() => setRotation((r) => r + 60)}
       onClick={() => setRotation((r) => r + 60)}
       className="relative w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500/10 via-base-200 to-base-300 border border-base-300 flex items-center justify-center cursor-pointer transition-all duration-300 hover:scale-110 shadow-xs hover:border-amber-400/50 shrink-0 group"
-      title="Society of HiveMind - Swarm Intelligence (Click or hover to rotate agents)"
+      title="Society of HiveMind - Swarm Intelligence"
     >
       <svg
         className="w-8 h-8 transition-transform duration-500 ease-out"
@@ -100,7 +100,7 @@ export const RLAtariMark: React.FC = () => {
       onMouseEnter={handleInteract}
       onClick={handleInteract}
       className="relative w-12 h-12 rounded-xl bg-zinc-900 border border-zinc-700 flex items-center justify-center cursor-pointer transition-all duration-300 hover:scale-110 shadow-xs shrink-0 group overflow-hidden"
-      title="RLatari - Deep Reinforcement Learning (Hover to play breakout)"
+      title="RLatari - Deep Reinforcement Learning"
     >
       <svg className="w-9 h-9" viewBox="0 0 32 32" fill="none">
         <rect x="3" y="4" width="26" height="24" rx="3" stroke="#22c55e" strokeWidth="1" opacity="0.6" />
@@ -351,7 +351,7 @@ export const DotMatrixMark: React.FC = () => {
       onMouseEnter={handleHover}
       onClick={handleHover}
       className="grid grid-cols-3 gap-1.5 p-2 rounded-xl bg-base-200 border border-base-300 cursor-pointer select-none transition-transform hover:scale-110 shrink-0 w-12 h-12 place-items-center"
-      title="Interactive Mark (Hover to jump active node)"
+      title="Software Repository"
     >
       {[...Array(9)].map((_, i) => (
         <span
