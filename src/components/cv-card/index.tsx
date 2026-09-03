@@ -112,7 +112,7 @@ const CvCard: React.FC<CvCardProps> = ({
                 Curriculum Vitae & Experience
               </p>
               <h2 className="text-xl sm:text-2xl font-extrabold text-base-content tracking-tight">
-                Academic & Professional Trajectory
+                Academic & Professional Career
               </h2>
             </div>
           </div>
@@ -143,7 +143,7 @@ const CvCard: React.FC<CvCardProps> = ({
                 org={exp.company}
                 orgLink={exp.companyLink}
                 period={`${exp.from} – ${exp.to}`}
-                honor={exp.position?.includes('UZH.ai Fellow') ? 'Fellowship Grant CHF 47,000' : undefined}
+                honor={exp.position?.includes('UZH.ai Fellow') ? 'Fellowship Grant CHF 50,000' : undefined}
               />
             ))}
           </div>

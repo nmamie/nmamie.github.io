@@ -17,10 +17,10 @@ const recognitions: RecognitionItem[] = [
   {
     title: 'UZH.ai Fellowship (DSI Excellence Program)',
     award: 'Prestigious Fellowship',
-    organization: 'Digital Society Initiative & UZH.ai',
+    organization: 'UZH.ai & Digital Society Initiative (DSI)',
     year: '2026',
-    description: 'Awarded a competitive 2-year doctoral fellowship with CHF 47,000 research & salary grant in the interdisciplinary Digital Society Initiative at the University of Zurich.',
-    link: 'https://www.dsi.uzh.ch/en/research/phd/excellence-program.html',
+    description: 'Awarded a competitive doctoral fellowship with CHF 50,000 research & salary grant in the interdisciplinary Digital Society Initiative at the University of Zurich.',
+    link: 'https://www.ai.uzh.ch/en/research/UZH.ai-Fellowship-Program-2026.html',
     highlightColor: 'badge-primary',
   },
   {
