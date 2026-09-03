@@ -58,6 +58,8 @@ export const getSanitizedConfig = (
             config?.projects?.external?.projects?.map((item: any) => ({
               ...item,
               imageUrl: item.imageUrl || item.imageURL || '',
+              tags: item.tags || [],
+              platforms: item.platforms || [],
             })) || [],
         },
       },
@@ -122,19 +124,24 @@ export const getSanitizedConfig = (
             imageUrl: item.imageUrl || '',
             bibtex: item.bibtex || '',
             laymanSummary: item.laymanSummary || '',
+            tldr: item.tldr || '',
+            topics: item.topics || [],
+            codeUrl: item.codeUrl || '',
+            slidesUrl: item.slidesUrl || '',
             authorLinks: item.authorLinks || {},
             journalStatus: item.journalStatus || '',
             journalAward: item.journalAward || '',
             googleScholarLink: item.googleScholarLink || '',
             selected: item.selected ?? false,
             citations: (() => {
+              const configCount = item.citations ?? 0;
               if (item.googleScholarLink) {
                 const match = /citation_for_view=[^:]+:([a-zA-Z0-9_-]+)/.exec(item.googleScholarLink);
                 if (match && citationsData && (citationsData as any)[match[1]] !== undefined) {
-                  return (citationsData as any)[match[1]];
+                  return Math.max(configCount, (citationsData as any)[match[1]]);
                 }
               }
-              return item.citations ?? 0;
+              return configCount;
             })(),
           })) || [],
       news:

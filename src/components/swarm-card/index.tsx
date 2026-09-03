@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { PiSelectionAll } from 'react-icons/pi';
+import { HiOutlineSparkles, HiOutlineExternalLink } from 'react-icons/hi';
 import { skeleton } from '../../utils';
 
 interface Boid {
@@ -139,7 +140,6 @@ const SwarmCard = ({ loading }: { loading: boolean }) => {
 
         // Steer towards target attractors (food)
         if (targetList.length > 0) {
-          // Find closest target
           let closestTarget = targetList[0];
           let minDist = Math.sqrt((boid.x - closestTarget.x) ** 2 + (boid.y - closestTarget.y) ** 2);
 
@@ -151,23 +151,16 @@ const SwarmCard = ({ loading }: { loading: boolean }) => {
             }
           }
 
-          // Steer force
-          boid.vx += (closestTarget.x - boid.x) * 0.0015;
-          boid.vy += (closestTarget.y - boid.y) * 0.0015;
+          const targetDx = closestTarget.x - boid.x;
+          const targetDy = closestTarget.y - boid.y;
+          boid.vx += targetDx * 0.005;
+          boid.vy += targetDy * 0.005;
 
-          // Consume food if extremely close
-          if (minDist < 15) {
+          // Check if target is consumed
+          if (minDist < 10) {
             setTargets((prev) => prev.filter((t) => t !== closestTarget));
           }
         }
-
-        // Keep within walls
-        const margin = 20;
-        const turnFactor = 0.2;
-        if (boid.x < margin) boid.vx += turnFactor;
-        if (boid.x > canvas.width - margin) boid.vx -= turnFactor;
-        if (boid.y < margin) boid.vy += turnFactor;
-        if (boid.y > canvas.height - margin) boid.vy -= turnFactor;
 
         // Speed limit
         const speed = Math.sqrt(boid.vx ** 2 + boid.vy ** 2);
@@ -179,61 +172,72 @@ const SwarmCard = ({ loading }: { loading: boolean }) => {
         // Update positions
         boid.x += boid.vx;
         boid.y += boid.vy;
+
+        // Screen wrapping with margins
+        const margin = 10;
+        if (boid.x < -margin) boid.x = canvas.width + margin;
+        if (boid.x > canvas.width + margin) boid.x = -margin;
+        if (boid.y < -margin) boid.y = canvas.height + margin;
+        if (boid.y > canvas.height + margin) boid.y = -margin;
       }
     };
 
-    const draw = () => {
+    const drawSimulation = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Resolve theme colors dynamically
-      const primaryColor = getComputedStyle(canvas).getPropertyValue('--p');
-      const resolvedColor = primaryColor ? `oklch(${primaryColor})` : '#3b82f6';
-      
       // Draw targets
       const currentTargets = stateRef.current.targets;
-      ctx.lineWidth = 1.5;
-      currentTargets.forEach((target) => {
-        ctx.strokeStyle = resolvedColor;
+      for (const t of currentTargets) {
         ctx.beginPath();
-        // Pulsing radius
-        const pulse = target.radius + Math.sin(Date.now() / 150) * 2;
-        ctx.arc(target.x, target.y, pulse, 0, 2 * Math.PI);
+        ctx.arc(t.x, t.y, 6, 0, Math.PI * 2);
+        ctx.fillStyle = '#f59e0b';
+        ctx.fill();
+        ctx.strokeStyle = '#d97706';
+        ctx.lineWidth = 2;
         ctx.stroke();
 
-        ctx.fillStyle = resolvedColor;
+        // Pulsing glow
         ctx.beginPath();
-        ctx.arc(target.x, target.y, 4, 0, 2 * Math.PI);
-        ctx.fill();
-      });
+        ctx.arc(t.x, t.y, 12, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(245, 158, 11, 0.4)';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      }
 
-      // Draw Boids (triangles pointing in velocity direction)
-      ctx.fillStyle = resolvedColor;
-      boids.forEach((boid) => {
+      // Draw boids
+      for (const boid of boids) {
         const angle = Math.atan2(boid.vy, boid.vx);
         ctx.save();
         ctx.translate(boid.x, boid.y);
         ctx.rotate(angle);
+
+        // Draw bird/agent triangle
         ctx.beginPath();
         ctx.moveTo(8, 0);
-        ctx.lineTo(-4, -4);
-        ctx.lineTo(-4, 4);
+        ctx.lineTo(-6, -4);
+        ctx.lineTo(-4, 0);
+        ctx.lineTo(-6, 4);
         ctx.closePath();
+
+        // Style
+        ctx.fillStyle = 'rgba(99, 102, 241, 0.85)';
         ctx.fill();
+
         ctx.restore();
-      });
+      }
     };
 
     const loop = () => {
       updateSimulation();
-      draw();
+      drawSimulation();
       animationFrameId = requestAnimationFrame(loop);
     };
 
     loop();
 
     return () => {
-      cancelAnimationFrame(animationFrameId);
       window.removeEventListener('resize', resizeCanvas);
+      cancelAnimationFrame(animationFrameId);
     };
   }, [loading]);
 
@@ -248,10 +252,10 @@ const SwarmCard = ({ loading }: { loading: boolean }) => {
   };
 
   return (
-    <div className="col-span-1 lg:col-span-2">
+    <div id="swarm-playground" className="col-span-1 lg:col-span-2 scroll-mt-28">
       <div className="card bg-base-200 shadow-xl border border-base-300">
-        <div className="card-body p-8">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+        <div className="card-body p-6 md:p-8">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
             <div className="flex items-center space-x-3">
               {loading ? (
                 skeleton({
@@ -260,7 +264,7 @@ const SwarmCard = ({ loading }: { loading: boolean }) => {
                   className: 'rounded-xl',
                 })
               ) : (
-                <div className="flex items-center justify-center w-12 h-12 bg-primary/10 rounded-xl text-primary">
+                <div className="flex items-center justify-center w-12 h-12 bg-primary/10 rounded-xl text-primary shrink-0">
                   <PiSelectionAll className="text-2xl" />
                 </div>
               )}
@@ -268,25 +272,46 @@ const SwarmCard = ({ loading }: { loading: boolean }) => {
                 <h2 className="text-base sm:text-lg font-bold text-base-content truncate">
                   {loading
                     ? skeleton({ widthCls: 'w-48', heightCls: 'h-8' })
-                    : 'Swarm Intelligence Playground'}
+                    : 'Swarm Intelligence Sandbox'}
                 </h2>
-                <div className="text-base-content/60 text-xs sm:text-sm mt-1 truncate">
+                <div className="text-base-content/60 text-xs sm:text-sm mt-0.5 truncate">
                   {loading
                     ? skeleton({ widthCls: 'w-32', heightCls: 'h-4' })
-                    : 'Interactive simulation of Boids flocking behavior. Click to drop food!'}
+                    : 'Emergent collective behavior • Click inside to drop attraction targets'}
                 </div>
               </div>
             </div>
+
+            <a
+              href="https://link.springer.com/chapter/10.1007/978-981-95-0982-9_20"
+              target="_blank"
+              rel="noreferrer"
+              className="btn btn-outline btn-xs sm:btn-sm rounded-lg font-medium gap-1.5 shrink-0 border-base-content/20 hover:bg-base-300"
+            >
+              <HiOutlineSparkles className="text-primary text-sm" />
+              <span>Society of HiveMind Paper</span>
+              <HiOutlineExternalLink className="text-xs" />
+            </a>
+          </div>
+
+          <div className="p-3 bg-base-100 rounded-xl border border-base-300 text-xs text-base-content/75 leading-relaxed mb-4">
+            <span className="font-semibold text-primary">Research Context: </span>
+            In our work on <em>The Society of HiveMind (ICSI 2025)</em>, we explore how swarms of foundation models optimize collective reasoning through decentralized local feedback loops. This sandbox demonstrates the underlying classical flocking dynamics (separation, alignment, cohesion) that inspire collective AI architectures.
           </div>
 
           {loading ? (
             skeleton({ widthCls: 'w-full', heightCls: 'h-60', shape: 'rounded-xl' })
           ) : (
-            <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-5">
               <div
                 ref={containerRef}
-                className="relative bg-base-100 rounded-xl border border-base-300 overflow-hidden cursor-crosshair h-[240px]"
+                className="relative bg-base-100 rounded-xl border border-base-300 overflow-hidden cursor-crosshair h-[240px] shadow-inner"
               >
+                <div className="absolute top-2 right-2 z-10 pointer-events-none">
+                  <span className="badge badge-sm bg-base-200/80 backdrop-blur-sm text-[10px] border border-base-300">
+                    Click to attract swarm
+                  </span>
+                </div>
                 <canvas
                   ref={canvasRef}
                   onClick={handleCanvasClick}
@@ -295,11 +320,11 @@ const SwarmCard = ({ loading }: { loading: boolean }) => {
               </div>
 
               {/* Sliders for Simulation Controls */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs p-3 bg-base-100 rounded-xl border border-base-300">
                 <div className="flex flex-col gap-1">
                   <span className="opacity-70 font-semibold flex justify-between">
                     <span>Separation</span>
-                    <span>{separation.toFixed(1)}</span>
+                    <span className="font-mono">{separation.toFixed(1)}</span>
                   </span>
                   <input
                     type="range"
@@ -314,7 +339,7 @@ const SwarmCard = ({ loading }: { loading: boolean }) => {
                 <div className="flex flex-col gap-1">
                   <span className="opacity-70 font-semibold flex justify-between">
                     <span>Alignment</span>
-                    <span>{alignment.toFixed(1)}</span>
+                    <span className="font-mono">{alignment.toFixed(1)}</span>
                   </span>
                   <input
                     type="range"
@@ -329,7 +354,7 @@ const SwarmCard = ({ loading }: { loading: boolean }) => {
                 <div className="flex flex-col gap-1">
                   <span className="opacity-70 font-semibold flex justify-between">
                     <span>Cohesion</span>
-                    <span>{cohesion.toFixed(1)}</span>
+                    <span className="font-mono">{cohesion.toFixed(1)}</span>
                   </span>
                   <input
                     type="range"
@@ -344,7 +369,7 @@ const SwarmCard = ({ loading }: { loading: boolean }) => {
                 <div className="flex flex-col gap-1">
                   <span className="opacity-70 font-semibold flex justify-between">
                     <span>Flock Speed</span>
-                    <span>{maxSpeed.toFixed(1)}</span>
+                    <span className="font-mono">{maxSpeed.toFixed(1)}</span>
                   </span>
                   <input
                     type="range"

@@ -17,7 +17,7 @@ const CONFIG = {
       mode: 'automatic', // Mode can be: 'automatic' or 'manual'
       automatic: {
         sortBy: 'stars', // Sort projects by 'stars' or 'updated'
-        limit: 4, // How many projects to display.
+        limit: 6, // How many projects to display.
         exclude: {
           forks: true, // Forked projects will not be displayed if set to true.
           projects: [], // These projects will not be displayed. example: ['arifszn/my-project1', 'arifszn/my-project2']
@@ -29,19 +29,49 @@ const CONFIG = {
       },
     },
     external: {
-      header: 'My Research Projects',
+      header: 'Research Platforms & Systems',
       // To hide the `External Projects` section, keep it empty.
       projects: [
         {
-          title: 'Informfully',
+          title: 'Informfully — Empirical Study Platform',
           link: 'http://informfully.ch/',
-          description: 'Informfully is a research platform for conducting empirical field studies. At its core, Informfully is a smartphone application for Android and iOS to push text, audio, and video content to users. It allows researchers to log all activities of participants and offers in-app surveys to facilitate their user studies.',
+          description: 'An end-to-end research platform for conducting empirical field studies. Informfully comprises native mobile applications for iOS and Android delivering personalized text, audio, and video content with behavioral logging and in-app surveys to facilitate rigorous research on recommender systems.',
           imageUrl: '/informfully.png',
+          platforms: ['iOS App', 'Android App', 'Web Dashboard'],
+          tags: ['Empirical Field Studies', 'News Recommenders', 'Behavioral Logging', 'In-App Surveys'],
+        },
+        {
+          title: 'The Society of HiveMind (HiveLLM)',
+          link: 'https://github.com/nmamie/HiveLLM',
+          description: 'An evolutionary multi-agent optimization framework orchestrating swarms of diverse foundation models (LLMs) to unlock collective reasoning and emergent intelligence, presented at the 16th International Conference on Swarm Intelligence (ICSI 2025).',
+          imageUrl: '/img/HiveMind.png',
+          platforms: ['Multi-Agent Swarms', 'Python Package', 'ICSI 2025'],
+          tags: ['Swarm Intelligence', 'Multi-Agent LLMs', 'Evolutionary Optimization', 'Collective AI'],
+        },
+        {
+          title: 'Voting Booklet Bias Monitor',
+          link: 'https://github.com/ZurichNLP/voting-booklet-bias',
+          description: 'Multilingual stance detection system analyzing official federal voting booklets across German, French, and Italian with fine-tuned M-BERT models to empirically monitor neutrality in Swiss direct democracy. Awarded the SwissText 2023 Best Poster Award 🏆.',
+          imageUrl: '/img/dist_all.png',
+          platforms: ['NLP Pipeline', 'M-BERT', 'SwissText Best Poster 🏆'],
+          tags: ['Stance Detection', 'Direct Democracy', 'Multilingual NLP', 'Bias Monitoring'],
+        },
+        {
+          title: 'Deep Reinforcement Learning (RLatari)',
+          link: 'https://github.com/nmamie/RLatari',
+          description: 'High-performance reinforcement learning implementations experimenting with deep Q-networks, policy optimization, and representation learning across classic Atari 2600 benchmark environments.',
+          imageUrl: '/img/atari.png',
+          platforms: ['PyTorch', 'Arcade Gym', 'Discrete Control'],
+          tags: ['Reinforcement Learning', 'Deep Q-Networks', 'Policy Gradients', 'Atari Gym'],
         },
       ],
     },
   },
-  seo: { title: 'Noah Mamié', description: 'PhD @ UZH | Artificial Intelligence | GenAI, Multi-Agent Systems, GNNs', imageURL: '/logo.png' },
+  seo: { 
+    title: 'Noah Mamié | PhD Researcher & UZH.ai Fellow', 
+    description: 'Doctoral Researcher & UZH.ai Fellow @ University of Zurich (DDIS Lab) | DSI Excellence Program | GenAI for Personalized News Recommender Systems, Swarm & Collective Intelligence, Graph Neural Networks', 
+    imageURL: '/logo.png' 
+  },
   social: {
     linkedin: 'noah-mamie',
     x: '',
@@ -98,7 +128,7 @@ const CONFIG = {
   experiences: [
     {
       company: 'University of Zurich',
-      position: 'Doctoral Researcher',
+      position: 'Doctoral Researcher & UZH.ai Fellow (DSI Excellence Program)',
       from: 'September 2025',
       to: 'Present',
       companyLink: 'https://www.ifi.uzh.ch',
@@ -217,8 +247,11 @@ const CONFIG = {
       authors: 'Noah Mamié and Susie Xi Rao',
       link: 'https://link.springer.com/chapter/10.1007/978-981-95-0982-9_20',
       googleScholarLink: 'https://scholar.google.com/citations?view_op=view_citation&hl=de&user=JhXjm_sAAAAJ&citation_for_view=JhXjm_sAAAAJ:qjMakFHDy7sC',
-      citations: 10,
+      citations: 11,
       selected: true,
+      tldr: 'Foundation model swarms mimicking biological flocking behaviors significantly outperform individual LLMs in complex logical reasoning.',
+      topics: ['Swarm Intelligence', 'Multi-Agent Systems'],
+      codeUrl: 'https://github.com/nmamie/HiveLLM',
       description:
         'Multi-agent systems address issues of accessibility and scalability of artificial intelligence (AI) foundation models, which are often represented by large language models. We develop a framework - the “Society of HiveMind” (SOHM) - that orchestrates the interaction between multiple AI foundation models, imitating the observed behavior of animal swarms in nature by following modern evolutionary theories. On the one hand, we find that the SOHM provides a negligible benefit on tasks that mainly require real-world knowledge. On the one hand, we remark a significant improvement on tasks that require intensive logical reasoning, indicating that multi-agent systems are capable of increasing the reasoning capabilities of the collective compared to the individual agents. Our findings demonstrate the potential of combining a multitude of diverse AI foundation models to form an artificial swarm intelligence capable of self-improvement through interactions with a given environment.',
       year: '2025',
@@ -248,6 +281,9 @@ const CONFIG = {
       googleScholarLink: 'https://scholar.google.com/citations?view_op=view_citation&hl=de&user=JhXjm_sAAAAJ&citation_for_view=JhXjm_sAAAAJ:u5HHmVD_uO8C',
       citations: 3,
       selected: true,
+      tldr: 'Automated stance detection across Swiss official voting booklets reveals subtle linguistic slant across German, French, and Italian.',
+      topics: ['NLP & Bias Detection', 'Political AI'],
+      codeUrl: 'https://github.com/ZurichNLP/voting-booklet-bias',
       description:
         'In this study, we use recent stance detection methods to study the stance (for, against or neutral) of statements in official information booklets for voters. Our main goal is to answer the fundamental question: are topics to be voted on presented in a neutral way? To this end, we first train and compare several models for stance detection on a large dataset about Swiss politics. We find that fine-tuning an M-BERT model leads to the best accuracy. We then use our best model to analyze the stance of utterances extracted from the Swiss federal voting booklet concerning the Swiss popular votes of September 2022, which is the main goal of this project. We evaluated the models in both a multilingual as well as a monolingual context for German, French, and Italian. Our analysis shows that some issues are heavily favored while others are more balanced, and that the results are largely consistent across languages. Our findings have implications for the editorial process of future voting booklets and the design of better automated systems for analyzing political discourse. The data and code accompanying this paper are available at https://github.com/ZurichNLP/voting-booklet-bias.',
       year: '2023',
@@ -273,10 +309,16 @@ const CONFIG = {
   ],
   news: [
     {
+      title: 'Awarded UZH.ai Fellowship & Accepted into DSI Excellence Program 🎉',
+      date: 'September 2026',
+      link: 'https://www.dsi.uzh.ch/en/research/phd/excellence-program.html',
+      description: 'Honored to receive the prestigious UZH.ai Fellowship and be admitted into the Digital Society Initiative (DSI) Excellence Program at the University of Zurich starting September 1, 2026. Looking forward to deep interdisciplinary collaboration on AI and digital transformation!',
+    },
+    {
       title: 'Invited guest lecture on personalized recommender systems and the Informfully ecosystem in the "Recommender Systems" course at HSLU, Luzern',
       date: 'August 2026',
       link: 'https://www.hslu.ch/en/lucerne-school-of-business/degree-programmes/master/applied-information-and-data-science/',
-      description: 'I was invited to give a guest lecture on personalized recommender systems and the Informfully ecosystem in the "Recommender Systems" master\'s levelcourse at the School of Applied Sciences Luzern (HSLU).',
+      description: 'I was invited to give a guest lecture on personalized recommender systems and the Informfully ecosystem in the "Recommender Systems" master\'s level course at the School of Applied Sciences Luzern (HSLU).',
     }, 
     {
       title: 'Invited system demonstration of Informfully at the Recommenders in News Media NAMS 2026 Side event',
@@ -305,16 +347,22 @@ const CONFIG = {
   ],
   talks: [
     {
-      title: 'Informfully Demo at Recommenders in News Media NAMS 2026',
-      date: 'May 2026',
-      link: 'https://sites.google.com/view/recommenders-in-news-media/recommenders-in-news-media',
-      description: 'Presented a system demonstration of the Informfully research platform, showcasing its features for user studies and news recommender evaluations.',
+      title: 'Personalized Recommender Systems & The Informfully Ecosystem',
+      date: 'HSLU Luzern — August 2026',
+      link: 'https://www.hslu.ch/en/lucerne-school-of-business/degree-programmes/master/applied-information-and-data-science/',
+      description: 'Invited guest lecture in the "Recommender Systems" Master of Science course at Lucerne University of Applied Sciences and Arts (HSLU), covering personalized news delivery, behavioral logging, and empirical study design using Informfully.',
     },
     {
-      title: 'Society of HiveMind: AI Foundation Model Swarms at ICSI 2025',
-      date: 'Yokohama, Japan — October 2025',
+      title: 'Informfully System Demonstration at Recommenders in News Media (NAMS 2026)',
+      date: 'Zurich — May 2026',
+      link: 'https://sites.google.com/view/recommenders-in-news-media/recommenders-in-news-media',
+      description: 'Demonstrated the Informfully mobile app and web orchestration dashboard at the NAMS 2026 workshop, detailing how empirical researchers run real-time personalized news studies with in-app behavioral tracking.',
+    },
+    {
+      title: 'The Society of HiveMind: Multi-Agent Optimization of Foundation Model Swarms',
+      date: 'ICSI 2025 • Yokohama, Japan — October 2025',
       link: 'https://link.springer.com/chapter/10.1007/978-981-95-0982-9_20',
-      description: 'Gave a talk on our paper exploring multi-agent foundation model swarms mimicking biological systems to solve logical reasoning tasks.',
+      description: 'Oral conference presentation at the 16th International Conference on Swarm Intelligence (ICSI 2025), exploring how multi-agent foundation model swarms exhibit emergent collective reasoning and self-improvement.',
     },
   ],
   // Display articles from your medium or dev account. (Optional)

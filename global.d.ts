@@ -80,6 +80,8 @@ interface ExternalProjects {
     description?: string;
     imageUrl?: string;
     link: string;
+    tags?: string[];
+    platforms?: string[];
   }[];
 }
 
@@ -173,7 +175,7 @@ interface Social {
   medium?: string;
 
   /**
-   * dev
+   * Dev
    */
   dev?: string;
 
@@ -183,16 +185,17 @@ interface Social {
   stackoverflow?: string;
 
   /**
-   * Website
+   * Google Scholar
    */
   scholar?: string;
+
   /**
-   * Display name for scholar link
+   * Google Scholar Full Name
    */
   scholarName?: string;
 
   /**
-   * Telegram username
+   * Telegram
    */
   telegram?: string;
 
@@ -207,22 +210,22 @@ interface Social {
   email?: string;
 
   /**
-   * Discord username
+   * Discord
    */
   discord?: string;
 
   /**
-   * Bluesky username
+   * Bluesky
    */
   bluesky?: string;
 
   /**
-   * Substack newsletter username
+   * Substack
    */
   substack?: string;
 
   /**
-   * LessWrong username
+   * LessWrong
    */
   lesswrong?: string;
 }
@@ -267,6 +270,10 @@ interface Publication {
   imageUrl?: string;
   bibtex?: string;
   laymanSummary?: string;
+  tldr?: string;
+  topics?: string[];
+  codeUrl?: string;
+  slidesUrl?: string;
   authorLinks?: { [name: string]: string };
   journalStatus?: string;
   journalAward?: string;

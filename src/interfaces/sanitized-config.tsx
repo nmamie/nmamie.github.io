@@ -24,6 +24,8 @@ export interface SanitizedExternalProject {
   description?: string;
   imageUrl?: string;
   link: string;
+  tags?: string[];
+  platforms?: string[];
 }
 
 export interface SanitizedExternalProjects {
@@ -106,6 +108,10 @@ export interface SanitizedPublication {
   imageUrl?: string;
   bibtex?: string;
   laymanSummary?: string;
+  tldr?: string;
+  topics?: string[];
+  codeUrl?: string;
+  slidesUrl?: string;
   authorLinks?: { [name: string]: string };
   journalStatus?: string;
   journalAward?: string;

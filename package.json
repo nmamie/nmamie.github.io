@@ -19,6 +19,7 @@
     "lint:fix": "eslint . --fix --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "prettier": "prettier --check \"./**/*.{js,jsx,ts,tsx,css,md,json}\"",
     "prettier:fix": "prettier --write \"./**/*.{js,jsx,ts,tsx,css,md,json}\"",
+    "update-citations": "node scripts/update-citations.mjs",
     "preview": "vite preview"
   },
   "dependencies": {

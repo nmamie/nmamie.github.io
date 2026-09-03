@@ -22,9 +22,6 @@ import AvatarCard from './avatar-card';
 import { Profile } from '../interfaces/profile';
 import DetailsCard from './details-card';
 import SkillCard from './skill-card';
-import ExperienceCard from './experience-card';
-import EducationCard from './education-card';
-import CertificationCard from './certification-card';
 import { GithubProject } from '../interfaces/github-project';
 import GithubProjectCard from './github-project-card';
 import ExternalProjectCard from './external-project-card';
@@ -33,10 +30,12 @@ import Footer from './footer';
 import PublicationCard from './publication-card';
 import NewsCard from './news-card';
 import SwarmCard from './swarm-card';
-import TeachingCard from './teaching-card';
 import NewsletterCard from './newsletter-card';
 import TalksCard from './talks-card';
 import Logo from './logo';
+import HeroCard from './hero-card';
+import CvCard from './cv-card';
+import RecognitionCard from './recognition-card';
 
 const CACHE_TTL = 3600000; // 1 hour
 
@@ -75,6 +74,7 @@ const GitProfile = ({ config }: { config: Config }) => {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [githubProjects, setGithubProjects] = useState<GithubProject[]>([]);
   const [activeTab, setActiveTab] = useState<string>('about');
+  const [selectedPublicationTopic, setSelectedPublicationTopic] = useState<string>('All');
 
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
 
@@ -86,6 +86,44 @@ const GitProfile = ({ config }: { config: Config }) => {
 
   const vantaDivRef = useRef<HTMLDivElement>(null);
   const vantaEffectRef = useRef<any>(null);
+
+  const validTabs = ['about', 'news', 'publications', 'projects', 'cv', 'blog', 'talks'];
+
+  // Handle URL hash navigation & deep-linking
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash.replace(/^#/, '').toLowerCase();
+      if (validTabs.includes(hash)) {
+        setActiveTab(hash);
+      }
+    };
+
+    const initialHash = window.location.hash.replace(/^#/, '').toLowerCase();
+    if (validTabs.includes(initialHash)) {
+      setActiveTab(initialHash);
+    }
+
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
+
+  const handleTabChange = useCallback((tabId: string, topic?: string) => {
+    setActiveTab(tabId);
+    setIsMenuOpen(false);
+    if (topic) {
+      setSelectedPublicationTopic(topic);
+    }
+    if (window.location.hash !== `#${tabId}`) {
+      window.history.pushState(null, '', `#${tabId}`);
+    }
+  }, []);
+
+  const handleScrollToSwarm = useCallback(() => {
+    const el = document.getElementById('swarm-playground');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, []);
 
   const getGithubProjects = useCallback(
     async (publicRepoCount: number): Promise<GithubProject[]> => {
@@ -635,7 +673,7 @@ const GitProfile = ({ config }: { config: Config }) => {
   const handleSelectResult = (result: any) => {
     setIsSearchOpen(false);
     setGlobalSearchQuery('');
-    setActiveTab(result.targetTab);
+    handleTabChange(result.targetTab);
 
     if (result.targetId) {
       setTimeout(() => {
@@ -752,10 +790,6 @@ const GitProfile = ({ config }: { config: Config }) => {
     };
   }, [theme]);
 
-
-
-
-
   const handleError = (error: AxiosError | Error): void => {
     console.error('Error:', error);
 
@@ -826,7 +860,7 @@ const GitProfile = ({ config }: { config: Config }) => {
                 <div className="card-body p-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
                   {/* Top row containing Logo and Hamburger */}
                   <div className="flex items-center justify-between w-full md:w-auto">
-                    <div className="flex items-center space-x-2 px-2 cursor-pointer" onClick={() => { setActiveTab('about'); setIsMenuOpen(false); }}>
+                    <div className="flex items-center space-x-2 px-2 cursor-pointer" onClick={() => handleTabChange('about')}>
                       <Logo />
                     </div>
                     {/* Hamburger Button for mobile */}
@@ -856,10 +890,7 @@ const GitProfile = ({ config }: { config: Config }) => {
                         return (
                           <button
                             key={tab.id}
-                            onClick={() => {
-                              setActiveTab(tab.id);
-                              setIsMenuOpen(false);
-                            }}
+                            onClick={() => handleTabChange(tab.id)}
                             className={`tab tab-sm sm:tab-md font-semibold transition-all rounded-md px-3 py-2 md:py-1 ${
                               activeTab === tab.id
                                 ? 'tab-active bg-primary text-primary-content shadow-sm'
@@ -940,10 +971,17 @@ const GitProfile = ({ config }: { config: Config }) => {
                     {/* conditional views rendering depending on activeTab */}
                     {isAboutTab && (
                       <>
+                        <HeroCard
+                          loading={loading}
+                          onNavigateTab={handleTabChange}
+                          onScrollToSwarm={handleScrollToSwarm}
+                        />
                         {sanitizedConfig.news.length !== 0 && (
                           <NewsCard
                             loading={loading}
-                            news={sanitizedConfig.news.slice(0, 2)}
+                            news={sanitizedConfig.news.slice(0, 3)}
+                            showViewAll={true}
+                            onViewAll={() => handleTabChange('news')}
                           />
                         )}
                         {sanitizedConfig.publications.length !== 0 && (
@@ -981,6 +1019,8 @@ const GitProfile = ({ config }: { config: Config }) => {
                       <PublicationCard
                         loading={loading}
                         publications={sanitizedConfig.publications}
+                        selectedTopicFilter={selectedPublicationTopic}
+                        onTopicFilterChange={setSelectedPublicationTopic}
                       />
                     )}
 
@@ -1010,30 +1050,14 @@ const GitProfile = ({ config }: { config: Config }) => {
 
                     {isCvTab && (
                       <>
-                        {sanitizedConfig.experiences.length !== 0 && (
-                          <ExperienceCard
-                            loading={loading}
-                            experiences={sanitizedConfig.experiences}
-                          />
-                        )}
-                        {sanitizedConfig.educations.length !== 0 && (
-                          <EducationCard
-                            loading={loading}
-                            educations={sanitizedConfig.educations}
-                          />
-                        )}
-                        {sanitizedConfig.teaching && sanitizedConfig.teaching.length !== 0 && (
-                          <TeachingCard
-                            teaching={sanitizedConfig.teaching}
-                            loading={loading}
-                          />
-                        )}
-                        {sanitizedConfig.certifications.length !== 0 && (
-                          <CertificationCard
-                            loading={loading}
-                            certifications={sanitizedConfig.certifications}
-                          />
-                        )}
+                        <RecognitionCard loading={loading} />
+                        <CvCard
+                          experiences={sanitizedConfig.experiences}
+                          educations={sanitizedConfig.educations}
+                          teaching={sanitizedConfig.teaching}
+                          certifications={sanitizedConfig.certifications}
+                          loading={loading}
+                        />
                       </>
                     )}
 
