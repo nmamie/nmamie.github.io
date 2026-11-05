@@ -249,7 +249,7 @@ const CONFIG = {
       googleScholarLink: 'https://scholar.google.com/citations?view_op=view_citation&hl=de&user=JhXjm_sAAAAJ&citation_for_view=JhXjm_sAAAAJ:Tyk-4Ss8FVUC',
       citations: 0,
       selected: true,
-      tldr: 'Natural-language user profiles enable people to interact with and customize recommendations by providing them with a description of their preferences. We reproduce the original study on User Profile Recommendation (UPR) and extend it with a mechanistic interpretability analysis of open-weight models, as well as systematic context ablation, and multi-seed stability.',
+      tldr: 'Natural-language user profiles enable people to interact with and customize recommendations by providing them with a description of their preferences that enables direct intervention and meaningful steering of the recommender system.',
       codeUrl: 'https://github.com/nmamie/transparent_user_profiles',
       topics: ['Recommender Systems', 'Interpretability'],
       description:
