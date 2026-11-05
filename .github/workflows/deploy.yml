@@ -4,6 +4,10 @@ on:
   push:
     branches: [main]
 
+  # Rebuild daily so Google Scholar citations and external blog posts stay fresh
+  schedule:
+    - cron: '0 4 * * *'
+
   workflow_dispatch:
 
 permissions:
@@ -43,6 +47,9 @@ jobs:
 
       - name: Fetch Google Scholar Citations
         run: node scripts/fetch-citations.cjs
+
+      - name: Fetch external blog posts (Medium, Substack, LessWrong)
+        run: node scripts/fetch-posts.mjs
 
       - name: Build with vite
         run: npm run build

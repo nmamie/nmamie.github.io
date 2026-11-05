@@ -241,6 +241,34 @@ const CONFIG = {
   ],
   publications: [
     {
+      title: 'Reproducing Transparent and Scrutable Recommendations: Exploring Open-Weight Models via Natural-Language User Profiles',
+      conferenceName: 'The 9th BlackboxNLP Workshop at EMNLP 2026',
+      journalName: '',
+      authors: 'Noah Mamié and Laurin van den Bergh',
+      link: 'https://aclanthology.org/2026.blackboxnlp-1.74/',
+      googleScholarLink: 'https://scholar.google.com/citations?view_op=view_citation&hl=de&user=JhXjm_sAAAAJ&citation_for_view=JhXjm_sAAAAJ:Tyk-4Ss8FVUC',
+      citations: 0,
+      selected: true,
+      tldr: 'Natural-language user profiles enable people to interact with and customize recommendations by providing them with a description of their preferences. We reproduce the original study on User Profile Recommendation (UPR) and extend it with a mechanistic interpretability analysis of open-weight models, as well as systematic context ablation, and multi-seed stability.',
+      codeUrl: 'https://github.com/nmamie/transparent_user_profiles',
+      topics: ['Recommender Systems', 'Interpretability'],
+      description:
+        "In this reproducibility study, we investigate the transparency and scrutability of recommender systems enhanced by incorporating generated natural-language user profiles that represent user preferences. The original paper explores the synthesis of user profiles from raw user-generated review text across domains such as movies and accommodations (Amazon Movies & TV, TripAdvisor). Crucially, these natural-language user profiles enable direct user interaction and intervention, allowing users to customize recommendations by correcting misattributed preferences or addressing cold-start settings. We successfully reproduce the core findings of the original study. Additionally, we extend the evaluation by conducting systematic context ablation experiments, multi-seed stability across five distinct random seeds to establish statistical reliability, and a mechanistic interpretability analysis using the nnsight framework to probe internal model representations under counterfactual profile perturbations. Our findings verify the original paper's claim that User Profile Recommendation (UPR) achieves competitive performance under its test-set reranking protocol and makes recommendations more transparent. Perturbing the natural-language profiles does change predictions, but it shifts predicted ratings uniformly across genres with no detectable genre-selective effect, leaving rankings unchanged even under direct activation steering. We trace this back to the rating-regression objective rather than the profile interface, with ranking-objective models clearly exceeding in this task.",
+      year: '2026',
+      imageUrl: '/img/fig_user_profile_perturbation.svg',
+      bibtex: `@inproceedings{mamie2026reproducing,
+  author = {Mami{\'e}, Noah and van den Bergh, Laurin},
+  title = {Reproducing Transparent and Scrutable Recommendations: Exploring Open-Weight Models via Natural-Language User Profiles},
+  booktitle = {Proceedings of the 9th BlackboxNLP Workshop: Analyzing and Interpreting Neural Networks for NLP},
+  year = {2026},
+  pages = {1273--1284},
+  publisher = {Association for Computational Linguistics},
+  url = {https://aclanthology.org/2026.blackboxnlp-1.74/},
+  doi = {10.18653/2026.blackboxnlp-1.74}
+}`,
+      laymanSummary: 'Some recommender systems describe what you like in plain sentences ("enjoys slow-burn sci-fi") so you can read and correct them. We re-ran a prior study with open models and confirmed these profiles work and make recommendations easier to understand. But when we edited the profiles, the model mostly raised or lowered all ratings at once instead of favouring the genres we changed, which we trace back to how the model was trained.',
+    },
+    {
       title: 'The Society of HiveMind: Multi-Agent Optimization of Foundation Model Swarms to Unlock the Potential of Collective Intelligence',
       conferenceName: 'The Sixteenth International Conference on Swarm Intelligence 2025',
       journalName: '',
@@ -309,6 +337,12 @@ const CONFIG = {
   ],
   news: [
     {
+      title: 'New paper at BlackboxNLP @ EMNLP 2026 🎉: Reproducing Transparent and Scrutable Recommendations',
+      date: 'September 2026',
+      link: 'https://aclanthology.org/2026.blackboxnlp-1.74/',
+      description: 'Our reproducibility study on natural-language user profiles for transparent and scrutable recommendations, with a mechanistic interpretability analysis of open-weight models, appears in the Proceedings of the 9th BlackboxNLP Workshop at EMNLP 2026.',
+    },
+    {
       title: 'Awarded UZH.ai Fellowship & Accepted into DSI Excellence Program 🎉',
       date: 'September 2026',
       link: 'https://www.ai.uzh.ch/en/research/UZH.ai-Fellowship-Program-2026.html',
@@ -370,6 +404,15 @@ const CONFIG = {
     source: 'medium', // medium | dev
     username: 'nmamie', // to hide blog section, keep it empty
     limit: 4, // How many articles to display. Max is 10.
+  },
+  // Comments on native blog posts (src/posts/*.md), stored in GitHub Discussions via giscus.
+  // Setup: enable Discussions on the repo, install https://github.com/apps/giscus,
+  // then copy repoId/categoryId from https://giscus.app. Empty ids hide comments.
+  comments: {
+    repo: 'nmamie/nmamie.github.io',
+    repoId: 'R_kgDOP1pRuA',
+    category: 'Announcements',
+    categoryId: 'DIC_kwDOP1pRuM4DKdMb',
   },
   googleAnalytics: {
     id: '', // GA3 tracking id/GA4 tag id UA-XXXXXXXXX-X | G-XXXXXXXXXX

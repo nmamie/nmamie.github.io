@@ -171,3 +171,20 @@ svg {
   -webkit-backdrop-filter: blur(12px) !important;
   border: 1px solid color-mix(in srgb, var(--color-base-content) 10%, transparent) !important;
 }
+/* Native markdown blog posts (src/posts/*.md) */
+.blog-prose {
+  @apply text-base-content/90 leading-relaxed text-[1.02rem];
+}
+.blog-prose > * + * { @apply mt-5; }
+.blog-prose h2 { @apply text-xl sm:text-2xl font-bold text-base-content mt-10; }
+.blog-prose h3 { @apply text-lg font-bold text-base-content mt-8; }
+.blog-prose a { @apply text-primary underline underline-offset-2; }
+.blog-prose ul { @apply list-disc pl-6 space-y-1; }
+.blog-prose ol { @apply list-decimal pl-6 space-y-1; }
+.blog-prose blockquote { @apply border-l-4 border-primary/40 pl-4 italic text-base-content/70; }
+.blog-prose code { @apply bg-base-300 rounded px-1.5 py-0.5 text-[0.9em] font-mono; }
+.blog-prose pre { @apply bg-base-300 rounded-xl p-4 overflow-x-auto text-sm; }
+.blog-prose pre code { @apply bg-transparent p-0; }
+.blog-prose img { @apply rounded-xl border border-base-300 mx-auto max-w-full; }
+.blog-prose hr { @apply border-base-300 my-8; }
+.blog-prose table { @apply table table-sm; }

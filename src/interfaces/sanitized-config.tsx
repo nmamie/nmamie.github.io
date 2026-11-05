@@ -136,6 +136,14 @@ export interface SanitizedHotjar {
   snippetVersion: number;
 }
 
+export interface SanitizedComments {
+  display: boolean;
+  repo: string;
+  repoId: string;
+  category: string;
+  categoryId: string;
+}
+
 export interface SanitizedBlog {
   display: boolean;
   source: string;
@@ -175,6 +183,7 @@ export interface SanitizedConfig {
   googleAnalytics: SanitizedGoogleAnalytics;
   hotjar: SanitizedHotjar;
   blog: SanitizedBlog;
+  comments: SanitizedComments;
   themeConfig: SanitizedThemeConfig;
   footer?: string;
   enablePWA: boolean;

@@ -1,4 +1,4 @@
-import { PiNewspaper } from 'react-icons/pi';
+import { PiNewspaper, PiNotePencil } from 'react-icons/pi';
 import { SiSubstack } from 'react-icons/si';
 import { formatDistance } from 'date-fns';
 import { SanitizedBlog } from '../../interfaces/sanitized-config';
@@ -83,6 +83,13 @@ const BlogCard = ({
       );
     }
 
+    if (article.categories.includes('Blog')) {
+      return (
+        <div className="w-full h-full flex items-center justify-center bg-primary/10">
+          <PiNotePencil className="text-4xl text-primary" />
+        </div>
+      );
+    }
     if (article.categories.includes('LessWrong')) {
       return (
         <div className="w-full h-full flex items-center justify-center bg-base-content text-base-100 select-none">
@@ -127,7 +134,11 @@ const BlogCard = ({
                 console.error(error);
               }
 
-              window?.open(article.link, '_blank');
+              if (article.link.startsWith('#')) {
+                window.location.hash = article.link;
+              } else {
+                window?.open(article.link, '_blank');
+              }
             }}
           >
             <div className="p-8 h-full w-full">
@@ -154,7 +165,10 @@ const BlogCard = ({
                       {article.categories.map((category, index2) => {
                         const isLesswrong = category === 'LessWrong';
                         const isSubstack = category === 'Substack';
-                        const badgeClass = isLesswrong
+                        const isNative = category === 'Blog';
+                        const badgeClass = isNative
+                          ? 'badge-primary font-semibold'
+                          : isLesswrong
                           ? 'badge-warning font-semibold text-warning-content'
                           : isSubstack
                           ? 'badge-primary font-semibold text-primary-content bg-orange-500 border-orange-500'
@@ -213,7 +227,9 @@ const BlogCard = ({
                 <div className="text-base-content/60 text-xs sm:text-sm mt-1 truncate">
                   {loading
                     ? skeleton({ widthCls: 'w-32', heightCls: 'h-4' })
-                    : `Showcasing latest ${articles.length} entries from Medium, LessWrong & Substack`}
+                    : `Latest ${Math.min(articles.length, blog.limit)} of ${articles.length} posts across ${
+                        [...new Set(articles.map((a) => ['Blog', 'Medium', 'Substack', 'LessWrong', 'Dev.to'].find((c) => a.categories.includes(c))).filter(Boolean))].join(', ') || 'all platforms'
+                      }`}
                 </div>
               </div>
             </div>

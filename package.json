@@ -19,7 +19,8 @@
     "lint:fix": "eslint . --fix --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "prettier": "prettier --check \"./**/*.{js,jsx,ts,tsx,css,md,json}\"",
     "prettier:fix": "prettier --write \"./**/*.{js,jsx,ts,tsx,css,md,json}\"",
-    "update-citations": "node scripts/update-citations.mjs",
+    "update-citations": "node scripts/fetch-citations.cjs",
+    "update-posts": "node scripts/fetch-posts.mjs",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -45,6 +46,7 @@
     "eslint-plugin-prettier": "^5.1.3",
     "eslint-plugin-react-hooks": "^5.1.0",
     "eslint-plugin-react-refresh": "^0.4.20",
+    "marked": "^15.0.12",
     "postcss": "^8.4.38",
     "prettier": "^3.6.2",
     "react-hotjar": "^6.3.1",

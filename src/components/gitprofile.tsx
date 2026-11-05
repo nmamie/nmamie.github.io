@@ -26,6 +26,9 @@ import { GithubProject } from '../interfaces/github-project';
 import GithubProjectCard from './github-project-card';
 import ExternalProjectCard from './external-project-card';
 import BlogCard from './blog-card';
+import BlogPostView from './blog-post-view';
+import { localPosts, findLocalPost } from '../utils/local-posts';
+import externalPostsData from '../data/external-posts.json';
 import Footer from './footer';
 import PublicationCard from './publication-card';
 import NewsCard from './news-card';
@@ -64,6 +67,21 @@ const setCachedData = (key: string, data: any) => {
  * @param {Object} config - the configuration object
  * @return {JSX.Element} the rendered GitProfile component
  */
+/** Merge article lists, de-duplicating by link (later lists win), newest first. */
+const mergeArticles = (...lists: Article[][]): Article[] => {
+  const byLink = new Map<string, Article>();
+  lists.flat().forEach((a) => a.title && a.link && byLink.set(a.link.split('?')[0], a));
+  return [...byLink.values()].sort((a, b) => b.publishedAt.getTime() - a.publishedAt.getTime());
+};
+
+/** Mirror the open post into ?post=<slug> so it survives redirects that drop the hash. */
+const syncPostQuery = (slug: string | null) => {
+  const url = new URL(window.location.href);
+  if (slug) url.searchParams.set('post', slug);
+  else url.searchParams.delete('post');
+  if (url.href !== window.location.href) window.history.replaceState(null, '', url.href);
+};
+
 const GitProfile = ({ config }: { config: Config }) => {
   const [sanitizedConfig] = useState<SanitizedConfig | Record<string, never>>(
     getSanitizedConfig(config),
@@ -81,8 +99,18 @@ const GitProfile = ({ config }: { config: Config }) => {
   // Global search and article states
   const [isSearchOpen, setIsSearchOpen] = useState<boolean>(false);
   const [globalSearchQuery, setGlobalSearchQuery] = useState<string>('');
-  const [articles, setArticles] = useState<Article[]>([]);
-  const [loadingArticles, setLoadingArticles] = useState<boolean>(false);
+  // Native markdown posts + build-time cache of Medium/Substack/LessWrong posts,
+  // shown immediately; a live refresh is merged in on mount.
+  const [articles, setArticles] = useState<Article[]>(() =>
+    mergeArticles(
+      localPosts,
+      (externalPostsData as Array<Omit<Article, 'publishedAt'> & { publishedAt: string }>).map(
+        (p) => ({ ...p, publishedAt: new Date(p.publishedAt) }),
+      ),
+    ),
+  );
+  const loadingArticles = false;
+  const [openPostSlug, setOpenPostSlug] = useState<string | null>(null);
 
   const vantaDivRef = useRef<HTMLDivElement>(null);
   const vantaEffectRef = useRef<any>(null);
@@ -112,16 +140,26 @@ const GitProfile = ({ config }: { config: Config }) => {
   // Handle URL hash navigation & deep-linking
   useEffect(() => {
     const handleHashChange = () => {
-      const hash = window.location.hash.replace(/^#/, '').toLowerCase();
+      const raw = window.location.hash.replace(/^#/, '');
+      const [tab, slug] = raw.split('/');
+      const hash = tab.toLowerCase();
       if (validTabs.includes(hash)) {
         setActiveTab(hash);
+        const openSlug = hash === 'blog' && slug && findLocalPost(slug) ? slug : null;
+        setOpenPostSlug(openSlug);
+        syncPostQuery(openSlug);
+        if (hash === 'blog' && slug) window.scrollTo({ top: 0 });
       }
     };
 
-    const initialHash = window.location.hash.replace(/^#/, '').toLowerCase();
-    if (validTabs.includes(initialHash)) {
-      setActiveTab(initialHash);
+    // giscus strips the #hash when returning from GitHub sign-in, but keeps the
+    // query string. Restore an open post from ?post=<slug> in that case.
+    const postParam = new URLSearchParams(window.location.search).get('post');
+    if (postParam && findLocalPost(postParam) && !window.location.hash.startsWith('#blog/')) {
+      window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}#blog/${postParam}`);
     }
+
+    handleHashChange();
 
     window.addEventListener('hashchange', handleHashChange);
     return () => window.removeEventListener('hashchange', handleHashChange);
@@ -129,6 +167,8 @@ const GitProfile = ({ config }: { config: Config }) => {
 
   const handleTabChange = useCallback((tabId: string, topic?: string) => {
     setActiveTab(tabId);
+    setOpenPostSlug(null);
+    syncPostQuery(null);
     setIsMenuOpen(false);
     if (topic) {
       setSelectedPublicationTopic(topic);
@@ -333,15 +373,12 @@ const GitProfile = ({ config }: { config: Config }) => {
 
   // Fetch articles on mount
   useEffect(() => {
-    if (!sanitizedConfig.blog?.display) return;
-    
     const fetchAllPosts = async () => {
-      setLoadingArticles(true);
       const allPosts: Article[] = [];
       const promises: Promise<void>[] = [];
 
       // 1. Medium
-      if (sanitizedConfig.blog.source === 'medium' && sanitizedConfig.blog.username) {
+      if (sanitizedConfig.blog.display && sanitizedConfig.blog.source === 'medium') {
         promises.push(
           getMediumPost({ user: sanitizedConfig.blog.username })
             .then((res) => {
@@ -361,7 +398,7 @@ const GitProfile = ({ config }: { config: Config }) => {
       }
 
       // 2. Dev.to
-      if (sanitizedConfig.blog.source === 'dev' && sanitizedConfig.blog.username) {
+      if (sanitizedConfig.blog.display && sanitizedConfig.blog.source === 'dev') {
         promises.push(
           getDevPost({ user: sanitizedConfig.blog.username })
             .then((res) => {
@@ -471,9 +508,7 @@ const GitProfile = ({ config }: { config: Config }) => {
       }
 
       await Promise.all(promises);
-      allPosts.sort((a, b) => b.publishedAt.getTime() - a.publishedAt.getTime());
-      setArticles(allPosts);
-      setLoadingArticles(false);
+      setArticles((prev) => mergeArticles(prev, allPosts));
     };
 
     fetchAllPosts();
@@ -1035,7 +1070,7 @@ const GitProfile = ({ config }: { config: Config }) => {
                             }
                           />
                         )}
-                        {sanitizedConfig.blog.display && (
+                        {articles.length > 0 && (
                           <BlogCard
                             loading={loadingArticles}
                             googleAnalyticsId={sanitizedConfig.googleAnalytics.id}
@@ -1102,11 +1137,20 @@ const GitProfile = ({ config }: { config: Config }) => {
                       </>
                     )}
 
-                    {isBlogTab && sanitizedConfig.blog.display && (
+                    {isBlogTab && openPostSlug && findLocalPost(openPostSlug) && (
+                      <BlogPostView
+                        post={findLocalPost(openPostSlug)!}
+                        comments={sanitizedConfig.comments}
+                        theme={theme}
+                        onBack={() => handleTabChange('blog')}
+                      />
+                    )}
+
+                    {isBlogTab && !openPostSlug && (
                       <BlogCard
                         loading={loadingArticles}
                         googleAnalyticsId={sanitizedConfig.googleAnalytics.id}
-                        blog={sanitizedConfig.blog}
+                        blog={{ ...sanitizedConfig.blog, limit: 50 }}
                         articles={articles}
                       />
                     )}

@@ -167,6 +167,16 @@ export const getSanitizedConfig = (
         limit: config?.blog?.limit || 5,
         display: !!config?.blog?.username && !!config?.blog?.source,
       },
+      comments: {
+        repo: config?.comments?.repo || '',
+        repoId: config?.comments?.repoId || '',
+        category: config?.comments?.category || '',
+        categoryId: config?.comments?.categoryId || '',
+        display:
+          !!config?.comments?.repo &&
+          !!config?.comments?.repoId &&
+          !!config?.comments?.categoryId,
+      },
       themeConfig: {
         defaultTheme: config?.themeConfig?.defaultTheme || DEFAULT_THEMES[0],
         disableSwitch: config?.themeConfig?.disableSwitch || false,

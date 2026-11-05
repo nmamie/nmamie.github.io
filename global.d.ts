@@ -308,6 +308,17 @@ interface Hotjar {
   snippetVersion?: number;
 }
 
+interface Comments {
+  /** GitHub repo hosting the discussions, e.g. 'nmamie/nmamie.github.io' */
+  repo?: string;
+  /** From https://giscus.app (data-repo-id) */
+  repoId?: string;
+  /** Discussion category name, e.g. 'Blog Comments' */
+  category?: string;
+  /** From https://giscus.app (data-category-id) */
+  categoryId?: string;
+}
+
 interface Blog {
   /**
    * medium | dev
@@ -450,6 +461,9 @@ interface Config {
    * Blog config
    */
   blog?: Blog;
+
+  /** giscus comments on native blog posts. Leave ids empty to hide. */
+  comments?: Comments;
 
   /**
    * Theme config
