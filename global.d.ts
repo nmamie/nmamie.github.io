@@ -79,6 +79,8 @@ interface ExternalProjects {
     title: string;
     description?: string;
     imageUrl?: string;
+    /** Short muted looping clip shown instead of the image (e.g. /vid/demo.mp4) */
+    videoUrl?: string;
     link: string;
     tags?: string[];
     platforms?: string[];
@@ -493,7 +495,3 @@ interface Config {
 
 declare const CONFIG: Config;
 
-declare module 'vanta/dist/vanta.birds.min' {
-  const BIRDS: any;
-  export default BIRDS;
-}

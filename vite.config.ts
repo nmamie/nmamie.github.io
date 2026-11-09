@@ -35,17 +35,17 @@ export default defineConfig({
             workbox: {
               navigateFallback: undefined,
             },
-            includeAssets: ['logo.png'],
+            includeAssets: ['favicon.svg', 'favicon.ico', 'apple-touch-icon.png'],
             manifest: {
-              name: 'Portfolio',
-              short_name: 'Portfolio',
-              description: 'Personal Portfolio',
+              name: 'Noah Mamié',
+              short_name: 'Noah Mamié',
+              description: 'PhD researcher at the University of Zurich',
+              theme_color: '#15181c',
+              background_color: '#fbfbf9',
               icons: [
-                {
-                  src: 'logo.png',
-                  sizes: '64x64 32x32 24x24 16x16 192x192 512x512',
-                  type: 'image/png',
-                },
+                { src: 'logo192.png', sizes: '192x192', type: 'image/png' },
+                { src: 'logo512.png', sizes: '512x512', type: 'image/png' },
+                { src: 'favicon.svg', sizes: 'any', type: 'image/svg+xml' },
               ],
             },
           }),

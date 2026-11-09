@@ -23,6 +23,7 @@ export interface SanitizedExternalProject {
   title: string;
   description?: string;
   imageUrl?: string;
+  videoUrl?: string;
   link: string;
   tags?: string[];
   platforms?: string[];
@@ -120,6 +121,21 @@ export interface SanitizedPublication {
   citations?: number;
 }
 
+export interface SanitizedTalk {
+  title: string;
+  date: string;
+  link?: string;
+  description?: string;
+}
+
+export interface SanitizedTeaching {
+  course: string;
+  role: string;
+  institution: string;
+  year: string;
+  link?: string;
+}
+
 export interface SanitizedNews {
   title: string;
   date: string;
@@ -171,13 +187,7 @@ export interface SanitizedConfig {
   certifications: Array<SanitizedCertification>;
   publications: Array<SanitizedPublication>;
   news: Array<SanitizedNews>;
-  teaching?: Array<{
-    course: string;
-    role: string;
-    institution: string;
-    year: string;
-    link?: string;
-  }>;
+  teaching?: Array<SanitizedTeaching>;
   researchInterests?: Array<string>;
   enableSwarmDemo?: boolean;
   googleAnalytics: SanitizedGoogleAnalytics;
@@ -187,10 +197,5 @@ export interface SanitizedConfig {
   themeConfig: SanitizedThemeConfig;
   footer?: string;
   enablePWA: boolean;
-  talks?: Array<{
-    title: string;
-    date: string;
-    link?: string;
-    description?: string;
-  }>;
+  talks?: Array<SanitizedTalk>;
 }

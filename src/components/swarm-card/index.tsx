@@ -16,7 +16,14 @@ interface Target {
   radius: number;
 }
 
-const SwarmCard = ({ loading }: { loading: boolean }) => {
+const SwarmCard = ({
+  loading,
+  embedded = false,
+}: {
+  loading: boolean;
+  /** Render without card chrome/header (used inside the Projects section). */
+  embedded?: boolean;
+}) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
 
@@ -251,54 +258,8 @@ const SwarmCard = ({ loading }: { loading: boolean }) => {
     setTargets((prev) => [...prev, { x, y, radius: 8 }]);
   };
 
-  return (
-    <div id="swarm-playground" className="col-span-1 lg:col-span-2 scroll-mt-28">
-      <div className="card bg-base-200 shadow-xl border border-base-300">
-        <div className="card-body p-6 md:p-8">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
-            <div className="flex items-center space-x-3">
-              {loading ? (
-                skeleton({
-                  widthCls: 'w-12',
-                  heightCls: 'h-12',
-                  className: 'rounded-xl',
-                })
-              ) : (
-                <div className="flex items-center justify-center w-12 h-12 bg-primary/10 rounded-xl text-primary shrink-0">
-                  <PiSelectionAll className="text-2xl" />
-                </div>
-              )}
-              <div className="min-w-0 flex-1">
-                <h2 className="text-base sm:text-lg font-bold text-base-content truncate">
-                  {loading
-                    ? skeleton({ widthCls: 'w-48', heightCls: 'h-8' })
-                    : 'Swarm Intelligence Sandbox'}
-                </h2>
-                <div className="text-base-content/60 text-xs sm:text-sm mt-0.5 truncate">
-                  {loading
-                    ? skeleton({ widthCls: 'w-32', heightCls: 'h-4' })
-                    : 'Emergent collective behavior • Click inside to drop attraction targets'}
-                </div>
-              </div>
-            </div>
-
-            <a
-              href="https://link.springer.com/chapter/10.1007/978-981-95-0982-9_20"
-              target="_blank"
-              rel="noreferrer"
-              className="btn btn-outline btn-xs sm:btn-sm rounded-lg font-medium gap-1.5 shrink-0 border-base-content/20 hover:bg-base-300"
-            >
-              <HiOutlineSparkles className="text-primary text-sm" />
-              <span>Society of HiveMind Paper</span>
-              <HiOutlineExternalLink className="text-xs" />
-            </a>
-          </div>
-
-          <div className="p-3 bg-base-100 rounded-xl border border-base-300 text-xs text-base-content/75 leading-relaxed mb-4">
-            <span className="font-semibold text-primary">Research Context: </span>
-            In our work on <em>The Society of HiveMind (ICSI 2025)</em>, we explore how swarms of foundation models optimize collective reasoning through decentralized local feedback loops. This sandbox demonstrates the underlying classical flocking dynamics (separation, alignment, cohesion) that inspire collective AI architectures.
-          </div>
-
+  const simulation = (
+    <>
           {loading ? (
             skeleton({ widthCls: 'w-full', heightCls: 'h-60', shape: 'rounded-xl' })
           ) : (
@@ -384,6 +345,62 @@ const SwarmCard = ({ loading }: { loading: boolean }) => {
               </div>
             </div>
           )}
+    </>
+  );
+
+  if (embedded) {
+    return <div id="swarm-playground" className="scroll-mt-24">{simulation}</div>;
+  }
+
+  return (
+    <div id="swarm-playground" className="col-span-1 lg:col-span-2 scroll-mt-28">
+      <div className="card bg-base-200 shadow-xl border border-base-300">
+        <div className="card-body p-6 md:p-8">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
+            <div className="flex items-center space-x-3">
+              {loading ? (
+                skeleton({
+                  widthCls: 'w-12',
+                  heightCls: 'h-12',
+                  className: 'rounded-xl',
+                })
+              ) : (
+                <div className="flex items-center justify-center w-12 h-12 bg-primary/10 rounded-xl text-primary shrink-0">
+                  <PiSelectionAll className="text-2xl" />
+                </div>
+              )}
+              <div className="min-w-0 flex-1">
+                <h2 className="text-base sm:text-lg font-bold text-base-content truncate">
+                  {loading
+                    ? skeleton({ widthCls: 'w-48', heightCls: 'h-8' })
+                    : 'Swarm Intelligence Sandbox'}
+                </h2>
+                <div className="text-base-content/60 text-xs sm:text-sm mt-0.5 truncate">
+                  {loading
+                    ? skeleton({ widthCls: 'w-32', heightCls: 'h-4' })
+                    : 'Emergent collective behavior • Click inside to drop attraction targets'}
+                </div>
+              </div>
+            </div>
+
+            <a
+              href="https://link.springer.com/chapter/10.1007/978-981-95-0982-9_20"
+              target="_blank"
+              rel="noreferrer"
+              className="btn btn-outline btn-xs sm:btn-sm rounded-lg font-medium gap-1.5 shrink-0 border-base-content/20 hover:bg-base-300"
+            >
+              <HiOutlineSparkles className="text-primary text-sm" />
+              <span>Society of HiveMind Paper</span>
+              <HiOutlineExternalLink className="text-xs" />
+            </a>
+          </div>
+
+          <div className="p-3 bg-base-100 rounded-xl border border-base-300 text-xs text-base-content/75 leading-relaxed mb-4">
+            <span className="font-semibold text-primary">Research Context: </span>
+            In our work on <em>The Society of HiveMind (ICSI 2025)</em>, we explore how swarms of foundation models optimize collective reasoning through decentralized local feedback loops. This sandbox demonstrates the underlying classical flocking dynamics (separation, alignment, cohesion) that inspire collective AI architectures.
+          </div>
+
+          {simulation}
         </div>
       </div>
     </div>

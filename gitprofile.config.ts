@@ -12,7 +12,7 @@ const CONFIG = {
   base: '/',
   projects: {
     github: {
-      display: true, // Display GitHub projects?
+      display: false, // Display GitHub projects?
       header: 'Github Projects',
       mode: 'automatic', // Mode can be: 'automatic' or 'manual'
       automatic: {
@@ -59,8 +59,8 @@ const CONFIG = {
         {
           title: 'Deep Reinforcement Learning (RLatari)',
           link: 'https://github.com/nmamie/RLatari',
+          videoUrl: '/vid/rl-video-episode-0.mp4',
           description: 'High-performance reinforcement learning implementations experimenting with deep Q-networks, policy optimization, and representation learning across classic Atari 2600 benchmark environments.',
-          imageUrl: '/img/atari.png',
           platforms: ['PyTorch', 'Arcade Gym', 'Discrete Control'],
           tags: ['Reinforcement Learning', 'Deep Q-Networks', 'Policy Gradients', 'Atari Gym'],
         },
@@ -70,7 +70,7 @@ const CONFIG = {
   seo: { 
     title: 'Noah Mamié | PhD Researcher & UZH.ai Fellow', 
     description: 'Doctoral Researcher & UZH.ai Fellow @ University of Zurich (DDIS Lab) | DSI Excellence Program | GenAI for Personalized News Recommender Systems, Swarm & Collective Intelligence, Graph Neural Networks', 
-    imageURL: '/logo.png' 
+    imageURL: 'https://xn--mami-epa.ch/logo512.png' 
   },
   social: {
     linkedin: 'noah-mamie',
@@ -420,7 +420,7 @@ const CONFIG = {
   // Track visitor interaction and behavior. https://www.hotjar.com
   hotjar: { id: '', snippetVersion: 6 },
   themeConfig: {
-    defaultTheme: 'forest',
+    defaultTheme: 'scholar-light',
 
     // Hides the switch in the navbar
     // Useful if you want to support a single color mode
@@ -428,50 +428,13 @@ const CONFIG = {
 
     // Should use the prefers-color-scheme media-query,
     // using user system preferences, instead of the hardcoded defaultTheme
-    respectPrefersColorScheme: false,
+    respectPrefersColorScheme: true,
 
     // Display the ring in Profile picture
     displayAvatarRing: true,
 
     // Available themes. To remove any theme, exclude from here.
-    themes: [
-      'light',
-      'dark',
-      'cupcake',
-      'bumblebee',
-      'emerald',
-      'corporate',
-      'synthwave',
-      'retro',
-      'cyberpunk',
-      'valentine',
-      'halloween',
-      'garden',
-      'forest',
-      'aqua',
-      'lofi',
-      'pastel',
-      'fantasy',
-      'wireframe',
-      'black',
-      'luxury',
-      'dracula',
-      'cmyk',
-      'autumn',
-      'business',
-      'acid',
-      'lemonade',
-      'night',
-      'coffee',
-      'winter',
-      'dim',
-      'nord',
-      'sunset',
-      'caramellatte',
-      'abyss',
-      'silk',
-      'procyon',
-    ],
+    themes: ['scholar-light', 'scholar-dark'],
   },
 
   // Optional Footer. Supports plain text or HTML.

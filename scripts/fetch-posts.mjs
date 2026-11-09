@@ -107,11 +107,14 @@ try {
   /* first run */
 }
 
-const byLink = new Map(existing.map((p) => [p.link, p]));
+// Same post can come with different URLs (nmamie.medium.com vs medium.com/@nmamie),
+// so de-duplicate by normalized title.
+const keyOf = (p) => p.title.toLowerCase().replace(/[^a-z0-9]/g, '');
+const byLink = new Map(existing.map((p) => [keyOf(p), p]));
 for (const [name, run] of sources) {
   try {
     const posts = await run();
-    posts.forEach((p) => p.title && p.link && byLink.set(p.link, p));
+    posts.forEach((p) => p.title && p.link && byLink.set(keyOf(p), p));
     console.log(`✔ ${name}: ${posts.length} posts`);
   } catch (err) {
     console.warn(`✘ ${name}: ${err.message} (keeping cached posts)`);

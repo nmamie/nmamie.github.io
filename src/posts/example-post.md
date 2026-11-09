@@ -3,7 +3,7 @@ title: Writing posts directly on this site
 date: 2026-11-05
 description: How to publish a native blog post from a Markdown file.
 tags: [Meta]
-draft: true
+draft: false
 ---
 
 This file is a template. Set `draft: false` (or delete the line) to publish it.

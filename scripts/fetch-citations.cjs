@@ -41,6 +41,24 @@ fetch(PROFILE_URL, {
       return;
     }
 
+    // Profile totals + citations-per-year histogram (bars are matched to years by
+    // their CSS `right` offset, since years with 0 citations have no bar).
+    const std = [...html.matchAll(/class="gsc_rsb_std">(\d+)/g)].map((m) => +m[1]);
+    const years = [...html.matchAll(/class="gsc_g_t" style="right:(\d+)px">(\d{4})/g)].map(
+      (m) => ({ right: +m[1], year: m[2] }),
+    );
+    const bars = [
+      ...html.matchAll(/gsc_g_a"[^>]*style="right:(\d+)px[^"]*"[\s\S]*?class="gsc_g_al">(\d+)/g),
+    ].map((m) => ({ right: +m[1], count: +m[2] }));
+    const byYear = {};
+    years.forEach(({ right, year }) => {
+      const bar = bars.find((b) => Math.abs(b.right - (right + 5)) <= 3);
+      byYear[year] = bar ? bar.count : 0;
+    });
+    if (std.length >= 3) {
+      results._profile = { total: std[0], hIndex: std[2], i10Index: std[4] ?? 0, byYear };
+    }
+
     console.log('Successfully fetched citations:', results);
 
     let existing = {};

@@ -27,13 +27,13 @@ const BlogPostView = ({
   const tags = post.categories.filter((c) => c !== 'Blog');
 
   return (
-    <div className="col-span-1 lg:col-span-2">
-      <article className="card bg-base-200 shadow-xl border border-base-300">
-        <div className="card-body p-6 sm:p-10">
+    <div>
+      <article className="max-w-2xl mx-auto">
+        <div>
           <button
             type="button"
             onClick={onBack}
-            className="btn btn-ghost btn-sm self-start gap-2 -ml-2 mb-4 opacity-70 hover:opacity-100"
+            className="inline-flex items-center gap-1.5 text-sm text-base-content/60 hover:text-primary mb-8"
           >
             <PiArrowLeft /> All posts
           </button>
@@ -46,7 +46,7 @@ const BlogPostView = ({
             />
           )}
 
-          <h1 className="text-2xl sm:text-3xl font-bold text-base-content leading-tight">
+          <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-base-content leading-tight">
             {post.title}
           </h1>
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mt-3 text-sm text-base-content/60">

@@ -12,7 +12,7 @@ import {
 } from '../interfaces/sanitized-config';
 
 export const isDarkishTheme = (appliedTheme: string): boolean => {
-  return ['dark', 'halloween', 'forest', 'black', 'luxury', 'dracula'].includes(
+  return ['dark', 'scholar-dark', 'halloween', 'forest', 'black', 'luxury', 'dracula'].includes(
     appliedTheme,
   );
 };
@@ -212,7 +212,7 @@ export const getInitialTheme = (themeConfig: SanitizedThemeConfig): string => {
   if (themeConfig.respectPrefersColorScheme && !themeConfig.disableSwitch) {
     return typeof window !== 'undefined' &&
       window.matchMedia('(prefers-color-scheme: dark)').matches
-      ? 'dark'
+      ? themeConfig.themes.find((t) => isDarkishTheme(t)) || 'dark'
       : themeConfig.defaultTheme;
   }
 
