@@ -70,7 +70,7 @@ const CONFIG = {
   seo: { 
     title: 'Noah Mamié | PhD Researcher & UZH.ai Fellow', 
     description: 'Doctoral Researcher & UZH.ai Fellow @ University of Zurich (DDIS Lab) | DSI Excellence Program | GenAI for Personalized News Recommender Systems, Swarm & Collective Intelligence, Graph Neural Networks', 
-    imageURL: 'https://xn--mami-epa.ch/logo512.png' 
+    imageURL: 'https://xn--mami-epa.ch/logo512.png?v=2' 
   },
   social: {
     linkedin: 'noah-mamie',
