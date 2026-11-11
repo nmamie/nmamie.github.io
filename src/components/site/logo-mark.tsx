@@ -49,8 +49,20 @@ const LogoMark = ({ className = 'w-8 h-8' }: { className?: string }) => (
     <circle cx="50" cy="60" r="5.5" fill="url(#logoMarkGradient)" />
     <circle cx="65" cy="25" r="6" fill="url(#logoMarkGradient)" />
     <circle cx="80" cy="75" r="4.5" fill="currentColor" opacity="0.7" />
-    <circle cx="28" cy="45" r="2" style={{ fill: 'var(--color-secondary)' }} className="animate-pulse" />
-    <circle cx="72" cy="55" r="1.8" style={{ fill: 'var(--color-secondary)' }} className="animate-pulse" />
+    <circle
+      cx="28"
+      cy="45"
+      r="2"
+      style={{ fill: 'var(--color-secondary)' }}
+      className="animate-pulse"
+    />
+    <circle
+      cx="72"
+      cy="55"
+      r="1.8"
+      style={{ fill: 'var(--color-secondary)' }}
+      className="animate-pulse"
+    />
   </svg>
 );
 

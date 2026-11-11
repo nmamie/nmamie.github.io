@@ -41,20 +41,20 @@ const CONFIG = {
           tags: ['Empirical Field Studies', 'News Recommenders', 'Behavioral Logging', 'In-App Surveys'],
         },
         {
-          title: 'The Society of HiveMind (HiveLLM)',
-          link: 'https://github.com/nmamie/HiveLLM',
-          description: 'An evolutionary multi-agent optimization framework orchestrating swarms of diverse foundation models (LLMs) to unlock collective reasoning and emergent intelligence, presented at the 16th International Conference on Swarm Intelligence (ICSI 2025).',
-          imageUrl: '/img/HiveMind.png',
-          platforms: ['Multi-Agent Swarms', 'Python Package', 'ICSI 2025'],
-          tags: ['Swarm Intelligence', 'Multi-Agent LLMs', 'Evolutionary Optimization', 'Collective AI'],
-        },
-        {
           title: 'Voting Booklet Bias Monitor',
           link: 'https://github.com/ZurichNLP/voting-booklet-bias',
           description: 'Multilingual stance detection system analyzing official federal voting booklets across German, French, and Italian with fine-tuned M-BERT models to empirically monitor neutrality in Swiss direct democracy. Awarded the SwissText 2023 Best Poster Award 🏆.',
           imageUrl: '/img/dist_all.png',
           platforms: ['NLP Pipeline', 'M-BERT', 'SwissText Best Poster 🏆'],
           tags: ['Stance Detection', 'Direct Democracy', 'Multilingual NLP', 'Bias Monitoring'],
+        },
+        {
+          title: 'The Society of HiveMind (HiveLLM)',
+          link: 'https://github.com/nmamie/HiveLLM',
+          description: 'An evolutionary multi-agent optimization framework orchestrating swarms of diverse foundation models (LLMs) to unlock collective reasoning and emergent intelligence, presented at the 16th International Conference on Swarm Intelligence (ICSI 2025).',
+          imageUrl: '/img/HiveMind.png',
+          platforms: ['Multi-Agent Swarms', 'Python Package', 'ICSI 2025'],
+          tags: ['Swarm Intelligence', 'Multi-Agent LLMs', 'Evolutionary Optimization', 'Collective AI'],
         },
         {
           title: 'Deep Reinforcement Learning (RLatari)',
@@ -69,7 +69,7 @@ const CONFIG = {
   },
   seo: { 
     title: 'Noah Mamié | PhD Researcher & UZH.ai Fellow', 
-    description: 'Doctoral Researcher & UZH.ai Fellow @ University of Zurich (DDIS Lab) | DSI Excellence Program | GenAI for Personalized News Recommender Systems, Swarm & Collective Intelligence, Graph Neural Networks', 
+    description: 'Doctoral Researcher & UZH.ai Fellow at the University of Zurich (DDIS, DSI Excellence Program). Generative AI for personalized news recommendation, at the intersection of computer science, communication science and social science.', 
     imageURL: 'https://xn--mami-epa.ch/logo512.png?v=2' 
   },
   social: {
@@ -103,11 +103,12 @@ const CONFIG = {
       'CV_Noah.pdf', // Empty fileUrl will hide the `Download Resume` button.
   },
   researchInterests: [
-    'Multi-Agent Systems',
-    'Swarm Intelligence',
+    'News Recommender Systems',
     'Generative AI',
-    'Recommender Systems',
-    'Graph Neural Networks',
+    'Computational Social Science',
+    'Communication Science',
+    'NLP',
+    'Collective Intelligence',
   ],
   enableSwarmDemo: true,
   skills: [

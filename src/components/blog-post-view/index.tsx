@@ -42,11 +42,11 @@ const BlogPostView = ({
             <img
               src={post.thumbnail}
               alt=""
-              className="w-full max-h-80 object-cover rounded-xl mb-6 border border-base-300"
+              className="w-full max-h-80 object-cover mb-6 border border-base-300"
             />
           )}
 
-          <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-base-content leading-tight">
+          <h1 className="font-serif text-4xl sm:text-5xl font-medium tracking-tight text-base-content leading-tight">
             {post.title}
           </h1>
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mt-3 text-sm text-base-content/60">

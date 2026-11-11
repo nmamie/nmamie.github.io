@@ -15,17 +15,29 @@ const NetworkBackdrop = ({ theme }: { theme: string }) => {
     if (!canvas || !ctx) return;
 
     const css = getComputedStyle(document.documentElement);
-    const colors = ['--color-primary', '--color-secondary', '--color-accent'].map(
-      (v) => css.getPropertyValue(v).trim() || '#0f6e74',
-    );
-    const lineColor = css.getPropertyValue('--color-base-content').trim() || '#1f2328';
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const colors = [
+      '--color-primary',
+      '--color-secondary',
+      '--color-accent',
+    ].map((v) => css.getPropertyValue(v).trim() || '#0f6e74');
+    const lineColor =
+      css.getPropertyValue('--color-base-content').trim() || '#1f2328';
+    const reduced = window.matchMedia(
+      '(prefers-reduced-motion: reduce)',
+    ).matches;
 
     let w = 0;
     let h = 0;
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     const pointer = { x: -9999, y: -9999 };
-    type Node = { x: number; y: number; vx: number; vy: number; r: number; c: string };
+    type Node = {
+      x: number;
+      y: number;
+      vx: number;
+      vy: number;
+      r: number;
+      c: string;
+    };
     let nodes: Node[] = [];
 
     const resize = () => {
@@ -143,8 +155,10 @@ const NetworkBackdrop = ({ theme }: { theme: string }) => {
       aria-hidden="true"
       className="absolute inset-0 w-full h-full pointer-events-none"
       style={{
-        maskImage: 'radial-gradient(ellipse at 70% 40%, black 30%, transparent 80%)',
-        WebkitMaskImage: 'radial-gradient(ellipse at 70% 40%, black 30%, transparent 80%)',
+        maskImage:
+          'radial-gradient(ellipse at 70% 40%, black 30%, transparent 80%)',
+        WebkitMaskImage:
+          'radial-gradient(ellipse at 70% 40%, black 30%, transparent 80%)',
       }}
     />
   );

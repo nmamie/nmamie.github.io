@@ -1,4 +1,10 @@
-import { ReactNode, useEffect, useRef, useState } from 'react';
+import {
+  AnchorHTMLAttributes,
+  ReactNode,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 
 /** Page section with a small-caps label, anchor id and a gentle fade-in on scroll. */
 const Section = ({
@@ -39,12 +45,12 @@ const Section = ({
       id={id}
       ref={ref}
       data-section
-      className={`scroll-mt-24 py-12 sm:py-14 border-t border-base-300 first:border-t-0 reveal ${
+      className={`scroll-mt-24 py-10 sm:py-12 reveal ${
         visible ? 'is-visible' : ''
       }`}
     >
       {title && (
-        <div className="flex items-baseline justify-between gap-4 mb-8">
+        <div className="flex items-baseline justify-between gap-4 mb-8 border-t-2 border-base-content pt-2.5">
           <h2 className="section-label">{title}</h2>
           {action}
         </div>
@@ -67,7 +73,7 @@ export const TextButton = ({
   <button
     type="button"
     onClick={onClick}
-    className="text-sm text-base-content/60 hover:text-primary transition-colors"
+    className="meta hover:text-primary transition-colors"
   >
     {children}
   </button>
@@ -76,16 +82,13 @@ export const TextButton = ({
 /** External link that opens in a new tab. */
 export const ExtLink = ({
   href,
-  className = '',
   children,
-  title,
-}: {
-  href: string;
-  className?: string;
-  children: ReactNode;
-  title?: string;
-}) => (
-  <a href={href} target="_blank" rel="noreferrer" className={className} title={title}>
+  ...rest
+}: { href: string; children: ReactNode } & Omit<
+  AnchorHTMLAttributes<HTMLAnchorElement>,
+  'href' | 'target' | 'rel'
+>) => (
+  <a href={href} target="_blank" rel="noreferrer" {...rest}>
     {children}
   </a>
 );

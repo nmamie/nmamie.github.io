@@ -1,8 +1,13 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { HiOutlineCheck, HiOutlineClipboardDocument } from 'react-icons/hi2';
 import { SanitizedPublication } from '../../interfaces/sanitized-config';
 import { useLiveCitations } from '../../utils/useLiveCitations';
 import Section, { ExtLink } from './section';
+import { Ranked, useRanked, useReader } from '../../utils/reader';
+import { FilterNote, RankNote } from './reader-bar';
+
+export const pubText = (p: SanitizedPublication) =>
+  [p.title, ...(p.topics || []), p.tldr].join(' ');
 
 const SELF = /Noah Mami[ée]/;
 
@@ -36,11 +41,18 @@ const Authors = ({ pub }: { pub: SanitizedPublication }) => {
 const PublicationItem = ({
   pub,
   citations,
+  reason,
+  kind,
 }: {
   pub: SanitizedPublication;
   citations?: number;
+  reason?: string;
+  kind?: Ranked<unknown>['kind'];
 }) => {
-  const [open, setOpen] = useState(false);
+  const { depth, note } = useReader();
+  const [open, setOpen] = useState(depth === 'full');
+  useEffect(() => setOpen(depth === 'full'), [depth]);
+  const headline = depth === 'headline';
   const [copied, setCopied] = useState(false);
   const venue = pub.conferenceName || pub.journalName;
 
@@ -56,18 +68,27 @@ const PublicationItem = ({
 
   const linkCls = 'hover:text-primary transition-colors';
 
+  const slug = pub.title
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, '-')
+    .slice(0, 60);
+
   return (
     <article
-      id={`pub-${pub.title.toLowerCase().replace(/[^a-z0-9]/g, '-').slice(0, 60)}`}
-      className="grid sm:grid-cols-[180px_1fr] gap-5 sm:gap-7 scroll-mt-24"
+      id={`pub-${slug}`}
+      style={{
+        viewTransitionName: `pub-${slug.replace(/-+/g, '-').replace(/-$/, '')}`,
+      }}
+      onClickCapture={() => note(pubText(pub), pub.topics)}
+      className={`grid gap-5 sm:gap-7 scroll-mt-24 ${headline ? '' : 'sm:grid-cols-[180px_1fr]'}`}
     >
-      {pub.imageUrl ? (
+      {headline ? null : pub.imageUrl ? (
         <ExtLink href={pub.link || '#'} className="block">
           <img
             src={pub.imageUrl}
             alt=""
             loading="lazy"
-            className="w-full aspect-[4/3] object-contain bg-white rounded-lg border border-base-300 p-2 transition-all duration-300 hover:scale-[1.03] hover:shadow-[0_14px_40px_-18px_color-mix(in_oklab,var(--color-primary)_45%,transparent)]"
+            className="w-full aspect-[4/3] object-contain bg-white border border-base-300 p-2 transition-colors duration-300 hover:border-base-content/60"
           />
         </ExtLink>
       ) : (
@@ -75,78 +96,104 @@ const PublicationItem = ({
       )}
 
       <div className="min-w-0">
-        <h3 className="font-medium text-base-content leading-snug text-[1.05rem]">
+        <h3 className="font-serif text-xl font-medium text-base-content leading-snug">
           {pub.link ? (
-            <ExtLink href={pub.link} className="hover:text-primary transition-colors">
+            <ExtLink
+              href={pub.link}
+              className="hover:text-primary transition-colors"
+            >
               {pub.title}
             </ExtLink>
           ) : (
             pub.title
           )}
         </h3>
-        <p className="text-sm text-base-content/65 mt-1.5">
-          <Authors pub={pub} />
-        </p>
+        {!headline && (
+          <p className="text-sm text-base-content/65 mt-1.5">
+            <Authors pub={pub} />
+          </p>
+        )}
         <p className="text-sm text-base-content/65 mt-0.5">
           <span className="italic">{venue}</span>
           {pub.year && !venue?.includes(pub.year) ? `, ${pub.year}` : ''}
           {pub.journalAward && (
-            <span className="ml-2 inline-block rounded-full bg-secondary/12 text-secondary px-2 py-0.5 text-xs font-medium not-italic">{pub.journalAward}</span>
+            <span className="ml-2 font-mono text-[0.7rem] uppercase tracking-wider text-primary not-italic">
+              ★ {pub.journalAward.replace(/\s*🏆/, '')}
+            </span>
           )}
+          <RankNote
+            kind={kind}
+            reason={reason}
+            className="ml-2 inline-block whitespace-nowrap"
+          />
         </p>
 
-        {pub.tldr && (
-          <p className="text-sm text-base-content/80 mt-3 leading-relaxed">{pub.tldr}</p>
-        )}
-
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-3 text-sm text-base-content/60">
-          {pub.link && (
-            <ExtLink href={pub.link} className={linkCls}>
-              Paper
-            </ExtLink>
-          )}
-          {pub.codeUrl && (
-            <ExtLink href={pub.codeUrl} className={linkCls}>
-              Code
-            </ExtLink>
-          )}
-          {pub.slidesUrl && (
-            <ExtLink href={pub.slidesUrl} className={linkCls}>
-              Slides
-            </ExtLink>
-          )}
-          {(pub.description || pub.laymanSummary) && (
-            <button type="button" onClick={() => setOpen(!open)} className={linkCls}>
-              {open ? 'Hide abstract' : 'Abstract'}
-            </button>
-          )}
-          {pub.bibtex && (
-            <button
-              type="button"
-              onClick={copyBibtex}
-              className={`${linkCls} inline-flex items-center gap-1`}
-            >
-              {copied ? <HiOutlineCheck /> : <HiOutlineClipboardDocument />}
-              {copied ? 'Copied' : 'BibTeX'}
-            </button>
-          )}
-          {pub.googleScholarLink && (
-            <ExtLink href={pub.googleScholarLink} className={linkCls}>
-              {citations ? `Cited by ${citations}` : 'Scholar'}
-            </ExtLink>
-          )}
-        </div>
-
-        {open && (
-          <div className="mt-4 space-y-3 text-sm leading-relaxed text-base-content/80 border-l-2 border-primary/40 pl-4">
-            {pub.laymanSummary && (
-              <p>
-                <span className="font-medium text-base-content">In short: </span>
-                {pub.laymanSummary}
+        {headline ? null : (
+          <>
+            {pub.tldr && (
+              <p className="text-sm text-base-content/80 mt-3 leading-relaxed">
+                {pub.tldr}
               </p>
             )}
-            {pub.description && <p className="text-base-content/70">{pub.description}</p>}
-          </div>
+
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-3 font-mono text-[0.72rem] uppercase tracking-wider text-base-content/60">
+              {pub.link && (
+                <ExtLink href={pub.link} className={linkCls}>
+                  Paper
+                </ExtLink>
+              )}
+              {pub.codeUrl && (
+                <ExtLink href={pub.codeUrl} className={linkCls}>
+                  Code
+                </ExtLink>
+              )}
+              {pub.slidesUrl && (
+                <ExtLink href={pub.slidesUrl} className={linkCls}>
+                  Slides
+                </ExtLink>
+              )}
+              {(pub.description || pub.laymanSummary) && (
+                <button
+                  type="button"
+                  onClick={() => setOpen(!open)}
+                  className={linkCls}
+                >
+                  {open ? 'Hide abstract' : 'Abstract'}
+                </button>
+              )}
+              {pub.bibtex && (
+                <button
+                  type="button"
+                  onClick={copyBibtex}
+                  className={`${linkCls} inline-flex items-center gap-1`}
+                >
+                  {copied ? <HiOutlineCheck /> : <HiOutlineClipboardDocument />}
+                  {copied ? 'Copied' : 'BibTeX'}
+                </button>
+              )}
+              {pub.googleScholarLink && (
+                <ExtLink href={pub.googleScholarLink} className={linkCls}>
+                  {citations ? `Cited by ${citations}` : 'Scholar'}
+                </ExtLink>
+              )}
+            </div>
+
+            {open && (
+              <div className="mt-4 space-y-3 text-sm leading-relaxed text-base-content/80 border-l-2 border-primary pl-4">
+                {pub.laymanSummary && (
+                  <p>
+                    <span className="font-medium text-base-content">
+                      In short:{' '}
+                    </span>
+                    {pub.laymanSummary}
+                  </p>
+                )}
+                {pub.description && (
+                  <p className="text-base-content/70">{pub.description}</p>
+                )}
+              </div>
+            )}
+          </>
         )}
       </div>
     </article>
@@ -163,9 +210,18 @@ const Publications = ({
   onTopicChange: (t: string) => void;
 }) => {
   const citations = useLiveCitations(publications);
-  const topics = ['All', ...new Set(publications.flatMap((p) => p.topics || []))];
-  const shown =
-    topic === 'All' ? publications : publications.filter((p) => p.topics?.includes(topic));
+  const { depth, note } = useReader();
+  const topics = [
+    'All',
+    ...new Set(publications.flatMap((p) => p.topics || [])),
+  ];
+  const filtered =
+    topic === 'All'
+      ? publications
+      : publications.filter((p) => p.topics?.includes(topic));
+  const [showAll, setShowAll] = useState(false);
+  // an explicitly chosen topic overrides the profile filter
+  const ranked = useRanked(filtered, pubText, showAll || topic !== 'All');
 
   return (
     <Section id="publications" title="Publications">
@@ -174,7 +230,10 @@ const Publications = ({
           <button
             key={t}
             type="button"
-            onClick={() => onTopicChange(t)}
+            onClick={() => {
+              if (t !== 'All') note(t, [t]);
+              onTopicChange(t);
+            }}
             className={`chip transition-colors ${
               t === topic ? 'chip-active' : 'hover:border-base-content/40'
             }`}
@@ -183,9 +242,20 @@ const Publications = ({
           </button>
         ))}
       </div>
-      <div className="space-y-12">
-        {shown.map((p) => (
-          <PublicationItem key={p.title} pub={p} citations={citations[p.title] ?? p.citations} />
+      <FilterNote
+        {...ranked}
+        showAll={showAll}
+        onToggle={() => setShowAll(!showAll)}
+      />
+      <div className={depth === 'headline' ? 'space-y-5' : 'space-y-12'}>
+        {ranked.list.map(({ item: p, reason, kind }) => (
+          <PublicationItem
+            key={p.title}
+            pub={p}
+            reason={reason}
+            kind={kind}
+            citations={citations[p.title] ?? p.citations}
+          />
         ))}
       </div>
     </Section>

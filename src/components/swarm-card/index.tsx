@@ -191,24 +191,30 @@ const SwarmCard = ({
 
     const drawSimulation = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+      // follow the active theme (ink birds, editorial-red targets)
+      const css = getComputedStyle(document.documentElement);
+      const ink = css.getPropertyValue('--color-base-content').trim() || '#1c1a17';
+      const accent = css.getPropertyValue('--color-primary').trim() || '#b0392b';
 
       // Draw targets
       const currentTargets = stateRef.current.targets;
       for (const t of currentTargets) {
         ctx.beginPath();
         ctx.arc(t.x, t.y, 6, 0, Math.PI * 2);
-        ctx.fillStyle = '#f59e0b';
+        ctx.fillStyle = accent;
         ctx.fill();
-        ctx.strokeStyle = '#d97706';
+        ctx.strokeStyle = accent;
         ctx.lineWidth = 2;
         ctx.stroke();
 
         // Pulsing glow
         ctx.beginPath();
         ctx.arc(t.x, t.y, 12, 0, Math.PI * 2);
-        ctx.strokeStyle = 'rgba(245, 158, 11, 0.4)';
+        ctx.globalAlpha = 0.4;
+        ctx.strokeStyle = accent;
         ctx.lineWidth = 1;
         ctx.stroke();
+        ctx.globalAlpha = 1;
       }
 
       // Draw boids
@@ -227,8 +233,10 @@ const SwarmCard = ({
         ctx.closePath();
 
         // Style
-        ctx.fillStyle = 'rgba(99, 102, 241, 0.85)';
+        ctx.globalAlpha = 0.85;
+        ctx.fillStyle = ink;
         ctx.fill();
+        ctx.globalAlpha = 1;
 
         ctx.restore();
       }
@@ -266,7 +274,7 @@ const SwarmCard = ({
             <div className="flex flex-col gap-5">
               <div
                 ref={containerRef}
-                className="relative bg-base-100 rounded-xl border border-base-300 overflow-hidden cursor-crosshair h-[240px] shadow-inner"
+                className="relative bg-base-100 border border-base-300 overflow-hidden cursor-crosshair h-[240px]"
               >
                 <div className="absolute top-2 right-2 z-10 pointer-events-none">
                   <span className="badge badge-sm bg-base-200/80 backdrop-blur-sm text-[10px] border border-base-300">
@@ -281,7 +289,7 @@ const SwarmCard = ({
               </div>
 
               {/* Sliders for Simulation Controls */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs p-3 bg-base-100 rounded-xl border border-base-300">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 font-mono text-[0.7rem] p-3 bg-base-100 border border-base-300">
                 <div className="flex flex-col gap-1">
                   <span className="opacity-70 font-semibold flex justify-between">
                     <span>Separation</span>
@@ -294,7 +302,7 @@ const SwarmCard = ({
                     step="0.1"
                     value={separation}
                     onChange={(e) => setSeparation(parseFloat(e.target.value))}
-                    className="range range-primary range-xs"
+                    className="range range-xs [--range-fill:0]"
                   />
                 </div>
                 <div className="flex flex-col gap-1">
@@ -309,7 +317,7 @@ const SwarmCard = ({
                     step="0.1"
                     value={alignment}
                     onChange={(e) => setAlignment(parseFloat(e.target.value))}
-                    className="range range-primary range-xs"
+                    className="range range-xs [--range-fill:0]"
                   />
                 </div>
                 <div className="flex flex-col gap-1">
@@ -324,7 +332,7 @@ const SwarmCard = ({
                     step="0.1"
                     value={cohesion}
                     onChange={(e) => setCohesion(parseFloat(e.target.value))}
-                    className="range range-primary range-xs"
+                    className="range range-xs [--range-fill:0]"
                   />
                 </div>
                 <div className="flex flex-col gap-1">
@@ -339,7 +347,7 @@ const SwarmCard = ({
                     step="0.5"
                     value={maxSpeed}
                     onChange={(e) => setMaxSpeed(parseFloat(e.target.value))}
-                    className="range range-primary range-xs"
+                    className="range range-xs [--range-fill:0]"
                   />
                 </div>
               </div>

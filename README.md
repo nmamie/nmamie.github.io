@@ -4,7 +4,7 @@ PhD researcher and UZH.ai Fellow at the University of Zurich ([DDIS group](https
 
 **Website: [mamié.ch](https://mamié.ch)** · [Google Scholar](https://scholar.google.com/citations?user=JhXjm_sAAAAJ) · [LinkedIn](https://www.linkedin.com/in/noah-mamie) · [Medium](https://medium.com/@nmamie) · [Bluesky](https://bsky.app/profile/nmamie.bsky.social)
 
-I work on **generative AI for personalized news recommendation**, evaluated in field studies with real readers on [Informfully](https://informfully.ch), and on **collective intelligence**: how swarms of foundation models can reason better together than alone.
+I work on **generative AI for personalized news recommendation**: recommenders that stay diverse, transparent and good for public debate, tested with real readers in field studies on [Informfully](https://informfully.ch). My work sits between computer science, communication science and social science; I came to AI from business administration, private equity and applied economics. Out of personal interest, I also explore collective intelligence in swarms of foundation models.
 
 ## Selected publications
 
@@ -56,6 +56,8 @@ draft: false
 
 Post body in **Markdown**.
 ```
+
+**Liquid reading.** Visitors pick an edition (*Headline / Brief / Full*) in the masthead. A floating *For you* button opens their keyword profile (learned from clicks on papers/projects and their tags, or typed in; removable) that re-ranks papers and projects and can optionally hide non-matching content. Both live only in the visitor's browser (`localStorage`). The interest vocabulary and keyword rules are in [`src/utils/reader.tsx`](src/utils/reader.tsx).
 
 **Comments** under these posts use [giscus](https://giscus.app) and are stored in this repo's [Discussions](https://github.com/nmamie/nmamie.github.io/discussions) (category *Announcements*). Settings are in the `comments` block of the config.
 
