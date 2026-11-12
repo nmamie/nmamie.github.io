@@ -1,4 +1,4 @@
-/** The "M" mark: a neural-net path through swarm agents. Colours follow the theme. */
+/** The "M" mark: a neural-net path through swarm agents. Colors follow the theme. */
 const LogoMark = ({ className = 'w-8 h-8' }: { className?: string }) => (
   <svg
     viewBox="0 0 100 100"

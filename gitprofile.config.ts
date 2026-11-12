@@ -68,8 +68,8 @@ const CONFIG = {
     },
   },
   seo: { 
-    title: 'Noah Mamié | PhD Researcher & UZH.ai Fellow', 
-    description: 'Doctoral Researcher & UZH.ai Fellow at the University of Zurich (DDIS, DSI Excellence Program). Generative AI for personalized news recommendation, at the intersection of computer science, communication science and social science.', 
+    title: 'Noah Mamié · Generative AI & News Recommendation, UZH',
+    description: 'Noah Mamié (Mamie) is a PhD researcher and UZH.ai Fellow at the University of Zurich working on generative AI for personalized news recommendation, between computer science, communication and social science.',
     imageURL: 'https://xn--mami-epa.ch/logo512.png?v=2' 
   },
   social: {
@@ -267,7 +267,7 @@ const CONFIG = {
   url = {https://aclanthology.org/2026.blackboxnlp-1.74/},
   doi = {10.18653/2026.blackboxnlp-1.74}
 }`,
-      laymanSummary: 'Some recommender systems describe what you like in plain sentences ("enjoys slow-burn sci-fi") so you can read and correct them. We re-ran a prior study with open models and confirmed these profiles work and make recommendations easier to understand. But when we edited the profiles, the model mostly raised or lowered all ratings at once instead of favouring the genres we changed, which we trace back to how the model was trained.',
+      laymanSummary: 'Some recommender systems describe what you like in plain sentences ("enjoys slow-burn sci-fi") so you can read and correct them. We re-ran a prior study with open models and confirmed these profiles work and make recommendations easier to understand. But when we edited the profiles, the model mostly raised or lowered all ratings at once instead of favoring the genres we changed, which we trace back to how the model was trained.',
     },
     {
       title: 'The Society of HiveMind: Multi-Agent Optimization of Foundation Model Swarms to Unlock the Potential of Collective Intelligence',
@@ -350,10 +350,10 @@ const CONFIG = {
       description: 'Honored to receive the prestigious UZH.ai Fellowship and be admitted into the Digital Society Initiative (DSI) Excellence Program at the University of Zurich starting September 1, 2026. Looking forward to deep interdisciplinary collaboration on AI and digital transformation!',
     },
     {
-      title: 'Invited guest lecture on personalized recommender systems and the Informfully ecosystem in the "Recommender Systems" course at HSLU, Luzern',
+      title: 'Invited guest lecture on personalized recommender systems and the Informfully ecosystem in the "Recommender Systems" course at HSLU, Lucerne',
       date: 'August 2026',
       link: 'https://www.hslu.ch/en/lucerne-school-of-business/degree-programmes/master/applied-information-and-data-science/',
-      description: 'I was invited to give a guest lecture on personalized recommender systems and the Informfully ecosystem in the "Recommender Systems" master\'s level course at the School of Applied Sciences Luzern (HSLU).',
+      description: 'I was invited to give a guest lecture on personalized recommender systems and the Informfully ecosystem in the "Recommender Systems" master\'s level course at the Lucerne University of Applied Sciences and Arts (HSLU).',
     }, 
     {
       title: 'Invited system demonstration of Informfully at the Recommenders in News Media NAMS 2026 Side event',
@@ -383,7 +383,7 @@ const CONFIG = {
   talks: [
     {
       title: 'Personalized Recommender Systems & The Informfully Ecosystem',
-      date: 'HSLU Luzern — August 2026',
+      date: 'HSLU Lucerne — August 2026',
       link: 'https://www.hslu.ch/en/lucerne-school-of-business/degree-programmes/master/applied-information-and-data-science/',
       description: 'Invited guest lecture in the "Recommender Systems" Master of Science course at Lucerne University of Applied Sciences and Arts (HSLU), covering personalized news delivery, behavioral logging, and empirical study design using Informfully.',
     },

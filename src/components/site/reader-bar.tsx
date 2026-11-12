@@ -45,9 +45,9 @@ export const EditionBar = () => {
         className="meta ml-auto hover:text-primary transition-colors"
       >
         ◐{' '}
-        {enabled && profile.length > 0
-          ? `For you · ${profile.length}`
-          : 'Personalise'}{' '}
+        {enabled
+          ? `For you${profile.length ? ` · ${profile.length}` : ''}`
+          : 'Personalize (off)'}{' '}
         →
       </button>
     </div>
@@ -119,16 +119,24 @@ const ProfilePanel = ({ vocabulary }: { vocabulary: string[] }) => {
 
   if (!enabled)
     return (
-      <p className="text-sm text-base-content/70">
-        Personalisation is paused, so everything appears in its usual order.{' '}
+      <div className="space-y-3 text-sm">
+        <p className="text-base-content/80 leading-relaxed">
+          Personalization is <strong className="font-medium">off</strong>. If you turn it on, this
+          page learns keywords from the papers and projects you open, ranks them for you and, if you
+          like, hides what doesn't match.
+        </p>
+        <p className="text-base-content/60 leading-relaxed">
+          Your keywords are kept only in your browser's local storage. Nothing is sent to me or to
+          anyone else, and you can see, edit or delete them at any time. Turning it off deletes them.
+        </p>
         <button
           type="button"
-          className="link-underline"
           onClick={() => setEnabled(true)}
+          className="btn-pill"
         >
-          Turn it on
+          Turn on personalization
         </button>
-      </p>
+      </div>
     );
 
   return (
@@ -253,12 +261,8 @@ const ProfilePanel = ({ vocabulary }: { vocabulary: string[] }) => {
           </>
         )}
         {' · '}
-        <button
-          type="button"
-          onClick={() => setEnabled(false)}
-          className="hover:text-primary"
-        >
-          Pause
+        <button type="button" onClick={() => setEnabled(false)} className="hover:text-primary">
+          Turn off &amp; delete
         </button>
       </p>
     </div>
@@ -356,7 +360,8 @@ export const FloatingReader = ({
               : 'bg-base-100/90 text-base-content/80 hover:text-base-content'
           }`}
         >
-          ◐ For you{count > 0 ? ` · ${count}` : ''}
+          ◐ {enabled ? 'For you' : 'Personalize'}
+          {count > 0 ? ` · ${count}` : ''}
           {filter && count > 0 ? ' · filtered' : ''}
           {pending && (
             <span
@@ -424,7 +429,7 @@ export const RankNote = ({
     </span>
   ) : kind === 'bubble' ? (
     <span
-      title="Matches none of your keywords: shown on purpose so personalisation doesn't narrow what you see"
+      title="Matches none of your keywords: shown on purpose so personalization doesn't narrow what you see"
       className={`font-mono text-[0.7rem] uppercase tracking-wider text-primary not-italic ${className}`}
     >
       ↗ Outside your bubble

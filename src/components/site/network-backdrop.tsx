@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 
 /**
  * Drifting graph of nodes and edges behind the intro: a nod to graph learning and
- * agent swarms. Nodes near the pointer light up and link to it. Colours come from
+ * agent swarms. Nodes near the pointer light up and link to it. Colors come from
  * the active daisyUI theme, so it follows light/dark automatically. Static frame
  * when the visitor prefers reduced motion.
  */

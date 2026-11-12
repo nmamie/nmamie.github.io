@@ -3,12 +3,14 @@ import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 import CONFIG from './gitprofile.config';
 import { createHtmlPlugin } from 'vite-plugin-html';
+import { seoPlugin } from './seo';
 
 // https://vitejs.dev/config/
 export default defineConfig({
   base: CONFIG.base || '/',
   plugins: [
     react(),
+    seoPlugin(),
     createHtmlPlugin({
       inject: {
         data: {
@@ -39,9 +41,9 @@ export default defineConfig({
             manifest: {
               name: 'Noah Mamié',
               short_name: 'Noah Mamié',
-              description: 'PhD researcher at the University of Zurich',
-              theme_color: '#15181c',
-              background_color: '#fbfbf9',
+              description: 'Generative AI for personalized news recommendation, University of Zurich',
+              theme_color: '#ffffff',
+              background_color: '#ffffff',
               icons: [
                 { src: 'logo192.png', sizes: '192x192', type: 'image/png' },
                 { src: 'logo512.png', sizes: '512x512', type: 'image/png' },

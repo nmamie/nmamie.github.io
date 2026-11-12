@@ -1,5 +1,5 @@
 # https://www.robotstxt.org/robotstxt.html
 User-agent: *
-Disallow:
+Allow: /
 
-Sitemap: https://mamié.ch/sitemap.xml
+Sitemap: https://xn--mami-epa.ch/sitemap.xml

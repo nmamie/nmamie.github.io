@@ -12,7 +12,7 @@ import { flushSync } from 'react-dom';
  * "Liquid" reading: one page, many editions.
  * - depth: how much of every item is shown (headline / brief / full)
  * - profile: keywords learned from what the visitor opens or types, visible and
- *   editable, stored only in this browser. It either re-ranks or filters content.
+ *   editable, stored only in this browser. Off until the visitor opts in. It either re-ranks or filters content.
  *   Ranking changes are applied explicitly so content never jumps under the cursor.
  */
 
@@ -250,7 +250,7 @@ export const ReaderProvider = ({ children }: { children: ReactNode }) => {
     load<boolean>(FILTER_KEY, false),
   );
   const [enabled, setEnabledState] = useState<boolean>(() =>
-    load(ENABLED_KEY, true),
+    load(ENABLED_KEY, false),
   );
   const [stored, setStored] = useState<Stored>(() =>
     migrate(load<unknown>(PROFILE_KEY, {})),
@@ -291,9 +291,23 @@ export const ReaderProvider = ({ children }: { children: ReactNode }) => {
       enabled,
       setEnabled: (on) => {
         save(ENABLED_KEY, on);
+        if (!on) {
+          // turning personalization off deletes what was learned
+          save(PROFILE_KEY, {});
+          try {
+            localStorage.removeItem(PROFILE_KEY);
+            localStorage.removeItem(FILTER_KEY);
+          } catch {
+            /* storage unavailable */
+          }
+        }
         liquid(() => {
           setEnabledState(on);
-          setAppliedStored(stored);
+          if (!on) {
+            setStored({});
+            setAppliedStored({});
+            setFilterState(false);
+          } else setAppliedStored(stored);
         });
       },
       profile: keywordsOf(stored, now),
@@ -341,7 +355,7 @@ export type Ranked<T> = {
   /** 'match' = ranked up for the profile, 'bubble' = deliberate pick from outside it */
   kind?: 'match' | 'bubble';
 };
-export type Personalised<T> = {
+export type Personalized<T> = {
   list: Ranked<T>[];
   /** items left out by the filter (0 when the filter is off) */
   hidden: number;
@@ -378,17 +392,17 @@ const useScored = <T,>(items: T[], textOf: (item: T) => string) => {
 
 /**
  * Content-based re-ranking with a diversity term, for papers and projects.
- * relevance = Σ decayed weight of profile keywords the item matches (normalised to 0..1);
+ * relevance = Σ decayed weight of profile keywords the item matches (normalized to 0..1);
  * order     = greedy MMR: λ·relevance − (1−λ)·max Jaccard similarity to items already placed;
  * bubble    = the first item matching none of the keywords is guaranteed a slot near the top
- *             and labelled, so personalisation never hides a whole area.
+ *             and labeled, so personalization never hides a whole area.
  * With the filter on, only matching items (plus the bubble pick) are kept, unless `showAll`.
  */
 export const useRanked = <T,>(
   items: T[],
   textOf: (item: T) => string,
   showAll = false,
-): Personalised<T> => {
+): Personalized<T> => {
   const { filter } = useReader();
   const { cands, active } = useScored(items, textOf);
   return useMemo(() => {
@@ -449,7 +463,7 @@ export const useFiltered = <T,>(
   items: T[],
   textOf: (item: T) => string,
   showAll = false,
-): Personalised<T> => {
+): Personalized<T> => {
   const { filter } = useReader();
   const { cands, active } = useScored(items, textOf);
   return useMemo(() => {

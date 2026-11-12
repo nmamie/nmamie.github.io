@@ -41,6 +41,7 @@ npm run build
 | Paper figures and images | `public/img/` |
 | Blog posts written on this site | `src/posts/<slug>.md` (see below) |
 | Bio and research areas | [`src/components/site/intro.tsx`](src/components/site/intro.tsx), [`research-overview.tsx`](src/components/site/research-overview.tsx) |
+| Search-engine text (title, description, static bio, structured data, sitemap) | `seo` block in the config, [`seo.ts`](seo.ts) (keep its bio in sync with the intro) |
 
 **Blog posts.** Add a Markdown file to `src/posts/` and push. It appears under *Writing* next to Medium, Substack and LessWrong posts, and is readable at `/#blog/<slug>`:
 

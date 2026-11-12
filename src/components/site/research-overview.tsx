@@ -23,7 +23,7 @@ type Focus = {
   core?: boolean;
 };
 
-/** Where the work sits: the overlaps of three disciplines, with news recommendation at the centre. */
+/** Where the work sits: the overlaps of three disciplines, with news recommendation at the center. */
 const focuses: Focus[] = [
   {
     id: 'news',
@@ -50,7 +50,7 @@ const focuses: Focus[] = [
     y: 222,
     label: ['field', 'studies'],
     title: 'Field studies with Informfully',
-    text: 'Our open research platform (iOS, Android, web) for running news-recommendation experiments with real users, behavioural logging and in-app surveys.',
+    text: 'Our open research platform (iOS, Android, web) for running news-recommendation experiments with real users, behavioral logging and in-app surveys.',
     section: 'projects',
   },
   {

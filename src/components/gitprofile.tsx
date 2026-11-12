@@ -349,6 +349,11 @@ const GitProfile = ({ config }: { config: Config }) => {
                 <p className="text-xs text-base-content/40 mt-4">
                   © {new Date().getFullYear()} Noah Mamié
                 </p>
+                <p className="text-xs text-base-content/40 mt-1 max-w-md leading-relaxed">
+                  Privacy: no cookies, no analytics. Personalization is opt-in
+                  and stays in your browser. Citation counts and blog posts are
+                  refreshed from OpenAlex and Medium; comments use GitHub.
+                </p>
               </div>
               <SocialLinks config={cfg} className="-ml-2 sm:ml-0" />
             </div>

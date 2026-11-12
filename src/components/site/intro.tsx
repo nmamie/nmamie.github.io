@@ -32,7 +32,7 @@ const Intro = ({
       <div className="relative">
         {/* Masthead dateline */}
         <div className="meta flex flex-wrap justify-between gap-x-6 gap-y-1 border-y border-base-content/80 py-1.5">
-          <span>Zürich · {format(new Date(), 'EEEE, d MMMM yyyy')}</span>
+          <span>Zurich · {format(new Date(), 'EEEE, MMMM d, yyyy')}</span>
           <span className="hidden sm:inline">AI × Communication × Society</span>
         </div>
 
@@ -65,7 +65,7 @@ const Intro = ({
                   <A href="https://informfully.ch">Informfully</A>.
                 </p>
                 <p>
-                  I came to AI the long way round: business administration in
+                  I came to AI the long way around: business administration in
                   St. Gallen, private equity, applied economics research at ETH
                   Zurich, then an MSc in AI at UZH. That path is why I work
                   where computer science meets communication and social science.
@@ -90,7 +90,7 @@ const Intro = ({
 
           <figure className="shrink-0">
             <img
-              src={`https://github.com/${config.github.username}.png?size=360`}
+              src="/img/portrait.jpg"
               alt="Portrait of Noah Mamié"
               width={176}
               height={176}
