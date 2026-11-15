@@ -221,23 +221,102 @@ main {
   }
 }
 
-/* Native markdown blog posts (src/posts/*.md) */
+/* Native markdown blog posts (src/posts/*.md).
+ * Broadsheet masthead + LessWrong-style reading column: big serif body,
+ * generous leading, numbered section heads, margin contents. */
 .blog-prose {
-  @apply text-base-content/90 leading-relaxed text-[1.02rem];
+  counter-reset: post-section;
+  @apply text-base-content/90 text-[1.16rem] sm:text-[1.2rem] leading-[1.7];
+  hyphens: auto;
+  font-variant-numeric: oldstyle-nums proportional-nums;
 }
-.blog-prose > * + * { @apply mt-5; }
-.blog-prose h2 { @apply text-xl sm:text-2xl font-bold text-base-content mt-10; }
-.blog-prose h3 { @apply text-lg font-bold text-base-content mt-8; }
-.blog-prose a { @apply text-primary underline underline-offset-2; }
-.blog-prose ul { @apply list-disc pl-6 space-y-1; }
-.blog-prose ol { @apply list-decimal pl-6 space-y-1; }
-.blog-prose blockquote { @apply border-l-4 border-primary/40 pl-4 italic text-base-content/70; }
-.blog-prose code { @apply bg-base-300 rounded px-1.5 py-0.5 text-[0.9em] font-mono; }
-.blog-prose pre { @apply bg-base-300 rounded-xl p-4 overflow-x-auto text-sm; }
-.blog-prose pre code { @apply bg-transparent p-0; }
-.blog-prose img { @apply rounded-xl border border-base-300 mx-auto max-w-full; }
-.blog-prose hr { @apply border-base-300 my-8; }
+.blog-prose > * + * { @apply mt-6; }
+
+/* lede: drop cap, first line in small caps like a newspaper opening */
+.blog-prose > p:first-of-type::first-letter {
+  float: left;
+  font-size: 4.1em;
+  line-height: 0.8;
+  padding: 0.07em 0.1em 0 0;
+  font-weight: 500;
+  color: var(--color-primary);
+}
+.blog-prose > p:first-of-type::first-line {
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.04em;
+}
+/* end mark */
+.blog-prose > p:last-child::after {
+  content: '\25A0';
+  @apply ml-2 text-[0.6em] align-[0.12em] text-primary;
+}
+
+.blog-prose h2 {
+  counter-increment: post-section;
+  scroll-margin-top: 6rem;
+  @apply mt-14 pt-5 border-t border-base-content/20 font-serif text-[1.7rem] sm:text-[1.9rem] font-medium leading-tight tracking-tight text-base-content;
+}
+.blog-prose h2::before {
+  content: '§ ' counter(post-section, decimal-leading-zero);
+  @apply block mb-2 font-mono text-[0.68rem] font-medium uppercase tracking-[0.2em] text-primary;
+}
+.blog-prose h2 + * { @apply mt-4; }
+.blog-prose h3 { @apply mt-10 font-serif text-[1.3rem] font-semibold text-base-content; }
+.blog-prose strong { @apply font-semibold text-base-content; }
+.blog-prose a { @apply text-base-content underline decoration-primary/50 decoration-1 underline-offset-[3px] hover:text-primary hover:decoration-primary transition-colors; }
+.blog-prose ul { @apply list-disc pl-6 space-y-2; }
+.blog-prose ol { @apply list-decimal pl-6 space-y-2; }
+.blog-prose li::marker { @apply text-base-content/40; }
+.blog-prose blockquote {
+  @apply my-10 border-y-2 border-base-content py-5 text-center font-serif italic text-[1.45rem] leading-snug text-base-content;
+}
+.blog-prose code { @apply bg-base-200 border border-base-300 px-1.5 py-0.5 text-[0.82em] font-mono; }
+.blog-prose pre { @apply bg-base-200 border border-base-300 p-4 overflow-x-auto text-sm; }
+.blog-prose pre code { @apply bg-transparent border-0 p-0; }
+.blog-prose img { @apply border border-base-300 mx-auto max-w-full; }
+.blog-prose hr { @apply border-0 text-center my-12; }
+.blog-prose hr::after { content: '\2042'; @apply text-base-content/40 text-xl; }
 .blog-prose table { @apply table table-sm; }
+
+.blog-prose figure { @apply my-10; }
+.blog-prose figure img { @apply w-full; }
+.blog-prose figure a { @apply block no-underline; }
+.blog-prose figure.poster a img { @apply transition-[filter] duration-300; }
+.blog-prose figure.poster a:hover img { filter: brightness(0.97); }
+.blog-prose figcaption {
+  @apply mt-3 border-b border-base-content/20 pb-3 font-serif text-[0.92rem] leading-snug text-base-content/65;
+  hyphens: manual;
+}
+.blog-prose figcaption::before {
+  content: 'Fig. — ';
+  @apply font-mono text-[0.68rem] uppercase tracking-[0.16em] text-primary not-italic;
+}
+
+/* "Read more" box: paper / code / poster links */
+.blog-prose aside.resources {
+  @apply border border-base-content bg-base-200/60 px-5 py-4;
+}
+.blog-prose .resources-label {
+  @apply mb-2 font-mono text-[0.68rem] uppercase tracking-[0.2em] text-primary;
+}
+.blog-prose aside.resources ul { @apply list-none p-0 m-0 space-y-0; }
+.blog-prose aside.resources li { @apply border-t border-base-content/15 first:border-t-0; }
+.blog-prose aside.resources a {
+  @apply flex items-baseline gap-3 py-2 no-underline text-[1rem] leading-snug;
+  hyphens: manual;
+  word-break: break-word;
+}
+.blog-prose aside.resources a span {
+  @apply w-14 shrink-0 font-mono text-[0.68rem] uppercase tracking-[0.16em] text-base-content/55;
+}
+.blog-prose aside.resources a:hover span { @apply text-primary; }
+
+/* Margin table of contents */
+.post-toc { @apply space-y-2.5 border-l border-base-content/15; }
+.post-toc a {
+  @apply -ml-px block border-l border-transparent pl-3 font-serif text-[0.9rem] leading-snug text-base-content/50 hover:text-base-content transition-colors;
+}
+.post-toc a[aria-current='true'] { @apply border-primary text-base-content; }
 
 /* Segmented control for the reading depth ("edition"). */
 @layer components {

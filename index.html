@@ -12,6 +12,26 @@
     <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#161513" media="(prefers-color-scheme: dark)" />
     <title><%- metaTitle %></title>
+    <!--
+      Avoid a flash of unstyled content: #root ships crawlable static HTML
+      (see seo.ts). Visitors with JavaScript never need it, so hide it until
+      React replaces it, and paint the saved theme's paper colour right away.
+    -->
+    <script>
+      (function () {
+        var d = document.documentElement;
+        d.classList.add('js');
+        try {
+          var t = localStorage.getItem('gitprofile-theme');
+          if (t) d.setAttribute('data-theme', t);
+        } catch (e) {}
+      })();
+    </script>
+    <style>
+      html { background: #ffffff; }
+      html[data-theme='scholar-dark'] { background: #161513; }
+      html.js #prerender { display: none; }
+    </style>
 
     <meta name="description" content="<%- metaDescription %>" />
 
