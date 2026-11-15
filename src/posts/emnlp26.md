@@ -3,6 +3,7 @@ title: EMNLP 2026 Review
 date: 2026-11-15
 description: Fairness, Personalization, and the Future of Recommender Systems
 tags: [Conference Report, Recommender Systems, Interpretability]
+thumbnail: /img/emnlp26-thumb.jpg
 dateline: Budapest
 draft: false
 ---
