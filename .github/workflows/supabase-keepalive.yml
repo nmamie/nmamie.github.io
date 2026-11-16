@@ -1,0 +1,37 @@
+name: Supabase keep-alive
+
+# Free Supabase projects pause after a week without activity, which would
+# break blog comments. Reading one thread a day keeps the project awake.
+# URL and anon key are read from gitprofile.config.ts (both are public);
+# while they are empty this job does nothing.
+
+on:
+  schedule:
+    - cron: '17 6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Ping comments database
+        run: |
+          url=$(sed -n "s/^[[:space:]]*supabaseUrl:[[:space:]]*'\([^']*\)'.*/\1/p" gitprofile.config.ts | head -1)
+          key=$(sed -n "s/^[[:space:]]*supabaseAnonKey:[[:space:]]*'\([^']*\)'.*/\1/p" gitprofile.config.ts | head -1)
+          if [ -z "$url" ] || [ -z "$key" ]; then
+            echo "Supabase comments not configured; nothing to do."
+            exit 0
+          fi
+          status=$(curl -sS -o /dev/null -w '%{http_code}' --max-time 30 \
+            -X POST "${url%/}/rest/v1/rpc/get_thread" \
+            -H "apikey: $key" -H "Authorization: Bearer $key" \
+            -H 'Content-Type: application/json' \
+            -d '{"p_slug":"keepalive","p_client":"00000000-0000-0000-0000-000000000000"}')
+          echo "Supabase responded with HTTP $status"
+          [ "$status" = "200" ]

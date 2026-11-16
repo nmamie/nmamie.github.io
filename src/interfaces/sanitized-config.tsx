@@ -158,6 +158,10 @@ export interface SanitizedComments {
   repoId: string;
   category: string;
   categoryId: string;
+  /** 'native' = guest comments via Supabase, 'giscus' = GitHub Discussions */
+  provider: 'native' | 'giscus';
+  supabaseUrl: string;
+  supabaseAnonKey: string;
 }
 
 export interface SanitizedBlog {

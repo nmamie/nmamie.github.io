@@ -319,6 +319,13 @@ interface Comments {
   category?: string;
   /** From https://giscus.app (data-category-id) */
   categoryId?: string;
+  /**
+   * Guest comments & reactions (no account needed), stored in a free Supabase
+   * project. When both are set they replace giscus. See supabase/comments.sql.
+   */
+  supabaseUrl?: string;
+  /** The project's public "anon" key (safe to publish; access is limited by RLS). */
+  supabaseAnonKey?: string;
 }
 
 interface Blog {
@@ -464,7 +471,7 @@ interface Config {
    */
   blog?: Blog;
 
-  /** giscus comments on native blog posts. Leave ids empty to hide. */
+  /** Comments on native blog posts: guest comments via Supabase, else giscus. */
   comments?: Comments;
 
   /**

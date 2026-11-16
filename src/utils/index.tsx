@@ -167,16 +167,23 @@ export const getSanitizedConfig = (
         limit: config?.blog?.limit || 5,
         display: !!config?.blog?.username && !!config?.blog?.source,
       },
-      comments: {
-        repo: config?.comments?.repo || '',
-        repoId: config?.comments?.repoId || '',
-        category: config?.comments?.category || '',
-        categoryId: config?.comments?.categoryId || '',
-        display:
-          !!config?.comments?.repo &&
-          !!config?.comments?.repoId &&
-          !!config?.comments?.categoryId,
-      },
+      comments: (() => {
+        const c = config?.comments;
+        const supabaseUrl = (c?.supabaseUrl || '').replace(/\/+$/, '');
+        const supabaseAnonKey = c?.supabaseAnonKey || '';
+        const native = !!supabaseUrl && !!supabaseAnonKey;
+        const giscus = !!c?.repo && !!c?.repoId && !!c?.categoryId;
+        return {
+          repo: c?.repo || '',
+          repoId: c?.repoId || '',
+          category: c?.category || '',
+          categoryId: c?.categoryId || '',
+          supabaseUrl,
+          supabaseAnonKey,
+          provider: native ? ('native' as const) : ('giscus' as const),
+          display: native || giscus,
+        };
+      })(),
       themeConfig: {
         defaultTheme: config?.themeConfig?.defaultTheme || DEFAULT_THEMES[0],
         disableSwitch: config?.themeConfig?.disableSwitch || false,

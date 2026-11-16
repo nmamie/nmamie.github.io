@@ -229,8 +229,14 @@ main {
   @apply text-base-content/90 text-[1.16rem] sm:text-[1.2rem] leading-[1.7];
   hyphens: auto;
   font-variant-numeric: oldstyle-nums proportional-nums;
+  font-kerning: normal;
+  font-feature-settings: 'liga', 'kern';
+  text-wrap: pretty;
+  hanging-punctuation: first last;
 }
 .blog-prose > * + * { @apply mt-6; }
+.blog-prose em { font-style: italic; }
+.blog-prose abbr { font-variant-caps: all-small-caps; letter-spacing: 0.03em; text-decoration: none; }
 
 /* lede: drop cap, first line in small caps like a newspaper opening */
 .blog-prose > p:first-of-type::first-letter {
@@ -311,12 +317,105 @@ main {
 }
 .blog-prose aside.resources a:hover span { @apply text-primary; }
 
+/* ---- Post page chrome (broadsheet header, LessWrong-style margins) ---- */
+.post-masthead {
+  @apply mt-1 border-t-[3px] border-double border-base-content pt-10 sm:pt-16 pb-12 sm:pb-14 text-center;
+}
+.post-byline {
+  @apply mt-9 mx-auto max-w-2xl border-y border-base-content/25 py-2.5 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 font-mono text-[0.68rem] uppercase tracking-[0.14em] text-base-content/55;
+}
+.post-author {
+  @apply font-serif normal-case text-[0.95rem] tracking-normal text-base-content;
+  font-variant-caps: small-caps;
+  letter-spacing: 0.04em;
+}
+.reading-progress {
+  @apply fixed top-0 left-0 right-0 z-50 h-[2px] bg-primary origin-left pointer-events-none;
+  transition: transform 0.12s linear;
+}
+.post-colophon {
+  @apply mt-16 border-t-[3px] border-double border-base-content pt-5;
+}
+
 /* Margin table of contents */
 .post-toc { @apply space-y-2.5 border-l border-base-content/15; }
 .post-toc a {
-  @apply -ml-px block border-l border-transparent pl-3 font-serif text-[0.9rem] leading-snug text-base-content/50 hover:text-base-content transition-colors;
+  @apply -ml-px block border-l border-transparent pl-3 font-serif text-[0.9rem] leading-snug text-base-content/45 hover:text-base-content transition-colors;
+  text-wrap: balance;
 }
+.post-toc a[data-read='true'] { @apply text-base-content/70; }
 .post-toc a[aria-current='true'] { @apply border-primary text-base-content; }
+.post-toc-discussion { @apply pt-2.5 mt-1 border-t border-base-content/15; }
+.post-toc-discussion a { @apply italic; }
+
+/* ---- Discussion ("letters to the editor") ---- */
+.discussion {
+  @apply mt-20 border-t-2 border-base-content pt-8;
+}
+
+.composer {
+  @apply border border-base-content/30 bg-base-100 transition-colors focus-within:border-base-content;
+}
+.composer textarea {
+  @apply block w-full resize-y bg-transparent px-4 pt-3.5 pb-2 font-serif text-[1.06rem] leading-relaxed text-base-content placeholder:italic placeholder:text-base-content/40 focus:outline-none;
+}
+.composer-foot {
+  @apply flex flex-wrap items-center justify-between gap-3 border-t border-base-content/15 px-4 py-2.5;
+}
+.composer-sign {
+  @apply flex items-baseline gap-2 font-serif italic text-base-content/60;
+}
+.composer-sign input {
+  @apply w-44 border-0 border-b border-base-content/30 bg-transparent px-0.5 pb-0.5 font-serif not-italic text-base-content focus:border-primary focus:outline-none placeholder:italic placeholder:text-base-content/35;
+  font-variant-caps: small-caps;
+  letter-spacing: 0.03em;
+}
+.composer + p.meta,
+.composer > p.meta { @apply px-4 pb-3; }
+.composer-reply { @apply mt-3 mb-1; }
+.composer .btn-pill:disabled { @apply opacity-50 cursor-wait; }
+
+.comment-list > .comment { @apply border-b border-base-content/15 py-5; }
+.comment-replies { @apply mt-4 ml-1.5 border-l border-base-content/20 pl-5 space-y-4; }
+.comment-replies .comment-replies { @apply pl-4; }
+.comment-replies > .comment:hover { @apply border-base-content/40; }
+
+.comment-head { @apply flex flex-wrap items-baseline gap-x-2.5 gap-y-1; }
+.comment-toggle {
+  @apply -ml-0.5 w-4 font-mono text-[0.8rem] leading-none text-base-content/35 hover:text-primary transition-colors;
+}
+.comment-author {
+  @apply font-serif font-semibold text-[1.02rem] text-base-content;
+  font-variant-caps: small-caps;
+  letter-spacing: 0.035em;
+}
+.comment-body {
+  @apply mt-1.5 font-serif text-[1.04rem] leading-[1.62] text-base-content/90 space-y-3;
+  overflow-wrap: anywhere;
+  text-wrap: pretty;
+}
+.comment-body a { @apply underline decoration-primary/50 underline-offset-2 hover:text-primary; }
+.comment-foot { @apply mt-2.5 flex flex-wrap items-center gap-x-4 gap-y-2; }
+.comment-action {
+  @apply font-mono text-[0.66rem] uppercase tracking-[0.14em] text-base-content/50 hover:text-primary transition-colors;
+}
+
+/* reacts */
+.react-chip {
+  @apply inline-flex items-center gap-1.5 border border-base-content/20 px-2 py-0.5 font-serif text-[0.85rem] text-base-content/70 transition-colors hover:border-base-content/60 hover:text-base-content;
+}
+.react-chip[aria-pressed='true'] {
+  @apply border-primary/70 bg-primary/[0.07] text-base-content;
+}
+.react-glyph { @apply text-primary; }
+.react-count { @apply font-mono text-[0.7rem] text-base-content/60; }
+.react-palette {
+  @apply absolute right-0 top-full z-20 mt-1.5 w-52 border border-base-content bg-base-100 py-1 shadow-[4px_4px_0_0] shadow-base-content/10;
+}
+.react-palette button {
+  @apply flex w-full items-center gap-2.5 px-3 py-1.5 text-left font-serif text-[0.95rem] text-base-content/80 hover:bg-base-200 hover:text-base-content;
+}
+.react-palette button[aria-checked='true'] { @apply text-base-content font-semibold; }
 
 /* Segmented control for the reading depth ("edition"). */
 @layer components {

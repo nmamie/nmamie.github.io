@@ -406,10 +406,14 @@ const CONFIG = {
     username: 'nmamie', // to hide blog section, keep it empty
     limit: 4, // How many articles to display. Max is 10.
   },
-  // Comments on native blog posts (src/posts/*.md), stored in GitHub Discussions via giscus.
-  // Setup: enable Discussions on the repo, install https://github.com/apps/giscus,
-  // then copy repoId/categoryId from https://giscus.app. Empty ids hide comments.
+  // Comments on native blog posts (src/posts/*.md).
+  // Guest comments + reactions (no account needed): create a free project at
+  // https://supabase.com, run supabase/comments.sql in its SQL editor, then paste
+  // the Project URL and the public anon key below. While those are empty, the
+  // site falls back to giscus (GitHub Discussions) using the ids further down.
   comments: {
+    supabaseUrl: 'https://ybfyvhjaiieuhjpqfuvr.supabase.co',
+    supabaseAnonKey: 'sb_publishable_KHp5yR29a4fHHhTJvEJ8Yg_8Pa7Qbdv',
     repo: 'nmamie/nmamie.github.io',
     repoId: 'R_kgDOP1pRuA',
     category: 'Announcements',

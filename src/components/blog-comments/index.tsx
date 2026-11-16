@@ -1,12 +1,15 @@
 import { useEffect, useRef } from 'react';
 import { SanitizedComments } from '../../interfaces/sanitized-config';
 import { isDarkishTheme } from '../../utils';
+import { Thread } from '../../utils/comments-api';
+import NativeComments from './native';
 
 /**
  * giscus comment thread (backed by GitHub Discussions), one thread per post.
  * Threads are keyed by the post slug, so renaming a post's file starts a new thread.
+ * Used only when guest comments (Supabase) are not configured.
  */
-const BlogComments = ({
+const GiscusThread = ({
   slug,
   comments,
   theme,
@@ -48,7 +51,9 @@ const BlogComments = ({
 
   // Follow the site's theme switcher without reloading the thread.
   useEffect(() => {
-    const iframe = ref.current?.querySelector<HTMLIFrameElement>('iframe.giscus-frame');
+    const iframe = ref.current?.querySelector<HTMLIFrameElement>(
+      'iframe.giscus-frame',
+    );
     iframe?.contentWindow?.postMessage(
       { giscus: { setConfig: { theme: giscusTheme } } },
       'https://giscus.app',
@@ -56,14 +61,43 @@ const BlogComments = ({
   }, [giscusTheme]);
 
   return (
-    <section className="mt-12 pt-8 border-t border-base-300">
-      <h2 className="text-lg font-bold text-base-content mb-1">Discussion</h2>
+    <>
       <p className="text-sm text-base-content/60 mb-6">
-        Sign in with GitHub to comment or react. Comments are stored in GitHub Discussions.
+        Sign in with GitHub to comment or react. Comments are stored in GitHub
+        Discussions.
       </p>
       <div ref={ref} className="giscus" />
-    </section>
+    </>
   );
 };
+
+/** "Letters to the editor": the discussion under a post. */
+const BlogComments = ({
+  slug,
+  comments,
+  theme,
+  thread,
+}: {
+  slug: string;
+  comments: SanitizedComments;
+  theme: string;
+  thread: Thread;
+}) => (
+  <section id="discussion" className="discussion">
+    <header className="mb-6">
+      <p className="font-mono text-[0.68rem] uppercase tracking-[0.22em] text-primary">
+        Letters to the editor
+      </p>
+      <h2 className="mt-2 font-serif text-[2rem] font-medium tracking-tight leading-tight text-base-content">
+        Discussion
+      </h2>
+    </header>
+    {comments.provider === 'native' ? (
+      <NativeComments thread={thread} />
+    ) : (
+      <GiscusThread slug={slug} comments={comments} theme={theme} />
+    )}
+  </section>
+);
 
 export default BlogComments;

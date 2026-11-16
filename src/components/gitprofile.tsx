@@ -289,7 +289,9 @@ const GitProfile = ({ config }: { config: Config }) => {
           )}
         </header>
 
-        <main className="max-w-4xl mx-auto px-5 sm:px-8">
+        <main
+          className={`${openPost ? 'max-w-6xl' : 'max-w-4xl'} mx-auto px-5 sm:px-8`}
+        >
           {openPost ? (
             <div className="py-10">
               <BlogPostView
@@ -352,7 +354,10 @@ const GitProfile = ({ config }: { config: Config }) => {
                 <p className="text-xs text-base-content/40 mt-1 max-w-md leading-relaxed">
                   Privacy: no cookies, no analytics. Personalization is opt-in
                   and stays in your browser. Citation counts and blog posts are
-                  refreshed from OpenAlex and Medium; comments use GitHub.
+                  refreshed from OpenAlex and Medium.{' '}
+                  {cfg.comments.provider === 'native'
+                    ? 'Blog comments and reactions are stored with Supabase; nothing is collected until you post one.'
+                    : 'Blog comments use GitHub Discussions.'}
                 </p>
               </div>
               <SocialLinks config={cfg} className="-ml-2 sm:ml-0" />
