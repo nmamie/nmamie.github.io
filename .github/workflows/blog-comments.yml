@@ -1,0 +1,62 @@
+name: Blog comments
+
+# Once a day:
+#  - reads every post's comment thread, so the free Supabase project never
+#    pauses for inactivity (free projects pause after a week without activity);
+#  - posts a GitHub Discussion (in the giscus category from gitprofile.config.ts)
+#    listing comments since the last digest, so new comments, and any abuse,
+#    show up in your GitHub notifications. Nothing is posted on quiet days.
+# Uses only the public key from gitprofile.config.ts; does nothing while it is empty.
+
+on:
+  schedule:
+    - cron: '17 6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  discussions: write
+
+concurrency:
+  group: blog-comments
+
+jobs:
+  digest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Check threads and collect new comments
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SITE_URL: https://nmamie.github.io
+        run: |
+          # Report everything after the previous digest (or the last 24h).
+          last=$(gh api graphql -f q='repo:${{ github.repository }} in:title "Blog comments digest"' -f query='
+            query($q: String!) { search(query: $q, type: DISCUSSION, first: 20) {
+              nodes { ... on Discussion { title createdAt } } } }' \
+            --jq '[.data.search.nodes[] | select(.title | startswith("Blog comments digest")) | .createdAt] | max // empty')
+          export SINCE="${last:-$(date -u -d '24 hours ago' +%Y-%m-%dT%H:%M:%SZ)}"
+          node scripts/comment-digest.mjs > digest.md
+
+      - name: Post digest discussion
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ ! -s digest.md ]; then echo "No new comments."; exit 0; fi
+          repo_id=$(sed -n "s/^[[:space:]]*repoId:[[:space:]]*'\([^']*\)'.*/\1/p" gitprofile.config.ts | head -1)
+          category_id=$(sed -n "s/^[[:space:]]*categoryId:[[:space:]]*'\([^']*\)'.*/\1/p" gitprofile.config.ts | head -1)
+          gh api graphql \
+            -f repo="$repo_id" -f cat="$category_id" \
+            -f title="Blog comments digest $(date -u +%Y-%m-%d)" \
+            -f body="$(head -c 60000 digest.md)" \
+            -f query='mutation($repo: ID!, $cat: ID!, $title: String!, $body: String!) {
+              createDiscussion(input: {repositoryId: $repo, categoryId: $cat, title: $title, body: $body}) {
+                discussion { url } } }' \
+            --jq '.data.createDiscussion.discussion.url'

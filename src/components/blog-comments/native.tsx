@@ -10,6 +10,31 @@ import ReactionBar from './reactions';
 
 type Sort = 'top' | 'new' | 'old';
 
+const MAX_LINKS = 2;
+
+/**
+ * Names guests cannot sign with (compared without accents, case, spacing or
+ * punctuation). Checked in the browser only: it stops casual impersonation.
+ * The author can unlock it in their own browser by running
+ * localStorage.setItem('blog-author', '1') in the developer console.
+ */
+const RESERVED_NAMES = ['noahmamie', 'nmamie', 'author', 'admin', 'editor'];
+const normalizeName = (s: string) =>
+  s
+    .toLowerCase()
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]/g, '');
+const isReservedName = (name: string) => {
+  try {
+    if (localStorage.getItem('blog-author') === '1') return false;
+  } catch {
+    /* storage blocked: treat as a guest */
+  }
+  const n = normalizeName(name);
+  return RESERVED_NAMES.some((r) => n === r || (r.length > 6 && n.includes(r)));
+};
+
 /** Plain text -> paragraphs with clickable links. No HTML is ever injected. */
 const renderBody = (body: string) =>
   body.split(/\n{2,}/).map((para, i) => {
@@ -60,6 +85,20 @@ const Composer = ({
     if (trap) return; // honeypot: bots fill every field
     if (!name.trim() || !body.trim()) {
       setNote({ kind: 'error', text: 'Please add your name and a comment.' });
+      return;
+    }
+    if (isReservedName(name)) {
+      setNote({
+        kind: 'error',
+        text: 'That name is reserved for the author. Please sign with your own name.',
+      });
+      return;
+    }
+    if ((body.match(/https?:\/\/|www\./gi) ?? []).length > MAX_LINKS) {
+      setNote({
+        kind: 'error',
+        text: `Please include at most ${MAX_LINKS} links per comment.`,
+      });
       return;
     }
     setBusy(true);
